@@ -12,6 +12,9 @@ export default function AppLayout({
   return (
     <div className="flex min-h-screen">
       <div className="hidden border-r bg-card text-card-foreground lg:flex lg:w-64 lg:flex-col">
+        <div className="flex h-16 items-center border-b px-6">
+            <Logo />
+        </div>
         <AppSidebar />
       </div>
       <div className="flex flex-1 flex-col">
@@ -23,8 +26,11 @@ export default function AppLayout({
                 <span className="sr-only">Toggle Menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-64 p-0">
+            <SheetContent side="left" className="flex w-64 flex-col p-0">
                <SheetTitle className="sr-only">Sidebar Menu</SheetTitle>
+               <div className="flex h-16 shrink-0 items-center border-b px-6">
+                <Logo />
+               </div>
                <AppSidebar />
             </SheetContent>
           </Sheet>

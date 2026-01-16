@@ -1,6 +1,5 @@
 'use client';
 
-import { Logo } from '@/components/logo';
 import {
   Bell,
   BookUser,
@@ -45,17 +44,14 @@ export function AppSidebar() {
   const navItems = user?.role === 'admin' ? adminNav : user?.role === 'consultant' ? consultantNav : studentNav;
 
   return (
-    <div className="flex h-full flex-col">
-      <div className="flex h-16 items-center border-b px-6">
-        <Logo />
-      </div>
-      <nav className="flex-1 space-y-2 p-4">
+    <>
+      <nav className="flex-1 space-y-2 overflow-y-auto p-4">
         {navItems.map((item) => (
           <Link
             key={item.label}
             href={item.href}
             className={cn(
-              'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10',
+              'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-primary/10',
               pathname === item.href && 'bg-primary/10 text-primary',
             )}
           >
@@ -64,7 +60,7 @@ export function AppSidebar() {
           </Link>
         ))}
       </nav>
-      <div className="mt-auto border-t p-4">
+      <div className="border-t p-4">
         {user && (
           <div className="flex items-center gap-4">
             <Avatar className="h-10 w-10">
@@ -81,6 +77,6 @@ export function AppSidebar() {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }

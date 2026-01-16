@@ -5,11 +5,11 @@ import {
   Bell,
   BookUser,
   Building2,
-  ClipboardList,
   HeartHandshake,
   Home,
   LogOut,
   MessageSquare,
+  Users,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth';
@@ -26,10 +26,10 @@ export function AppSidebar() {
 
   const adminNav = [
     { href: '/dashboard', label: 'Dashboard', icon: Home },
+    { href: '/users', label: 'Users', icon: Users },
     { href: '/departments', label: 'Departments', icon: Building2 },
     { href: '/consultations', label: 'Consultations', icon: MessageSquare },
     { href: '/public-content', label: 'News', icon: Bell },
-    { href: '/consultations', label: 'Requests', icon: ClipboardList },
   ];
 
   const consultantNav = [

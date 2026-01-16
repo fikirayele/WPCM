@@ -22,7 +22,7 @@ export default function RequestConsultationPage() {
             title: "Request Submitted",
             description: "Your information has been submitted successfully. We will get back to you shortly.",
         });
-        // In a real app, you might want to redirect or clear the form.
+        router.push('/');
     };
     
     const studyLevels = [
@@ -36,7 +36,7 @@ export default function RequestConsultationPage() {
     ];
 
   return (
-    <div className="space-y-8 py-12 px-4">
+    <div className="space-y-8 py-12">
       <div className="text-center">
         <h1 className="font-headline text-3xl font-bold text-primary">WPCM Student Consultation & Support Form</h1>
         <p className="text-muted-foreground mt-2 max-w-3xl mx-auto">
@@ -220,7 +220,7 @@ export default function RequestConsultationPage() {
             {/* Section 8: Additional Comments */}
             <div className="space-y-4">
                  <h2 className="text-xl font-semibold font-headline text-primary border-b pb-2">8. Additional Comments or Requests</h2>
-                 <Label htmlFor="comments" className="text-muted-foreground">Tell us anything you would like us to know about your situation, needs, or goals</Label>
+                 <Label htmlFor="comments" className="!mt-4 !block text-muted-foreground">Tell us anything you would like us to know about your situation, needs, or goals</Label>
                 <Textarea
                     id="comments"
                     className="min-h-[150px]"

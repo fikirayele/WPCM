@@ -4,10 +4,11 @@ import type { User, UserRole } from '@/lib/types';
 import { users } from '@/lib/data';
 import React, { createContext, useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 
 interface AuthContextType {
   user: User | null;
-  login: (role: UserRole) => void;
+  login: (email: string, password?: string) => void;
   logout: () => void;
 }
 
@@ -16,21 +17,40 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
+  const { toast } = useToast();
 
-  const login = useCallback((role: UserRole) => {
-    // Find the first user with the specified role for simulation
-    const userToLogin = users.find((u) => u.role === role);
-    if (userToLogin) {
-      setUser(userToLogin);
-      if (userToLogin.role === 'admin') {
-        router.push('/dashboard');
-      } else if (userToLogin.role === 'consultant') {
-        router.push('/consultations');
+  const login = useCallback(
+    (email: string, password?: string) => {
+      // Find user by email. For demo, we ignore password.
+      const userToLogin = users.find((u) => u.email === email);
+
+      if (userToLogin) {
+        if (!userToLogin.active) {
+          toast({
+            variant: 'destructive',
+            title: 'Login Failed',
+            description: 'Your account is inactive. Please contact an administrator.',
+          });
+          return;
+        }
+        setUser(userToLogin);
+        if (userToLogin.role === 'admin') {
+          router.push('/dashboard');
+        } else if (userToLogin.role === 'consultant') {
+          router.push('/consultations');
+        } else {
+          router.push('/');
+        }
       } else {
-        router.push('/');
+        toast({
+          variant: 'destructive',
+          title: 'Login Failed',
+          description: 'Invalid email or password.',
+        });
       }
-    }
-  }, [router]);
+    },
+    [router, toast]
+  );
 
   const logout = useCallback(() => {
     setUser(null);

@@ -10,7 +10,6 @@ import {
   LogOut,
   MessageSquare,
   Users,
-  Wallet,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth';
@@ -30,8 +29,7 @@ export function AppSidebar() {
     { href: '/consultations', label: 'Consultations', icon: MessageSquare },
     { href: '/users', label: 'Users', icon: Users },
     { href: '/departments', label: 'Departments', icon: Building2 },
-    { href: '/public-content', label: 'Content', icon: Bell },
-    { href: '/donations', label: 'Donations', icon: Wallet },
+    { href: '/public-content', label: 'News', icon: Bell },
   ];
 
   const consultantNav = [
@@ -59,7 +57,6 @@ export function AppSidebar() {
             className={cn(
               'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10',
               pathname === item.href && 'bg-primary/10 text-primary',
-              item.disabled && 'pointer-events-none opacity-50'
             )}
           >
             <item.icon className="h-4 w-4" />

@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAuth } from '@/hooks/use-auth';
 import { cn } from '@/lib/utils';
-import { Bot, Send, User as UserIcon } from 'lucide-react';
+import { Bot, Send, User as UserIcon, CheckCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { summarizeConsultationChat } from '@/ai/flows/consultation-chat-summarization';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -101,7 +101,16 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
                     <UserIcon className="h-4 w-4" />
                     <AlertTitle>Pending Assignment</AlertTitle>
                     <AlertDescription>
-                        An admin will assign a consultant to this request soon.
+                        An admin will assign a consultant to this request soon. The chat will be enabled once a consultant is assigned.
+                    </AlertDescription>
+                </Alert>
+            )}
+            {consultation.status === 'ASSIGNED' && messages.length === 0 && (
+                 <Alert variant="default" className="border-primary/50 text-primary">
+                    <CheckCircle className="h-4 w-4 text-primary" />
+                    <AlertTitle>Consultant Assigned!</AlertTitle>
+                    <AlertDescription>
+                        {consultant?.name} has been assigned to this consultation. You can now begin your conversation.
                     </AlertDescription>
                 </Alert>
             )}

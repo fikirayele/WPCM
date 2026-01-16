@@ -5,11 +5,11 @@ import {
   Bell,
   BookUser,
   Building2,
+  ClipboardList,
   HeartHandshake,
   Home,
   LogOut,
   MessageSquare,
-  Users,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth';
@@ -26,10 +26,10 @@ export function AppSidebar() {
 
   const adminNav = [
     { href: '/dashboard', label: 'Dashboard', icon: Home },
-    { href: '/consultations', label: 'Consultations', icon: MessageSquare },
-    { href: '/users', label: 'Users', icon: Users },
     { href: '/departments', label: 'Departments', icon: Building2 },
+    { href: '/consultations', label: 'Consultations', icon: MessageSquare },
     { href: '/public-content', label: 'News', icon: Bell },
+    { href: '/consultations', label: 'Requests', icon: ClipboardList },
   ];
 
   const consultantNav = [
@@ -52,7 +52,7 @@ export function AppSidebar() {
       <nav className="flex-1 space-y-2 p-4">
         {navItems.map((item) => (
           <Link
-            key={item.href}
+            key={item.label}
             href={item.href}
             className={cn(
               'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10',

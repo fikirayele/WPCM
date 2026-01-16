@@ -1,6 +1,6 @@
 import { AppSidebar } from './_components/app-sidebar';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import { Menu } from 'lucide-react';
 import { Logo } from '@/components/logo';
 
@@ -24,6 +24,7 @@ export default function AppLayout({
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-64 p-0">
+               <SheetTitle className="sr-only">Sidebar Menu</SheetTitle>
                <AppSidebar />
             </SheetContent>
           </Sheet>

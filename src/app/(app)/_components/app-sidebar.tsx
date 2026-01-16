@@ -45,7 +45,7 @@ export function AppSidebar() {
   const navItems = user?.role === 'admin' ? adminNav : user?.role === 'consultant' ? consultantNav : studentNav;
 
   return (
-    <div className="hidden h-screen w-64 flex-col border-r bg-card text-card-foreground lg:flex">
+    <div className="flex h-full flex-col">
       <div className="flex h-16 items-center border-b px-6">
         <Logo />
       </div>

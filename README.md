@@ -1,4 +1,4 @@
-# Firebase Studio
+# FaithConnect
 
 This is a NextJS starter in Firebase Studio.
 

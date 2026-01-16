@@ -1,3 +1,70 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-image",
+      "description": "A serene, abstract image representing faith and connection.",
+      "imageUrl": "https://images.unsplash.com/photo-1729258345933-e19940bd9e09?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZXJlbmUlMjBhYnN0cmFjdHxlbnwwfHx8fDE3Njg1ODE2ODN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "serene abstract"
+    },
+    {
+      "id": "about-us-image",
+      "description": "Image of a diverse group of people in a community setting.",
+      "imageUrl": "https://images.unsplash.com/photo-1768508950042-1bd30bd06e4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjb21tdW5pdHklMjBnYXRoZXJpbmd8ZW58MHx8fHwxNzY4NTgxNjgzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "community gathering"
+    },
+    {
+      "id": "news-1",
+      "description": "Image for a news article about a community event.",
+      "imageUrl": "https://images.unsplash.com/photo-1544928147-79a2dbc1f389?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb21tdW5pdHklMjBldmVudHxlbnwwfHx8fDE3Njg1ODE2ODN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "community event"
+    },
+    {
+      "id": "news-2",
+      "description": "Image for a news article about youth programs.",
+      "imageUrl": "https://images.unsplash.com/photo-1506869640319-fe1a24fd76dc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx5b3V0aCUyMGdyb3VwfGVufDB8fHx8MTc2ODU2OTU4Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "youth group"
+    },
+    {
+      "id": "news-3",
+      "description": "Image for an announcement about volunteering.",
+      "imageUrl": "https://images.unsplash.com/photo-1758599668338-4c55a3bd0ce0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx2b2x1bnRlZXJzJTIwaGFuZHN8ZW58MHx8fHwxNzY4NTgxNjgzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "volunteers hands"
+    },
+    {
+      "id": "avatar-1",
+      "description": "Avatar for user Sarah Day.",
+      "imageUrl": "https://images.unsplash.com/photo-1610655507808-a59293f4e332?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2ODU1NDczMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman portrait"
+    },
+    {
+      "id": "avatar-2",
+      "description": "Avatar for user John Smith.",
+      "imageUrl": "https://images.unsplash.com/photo-1607031542107-f6f46b5d54e9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3Njg1NzI1MTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man portrait"
+    },
+    {
+      "id": "avatar-3",
+      "description": "Avatar for user Maria Garcia.",
+      "imageUrl": "https://images.unsplash.com/photo-1623605931891-d5b95ee98459?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwZXJzb24lMjBzbWlsaW5nfGVufDB8fHx8MTc2ODUzODcwMHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person smiling"
+    },
+    {
+      "id": "avatar-4",
+      "description": "Avatar for user Dr. Emily White.",
+      "imageUrl": "https://images.unsplash.com/photo-1573165850883-9b0e18c44bd2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwcm9mZXNzaW9uYWwlMjB3b21hbnxlbnwwfHx8fDE3Njg1MDcyNjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "professional woman"
+    },
+    {
+      "id": "avatar-5",
+      "description": "Avatar for user Pastor Michael Brown.",
+      "imageUrl": "https://images.unsplash.com/photo-1524715208467-3253d6a9efa4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxraW5kJTIwbWFufGVufDB8fHx8MTc2ODU4MTY4M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "kind man"
+    },
+    {
+      "id": "avatar-6",
+      "description": "Avatar for admin user Jessica Jones.",
+      "imageUrl": "https://images.unsplash.com/photo-1524255684952-d7185b509571?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx3b21hbiUyMGdsYXNzZXN8ZW58MHx8fHwxNzY4NTI1NjEyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman glasses"
+    }
+  ]
 }

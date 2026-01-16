@@ -1,0 +1,89 @@
+'use client';
+
+import { Logo } from '@/components/logo';
+import {
+  Bell,
+  BookUser,
+  Building2,
+  HeartHandshake,
+  Home,
+  LogOut,
+  MessageSquare,
+  Users,
+  Wallet,
+} from 'lucide-react';
+import Link from 'next/link';
+import { useAuth } from '@/hooks/use-auth';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+
+const getInitials = (name: string) => name.split(' ').map((n) => n[0]).join('');
+
+export function AppSidebar() {
+  const pathname = usePathname();
+  const { user, logout } = useAuth();
+
+  const adminNav = [
+    { href: '/dashboard', label: 'Dashboard', icon: Home },
+    { href: '/consultations', label: 'Consultations', icon: MessageSquare },
+    { href: '/users', label: 'Users', icon: Users },
+    { href: '/departments', label: 'Departments', icon: Building2 },
+    { href: '/public-content', label: 'Content', icon: Bell },
+    { href: '/donations', label: 'Donations', icon: Wallet },
+  ];
+
+  const consultantNav = [
+    { href: '/dashboard', label: 'Dashboard', icon: Home },
+    { href: '/consultations', label: 'My Consultations', icon: MessageSquare },
+  ];
+
+  const studentNav = [
+    { href: '/request-consultation', label: 'Request Help', icon: HeartHandshake },
+    { href: '/consultations', label: 'My Consultations', icon: BookUser },
+  ];
+  
+  const navItems = user?.role === 'admin' ? adminNav : user?.role === 'consultant' ? consultantNav : studentNav;
+
+  return (
+    <div className="hidden h-screen w-64 flex-col border-r bg-card text-card-foreground lg:flex">
+      <div className="flex h-16 items-center border-b px-6">
+        <Logo />
+      </div>
+      <nav className="flex-1 space-y-2 p-4">
+        {navItems.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={cn(
+              'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10',
+              pathname === item.href && 'bg-primary/10 text-primary',
+              item.disabled && 'pointer-events-none opacity-50'
+            )}
+          >
+            <item.icon className="h-4 w-4" />
+            {item.label}
+          </Link>
+        ))}
+      </nav>
+      <div className="mt-auto border-t p-4">
+        {user && (
+          <div className="flex items-center gap-4">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={user.avatarUrl} />
+              <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+            </Avatar>
+            <div className="flex-1 overflow-hidden">
+              <p className="truncate font-semibold">{user.name}</p>
+              <p className="truncate text-xs text-muted-foreground">{user.email}</p>
+            </div>
+            <Button variant="ghost" size="icon" onClick={logout}>
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

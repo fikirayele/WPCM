@@ -11,12 +11,13 @@ export default function AppLayout({
 }) {
   return (
     <div className="flex min-h-screen">
-      <div className="hidden border-r bg-card text-card-foreground lg:flex lg:w-64 lg:flex-col">
-        <div className="flex h-16 items-center border-b px-6">
-            <Logo />
+      <aside className="hidden w-64 flex-col border-r bg-card lg:flex">
+        <div className="flex h-16 shrink-0 items-center border-b px-6">
+          <Logo />
         </div>
         <AppSidebar />
-      </div>
+      </aside>
+
       <div className="flex flex-1 flex-col">
         <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-card px-4 lg:hidden">
           <Sheet>
@@ -34,8 +35,11 @@ export default function AppLayout({
                <AppSidebar />
             </SheetContent>
           </Sheet>
-          <Logo />
+          <div className="flex-1 text-center">
+            <Logo />
+          </div>
         </header>
+
         <main className="flex-1 overflow-auto bg-primary/5 p-4 sm:p-6 lg:p-8">
           {children}
         </main>

@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
+import { Eye } from 'lucide-react';
 
 interface ConsultationActionsProps {
   initialConsultations: Consultation[];
@@ -109,7 +110,10 @@ export function ConsultationActions({ initialConsultations, users, departments }
                     </DialogContent>
                   </Dialog>
                 ) : (
-                  <Button variant="ghost" size="sm" onClick={(e) => e.stopPropagation()}>View</Button>
+                  <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); handleRowClick(c.id); }}>
+                    <Eye className="w-4 h-4 mr-2" />
+                    View
+                  </Button>
                 )}
               </TableCell>
             </TableRow>

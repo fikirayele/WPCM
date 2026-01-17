@@ -54,7 +54,7 @@ import {
   users as initialUsers,
 } from '@/lib/data';
 import type { Department, User } from '@/lib/types';
-import { ArrowUpDown, MoreHorizontal, PlusCircle } from 'lucide-react';
+import { ArrowUpDown, MoreHorizontal, PlusCircle, Pencil, Trash2 } from 'lucide-react';
 
 export function UserActions() {
   const [users, setUsers] = useState<User[]>(initialUsers);
@@ -384,7 +384,7 @@ export function UserActions() {
                           setIsDialogOpen(true);
                         }}
                       >
-                        Edit
+                        <Pencil className="w-4 h-4 mr-2" /> Edit
                       </DropdownMenuItem>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
@@ -392,7 +392,7 @@ export function UserActions() {
                             onSelect={(e) => e.preventDefault()}
                             className="text-destructive focus:bg-destructive focus:text-destructive-foreground"
                           >
-                            Delete
+                           <Trash2 className="w-4 h-4 mr-2" /> Delete
                           </DropdownMenuItem>
                         </AlertDialogTrigger>
                         <AlertDialogContent>

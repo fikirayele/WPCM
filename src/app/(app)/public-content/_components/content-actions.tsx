@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import Image from 'next/image';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -44,15 +45,37 @@ import { news as initialNews } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import type { NewsArticle } from '@/lib/types';
 import { format } from 'date-fns';
-import { MoreHorizontal, PlusCircle } from 'lucide-react';
+import { MoreHorizontal, PlusCircle, Pencil, Trash2, FileUp, Image as ImageIcon } from 'lucide-react';
 
 export function ContentActions() {
   const [articles, setArticles] = useState<NewsArticle[]>(initialNews);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [currentArticle, setCurrentArticle] = useState<NewsArticle | null>(
-    null
-  );
+  const [currentArticle, setCurrentArticle] = useState<NewsArticle | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const { toast } = useToast();
+
+  const handleOpenDialog = (article: NewsArticle | null) => {
+    setCurrentArticle(article);
+    setImagePreview(article ? article.imageUrl : null);
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setCurrentArticle(null);
+    setImagePreview(null);
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -60,11 +83,7 @@ export function ContentActions() {
     const title = formData.get('title') as string;
     const content = formData.get('content') as string;
     const author = formData.get('author') as string;
-    const imageUrl =
-      (formData.get('imageUrl') as string) ||
-      currentArticle?.imageUrl ||
-      PlaceHolderImages.find((img) => img.id === 'news-1')?.imageUrl ||
-      '';
+    const imageUrl = imagePreview || currentArticle?.imageUrl || PlaceHolderImages.find((img) => img.id === 'news-1')?.imageUrl || '';
 
     if (currentArticle) {
       const updatedArticle = { ...currentArticle, title, content, author, imageUrl };
@@ -90,8 +109,7 @@ export function ContentActions() {
         description: `"${title}" has been successfully published.`,
       });
     }
-    setIsDialogOpen(false);
-    setCurrentArticle(null);
+    handleCloseDialog();
   };
 
   const handleDelete = (articleId: string) => {
@@ -107,9 +125,9 @@ export function ContentActions() {
   return (
     <>
       <div className="flex justify-end mb-4">
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog open={isDialogOpen} onOpenChange={(open) => !open && handleCloseDialog()}>
           <DialogTrigger asChild>
-            <Button onClick={() => setCurrentArticle(null)}>
+            <Button onClick={() => handleOpenDialog(null)}>
               <PlusCircle className="w-4 h-4 mr-2" /> Add New Content
             </Button>
           </DialogTrigger>
@@ -162,17 +180,26 @@ export function ContentActions() {
                     required
                   />
                 </div>
-                <div className="grid items-center grid-cols-4 gap-4">
-                  <Label htmlFor="imageUrl" className="text-right">
-                    Image URL
-                  </Label>
-                  <Input
-                    id="imageUrl"
-                    name="imageUrl"
-                    defaultValue={currentArticle?.imageUrl}
-                    className="col-span-3"
-                    placeholder="https://..."
-                  />
+                <div className="grid grid-cols-4 items-start gap-4">
+                  <Label className="text-right pt-2">Image</Label>
+                   <div className="col-span-3 space-y-2">
+                      {imagePreview ? (
+                        <div className="relative aspect-video w-full">
+                            <Image src={imagePreview} alt="Article preview" fill className="rounded-md object-cover" />
+                        </div>
+                       ) : (
+                         <div className="flex items-center justify-center w-full">
+                           <div className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg bg-card">
+                             <ImageIcon className="w-8 h-8 text-muted-foreground" />
+                           </div>
+                         </div>
+                       )}
+                    <Label htmlFor="file-upload" className="w-full flex items-center justify-center px-4 py-2 bg-primary text-primary-foreground rounded-md cursor-pointer hover:bg-primary/90 text-sm">
+                        <FileUp className="w-4 h-4 mr-2" />
+                        <span>{imagePreview ? 'Change' : 'Upload'} Image</span>
+                        <Input id="file-upload" type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+                    </Label>
+                  </div>
                 </div>
               </div>
               <DialogFooter>
@@ -207,13 +234,8 @@ export function ContentActions() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        onClick={() => {
-                          setCurrentArticle(article);
-                          setIsDialogOpen(true);
-                        }}
-                      >
-                        Edit
+                      <DropdownMenuItem onClick={() => handleOpenDialog(article)}>
+                        <Pencil className="w-4 h-4 mr-2" /> Edit
                       </DropdownMenuItem>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
@@ -221,7 +243,7 @@ export function ContentActions() {
                             onSelect={(e) => e.preventDefault()}
                             className="text-destructive focus:bg-destructive focus:text-destructive-foreground"
                           >
-                            Delete
+                            <Trash2 className="w-4 h-4 mr-2" /> Delete
                           </DropdownMenuItem>
                         </AlertDialogTrigger>
                         <AlertDialogContent>

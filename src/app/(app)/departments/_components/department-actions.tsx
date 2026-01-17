@@ -49,7 +49,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { departments as initialDepartments } from '@/lib/data';
 import type { Department } from '@/lib/types';
-import { ArrowUpDown, MoreHorizontal, PlusCircle } from 'lucide-react';
+import { ArrowUpDown, MoreHorizontal, PlusCircle, Pencil, Trash2 } from 'lucide-react';
 
 export function DepartmentActions() {
   const [departments, setDepartments] =
@@ -258,7 +258,7 @@ export function DepartmentActions() {
                           setIsDialogOpen(true);
                         }}
                       >
-                        Edit
+                        <Pencil className="w-4 h-4 mr-2" /> Edit
                       </DropdownMenuItem>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
@@ -266,7 +266,7 @@ export function DepartmentActions() {
                             onSelect={(e) => e.preventDefault()}
                             className="text-destructive focus:bg-destructive focus:text-destructive-foreground"
                           >
-                            Delete
+                           <Trash2 className="w-4 h-4 mr-2" /> Delete
                           </DropdownMenuItem>
                         </AlertDialogTrigger>
                         <AlertDialogContent>

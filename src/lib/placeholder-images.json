@@ -8,9 +8,15 @@
     },
     {
       "id": "about-us-image",
-      "description": "Two people talking over a coffee, representing support and guidance.",
-      "imageUrl": "https://images.unsplash.com/photo-1766113492981-c8b53d76c0f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzdXBwb3J0JTIwZ3VpZGFuY2V8ZW58MHx8fHwxNzY4NjcwMzE5fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "support guidance"
+      "description": "A diverse group of people talking and smiling.",
+      "imageUrl": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "diverse group"
+    },
+    {
+      "id": "adventist-logo",
+      "description": "Placeholder for the Adventist logo.",
+      "imageUrl": "https://images.unsplash.com/photo-1611488006001-eb993d4d2ec4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxhZHZlbnRpc3QlMjBsb2dvfGVufDB8fHx8MTc2ODY3MTQzNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "adventist logo"
     },
     {
       "id": "news-1",

@@ -9,7 +9,7 @@ export default function AboutPage() {
   return (
     <div className="container py-16 md:py-24">
       <div className="text-center">
-        <h1 className="font-headline text-4xl font-bold text-primary">About FaithConnect</h1>
+        <h1 className="font-headline text-4xl font-bold text-primary">About WPCM Connect</h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-foreground/80">
           Serving our community through faith, support, and connection.
         </p>
@@ -31,7 +31,7 @@ export default function AboutPage() {
         <div className="space-y-6">
           <h2 className="font-headline text-3xl font-bold text-primary">Our Foundation</h2>
           <p className="text-foreground/70">
-            FaithConnect was born from a desire to extend our church's pastoral care into the digital space, ensuring every member of our community feels heard, supported, and valued. We believe in the power of connection to foster spiritual and personal growth.
+            WPCM Connect was born from a desire to extend our church's pastoral care into the digital space, ensuring every member of our community feels heard, supported, and valued. We believe in the power of connection to foster spiritual and personal growth.
           </p>
           <p className="text-foreground/70">
             Our platform provides a bridge to professional and spiritual guidance, grounded in the principles of confidentiality, compassion, and faith. We aim to be a sanctuary where individuals can find strength and clarity for life's challenges.
@@ -64,7 +64,7 @@ export default function AboutPage() {
             <CardTitle className="font-headline text-xl">Our Values</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground">Compassion, Integrity, Confidentiality, and Faith. These pillars guide every interaction and decision on the FaithConnect platform.</p>
+            <p className="text-muted-foreground">Compassion, Integrity, Confidentiality, and Faith. These pillars guide every interaction and decision on the WPCM Connect platform.</p>
           </CardContent>
         </Card>
       </div>

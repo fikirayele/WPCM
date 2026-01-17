@@ -65,12 +65,6 @@
       "description": "A group of people in a church.",
       "imageUrl": "/pic.jpg",
       "imageHint": "church community"
-    },
-    {
-      "id": "adventist-logo",
-      "description": "Logo for the Seventh-day Adventist Church",
-      "imageUrl": "/ad.jpg",
-      "imageHint": "church logo"
     }
   ]
 }

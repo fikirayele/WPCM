@@ -24,18 +24,6 @@ export default function HomePage() {
           />
         )}
         <div className="container relative mx-auto text-center">
-          {adventistLogo && (
-            <div className="mb-6 flex justify-center">
-              <Image
-                src={adventistLogo.imageUrl}
-                alt={adventistLogo.description}
-                data-ai-hint={adventistLogo.imageHint}
-                width={150}
-                height={75}
-                className="object-contain"
-              />
-            </div>
-          )}
           <h1 className="font-headline text-4xl font-bold tracking-tight text-primary md:text-6xl">
             A Sanctuary for Support &amp; Growth
           </h1>
@@ -142,6 +130,22 @@ export default function HomePage() {
             <Button variant="outline" asChild>
               <Link href="/news">View All News</Link>
             </Button>
+          </div>
+        </div>
+      </section>
+      
+      <section className="bg-background py-16 md:py-24">
+        <div className="container text-center">
+          <h2 className="font-headline text-3xl font-bold text-primary">Our Affiliations</h2>
+          <div className="mt-8 flex justify-center">
+             {adventistLogo && <Image
+                src={adventistLogo.imageUrl}
+                alt={adventistLogo.description}
+                data-ai-hint={adventistLogo.imageHint}
+                width={150}
+                height={75}
+                className="object-contain"
+              />}
           </div>
         </div>
       </section>

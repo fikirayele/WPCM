@@ -30,11 +30,6 @@ export default function HomePage() {
             WPCM is a safe and confidential platform for guidance, counseling, and spiritual support from trusted professionals within our church community.
           </p>
           <div className="mt-8 flex justify-center gap-4">
-            <Button size="lg" asChild>
-              <Link href="/request-consultation">
-                Request Consultation <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
             <Button size="lg" variant="outline" asChild>
               <Link href="/about">Learn More</Link>
             </Button>

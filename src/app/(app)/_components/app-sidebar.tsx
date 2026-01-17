@@ -36,10 +36,7 @@ export function AppSidebar() {
     { href: '/consultations', label: 'My Consultations', icon: MessageSquare },
   ];
 
-  const studentNav = [
-    { href: '/request-consultation', label: 'Request Help', icon: HeartHandshake },
-    { href: '/consultations', label: 'My Consultations', icon: BookUser },
-  ];
+  const studentNav: { href: string, label: string, icon: React.ElementType }[] = [];
   
   const navItems = user?.role === 'admin' ? adminNav : user?.role === 'consultant' ? consultantNav : studentNav;
 

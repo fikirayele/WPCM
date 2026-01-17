@@ -9,7 +9,6 @@ import { format } from 'date-fns';
 
 export default function HomePage() {
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-image');
-  const adventistLogo = PlaceHolderImages.find((img) => img.id === 'adventist-logo');
 
   return (
     <div className="flex flex-col">
@@ -143,16 +142,13 @@ export default function HomePage() {
             </p>
           </div>
           <div className="mt-12 flex justify-center">
-            {adventistLogo && (
               <Image
-                src={adventistLogo.imageUrl}
-                alt={adventistLogo.description}
-                data-ai-hint={adventistLogo.imageHint}
+                src="/ad.jpg"
+                alt="Adventist Logo"
                 width={200}
                 height={100}
                 className="object-contain"
               />
-            )}
           </div>
         </div>
       </section>

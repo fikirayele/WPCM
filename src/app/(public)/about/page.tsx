@@ -1,8 +1,10 @@
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Eye, Target, Heart } from 'lucide-react';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function AboutPage() {
+  const aboutImage = PlaceHolderImages.find((img) => img.id === 'about-us-image');
 
   return (
     <div className="container py-16 md:py-24">
@@ -15,13 +17,16 @@ export default function AboutPage() {
 
       <div className="mt-16 grid grid-cols-1 gap-12 md:grid-cols-2 md:items-center">
         <div>
-            <Image
-              src="/pic.jpg"
-              alt="About WPCM"
-              width={600}
-              height={400}
-              className="rounded-lg shadow-md"
-            />
+            {aboutImage && (
+              <Image
+                src={aboutImage.imageUrl}
+                alt={aboutImage.description}
+                data-ai-hint={aboutImage.imageHint}
+                width={600}
+                height={400}
+                className="rounded-lg shadow-md"
+              />
+            )}
         </div>
         <div className="space-y-6">
           <h2 className="font-headline text-3xl font-bold text-primary">Our Foundation</h2>

@@ -59,6 +59,18 @@
       "description": "Avatar for admin user Jessica Jones.",
       "imageUrl": "https://images.unsplash.com/photo-1524255684952-d7185b509571?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx3b21hbiUyMGdsYXNzZXN8ZW58MHx8fHwxNzY4NTI1NjEyfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "woman glasses"
+    },
+    {
+      "id": "about-us-image",
+      "description": "A group of people in a church.",
+      "imageUrl": "/pic.jpg",
+      "imageHint": "church community"
+    },
+    {
+      "id": "adventist-logo",
+      "description": "Logo for the Seventh-day Adventist Church",
+      "imageUrl": "/ad.jpg",
+      "imageHint": "church logo"
     }
   ]
 }

@@ -11,23 +11,25 @@ import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { Eye } from 'lucide-react';
+import { useAuth } from '@/hooks/use-auth';
 
 interface ConsultationActionsProps {
-  initialConsultations: Consultation[];
+  consultations: Consultation[];
   users: User[];
   departments: Department[];
 }
 
-export function ConsultationActions({ initialConsultations, users, departments }: ConsultationActionsProps) {
-  const [consultations, setConsultations] = useState<Consultation[]>(initialConsultations);
+export function ConsultationActions({ consultations, users, departments }: ConsultationActionsProps) {
   const [selectedConsultant, setSelectedConsultant] = useState<string | null>(null);
   const { toast } = useToast();
   const router = useRouter();
+  const { updateConsultation } = useAuth();
 
   const getStatusVariant = (status: string) => {
     switch (status) {
       case 'ACTIVE': return 'default';
       case 'PENDING': return 'destructive';
+      case 'AWAITING_ACCEPTANCE':
       case 'ASSIGNED': return 'secondary';
       case 'PAUSED': return 'outline';
       case 'COMPLETED': return 'outline';
@@ -40,16 +42,20 @@ export function ConsultationActions({ initialConsultations, users, departments }
       toast({ title: "Error", description: "Please select a consultant.", variant: "destructive" });
       return;
     }
-
-    setConsultations(consultations.map(c => 
-      c.id === consultationId ? { ...c, status: 'ASSIGNED', consultantId: selectedConsultant } : c
-    ));
+    
+    updateConsultation(consultationId, {
+        status: 'AWAITING_ACCEPTANCE',
+        consultantId: selectedConsultant,
+        studentAccepted: false,
+        consultantAccepted: false
+    });
     
     const consultant = users.find(u => u.id === selectedConsultant);
-    toast({ title: "Consultant Assigned", description: `${consultant?.name} has been assigned.` });
+    toast({ title: "Consultant Assigned", description: `${consultant?.name} has been assigned. A notification has been sent to the student and the consultant.` });
 
-    // Close the dialog - this is tricky without controlling open state from here.
-    // In a real app, dialog open state would be managed here.
+    // This is a hack to force close the dialog.
+    // In a real app, dialog open state would be managed more cleanly.
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
     setSelectedConsultant(null);
   };
   
@@ -81,7 +87,7 @@ export function ConsultationActions({ initialConsultations, users, departments }
               <TableCell>{department?.name || 'N/A'}</TableCell>
               <TableCell>{format(new Date(c.createdAt), 'PP')}</TableCell>
               <TableCell>
-                <Badge variant={getStatusVariant(c.status)}>{c.status}</Badge>
+                <Badge variant={getStatusVariant(c.status)}>{c.status.replace('_', ' ')}</Badge>
               </TableCell>
               <TableCell className="text-right">
                 {c.status === 'PENDING' ? (
@@ -110,9 +116,9 @@ export function ConsultationActions({ initialConsultations, users, departments }
                     </DialogContent>
                   </Dialog>
                 ) : (
-                  <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); handleRowClick(c.id); }}>
-                    <Eye className="w-4 h-4 mr-2" />
-                    View
+                  <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); handleRowClick(c.id); }}>
+                    <Eye className="w-4 h-4" />
+                    <span className="sr-only">View</span>
                   </Button>
                 )}
               </TableCell>

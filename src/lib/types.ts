@@ -11,12 +11,12 @@ export interface User {
 }
 
 export interface Department {
-  id: string;
+  id:string;
   name: string;
   description: string;
 }
 
-export type ConsultationStatus = 'PENDING' | 'ASSIGNED' | 'ACTIVE' | 'PAUSED' | 'COMPLETED';
+export type ConsultationStatus = 'PENDING' | 'ASSIGNED' | 'ACTIVE' | 'PAUSED' | 'COMPLETED' | 'AWAITING_ACCEPTANCE';
 
 export interface Message {
   id: string;
@@ -36,6 +36,8 @@ export interface Consultation {
   createdAt: string;
   lastMessageAt?: string;
   messages: Message[];
+  studentAccepted?: boolean;
+  consultantAccepted?: boolean;
 }
 
 export interface NewsArticle {

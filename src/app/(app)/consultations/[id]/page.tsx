@@ -1,11 +1,15 @@
-import { consultations, users, departments } from '@/lib/data';
+'use client';
+
+import { users, departments } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ChatClient } from './_components/chat-client';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function ConsultationDetailPage({ params }: { params: { id: string } }) {
+  const { consultations } = useAuth();
   const consultation = consultations.find(c => c.id === params.id);
 
   if (!consultation) {
@@ -17,6 +21,18 @@ export default function ConsultationDetailPage({ params }: { params: { id: strin
   const department = departments.find(d => d.id === consultation.departmentId);
 
   const getInitials = (name = '') => name.split(' ').map((n) => n[0]).join('');
+
+  const getStatusVariant = (status: string) => {
+    switch (status) {
+      case 'ACTIVE': return 'default';
+      case 'PENDING': return 'destructive';
+      case 'AWAITING_ACCEPTANCE':
+      case 'ASSIGNED': return 'secondary';
+      case 'PAUSED': return 'outline';
+      case 'COMPLETED': return 'outline';
+      default: return 'secondary';
+    }
+  };
 
   return (
     <div className="flex h-[calc(100vh-4rem)]">
@@ -30,7 +46,7 @@ export default function ConsultationDetailPage({ params }: { params: { id: strin
                 <CardTitle className="text-base">Status</CardTitle>
             </CardHeader>
             <CardContent>
-                <Badge variant={consultation.status === 'PENDING' ? 'destructive' : 'default'}>{consultation.status}</Badge>
+                <Badge variant={getStatusVariant(consultation.status)}>{consultation.status.replace('_', ' ')}</Badge>
             </CardContent>
         </Card>
         

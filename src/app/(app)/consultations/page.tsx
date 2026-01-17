@@ -1,8 +1,13 @@
+'use client';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { consultations, users, departments } from '@/lib/data';
+import { users, departments } from '@/lib/data';
+import { useAuth } from '@/hooks/use-auth';
 import { ConsultationActions } from './_components/consultation-actions';
 
 export default function ConsultationsPage() {
+  const { consultations } = useAuth();
+  
   return (
     <div className="space-y-8">
       <div className="flex items-start justify-between">
@@ -20,7 +25,7 @@ export default function ConsultationsPage() {
         </CardHeader>
         <CardContent>
           <ConsultationActions
-            initialConsultations={consultations}
+            consultations={consultations}
             users={users}
             departments={departments}
           />

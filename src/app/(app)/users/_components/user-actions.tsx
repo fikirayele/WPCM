@@ -384,7 +384,7 @@ export function UserActions() {
                           setIsDialogOpen(true);
                         }}
                       >
-                        <Pencil className="w-4 h-4 mr-2" /> Edit
+                        <Pencil className="w-4 h-4" />
                       </DropdownMenuItem>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
@@ -392,7 +392,7 @@ export function UserActions() {
                             onSelect={(e) => e.preventDefault()}
                             className="text-destructive focus:bg-destructive focus:text-destructive-foreground"
                           >
-                           <Trash2 className="w-4 h-4 mr-2" /> Delete
+                           <Trash2 className="w-4 h-4" />
                           </DropdownMenuItem>
                         </AlertDialogTrigger>
                         <AlertDialogContent>

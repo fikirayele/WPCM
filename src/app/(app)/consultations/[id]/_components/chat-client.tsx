@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Consultation, Message, User } from '@/lib/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -8,11 +8,12 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAuth } from '@/hooks/use-auth';
 import { cn } from '@/lib/utils';
-import { Bot, Send, User as UserIcon, CheckCircle } from 'lucide-react';
+import { Bot, Send, User as UserIcon, CheckCircle, Hand } from 'lucide-react';
 import { format } from 'date-fns';
 import { summarizeConsultationChat } from '@/ai/flows/consultation-chat-summarization';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useToast } from '@/hooks/use-toast';
 
 interface ChatClientProps {
   consultation: Consultation;
@@ -21,8 +22,8 @@ interface ChatClientProps {
 }
 
 export function ChatClient({ consultation, student, consultant }: ChatClientProps) {
-  const { user } = useAuth();
-  const [messages, setMessages] = useState<Message[]>(consultation.messages);
+  const { user, updateConsultation } = useAuth();
+  const { toast } = useToast();
   const [newMessage, setNewMessage] = useState('');
   const [summary, setSummary] = useState('');
   const [isLoadingSummary, setIsLoadingSummary] = useState(false);
@@ -40,13 +41,36 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
       text: newMessage,
       timestamp: new Date().toISOString(),
     };
-    setMessages([...messages, msg]);
+    
+    updateConsultation(consultation.id, {
+        messages: [...consultation.messages, msg],
+        lastMessageAt: new Date().toISOString(),
+    });
     setNewMessage('');
   };
+  
+  const handleAccept = () => {
+    const updates: Partial<Consultation> = {};
+    if (user?.id === student?.id) {
+        updates.studentAccepted = true;
+    }
+    if (user?.id === consultant?.id) {
+        updates.consultantAccepted = true;
+    }
+    updateConsultation(consultation.id, updates);
+    toast({ title: "Accepted!", description: "You have accepted the consultation." });
+  };
+
+  useEffect(() => {
+    if (consultation.studentAccepted && consultation.consultantAccepted && consultation.status === 'AWAITING_ACCEPTANCE') {
+        updateConsultation(consultation.id, { status: 'ACTIVE' });
+        toast({ title: "Consultation Active", description: "You can now start chatting." });
+    }
+  }, [consultation, updateConsultation, toast]);
 
   const handleSummarize = async () => {
     setIsLoadingSummary(true);
-    const chatHistory = messages.map(msg => {
+    const chatHistory = consultation.messages.map(msg => {
         const senderName = msg.senderId === student?.id ? student.name : consultant?.name || 'User';
         return `${senderName}: ${msg.text}`;
     }).join('\n');
@@ -62,12 +86,16 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
         setIsLoadingSummary(false);
     }
   };
+  
+  const isChatDisabled = consultation.status !== 'ACTIVE';
+  const isCurrentUserStudent = user?.id === student?.id;
+  const isCurrentUserConsultant = user?.id === consultant?.id;
 
   return (
     <div className="flex flex-col h-full bg-card rounded-lg">
       <ScrollArea className="flex-1 p-4">
         <div className="space-y-4">
-          {messages.map((message) => {
+          {consultation.messages.map((message) => {
             const sender = message.senderId === student?.id ? student : consultant;
             const isCurrentUser = message.senderId === user?.id;
 
@@ -105,32 +133,54 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
                     </AlertDescription>
                 </Alert>
             )}
-            {consultation.status === 'ASSIGNED' && messages.length === 0 && (
+            {consultation.status === 'AWAITING_ACCEPTANCE' && (
+                <Alert variant="default" className="border-blue-500/50 text-blue-600">
+                    <Hand className="h-4 w-4 text-blue-600" />
+                    <AlertTitle>Acceptance Required</AlertTitle>
+                    <AlertDescription>
+                        {isCurrentUserStudent && !consultation.studentAccepted && "Please accept the consultation to begin."}
+                        {isCurrentUserStudent && consultation.studentAccepted && "Waiting for consultant to accept."}
+                        {isCurrentUserConsultant && !consultation.consultantAccepted && "Please accept this consultation to begin."}
+                        {isCurrentUserConsultant && consultation.consultantAccepted && "Waiting for student to accept."}
+                    </AlertDescription>
+                </Alert>
+            )}
+            {consultation.status === 'ACTIVE' && consultation.messages.length === 0 && (
                  <Alert variant="default" className="border-primary/50 text-primary">
                     <CheckCircle className="h-4 w-4 text-primary" />
-                    <AlertTitle>Consultant Assigned!</AlertTitle>
+                    <AlertTitle>Ready to Chat!</AlertTitle>
                     <AlertDescription>
-                        {consultant?.name} has been assigned to this consultation. You can now begin your conversation.
+                       Both parties have accepted. You can now begin your conversation with {isCurrentUserStudent ? consultant?.name : student?.name}.
                     </AlertDescription>
                 </Alert>
             )}
         </div>
       </ScrollArea>
-      <div className="border-t p-4">
+      <div className="border-t p-4 space-y-2">
         {user?.role === 'consultant' && (
-             <Button onClick={handleSummarize} disabled={isLoadingSummary} className="mb-2 w-full" variant="outline">
+             <Button onClick={handleSummarize} disabled={isLoadingSummary} className="w-full" variant="outline">
                 <Bot className="mr-2 h-4 w-4" />
                 {isLoadingSummary ? 'Generating Summary...' : 'Summarize Chat'}
             </Button>
+        )}
+        {consultation.status === 'AWAITING_ACCEPTANCE' && (
+            <>
+              {isCurrentUserStudent && !consultation.studentAccepted && (
+                  <Button onClick={handleAccept} className="w-full">Accept Consultation</Button>
+              )}
+              {isCurrentUserConsultant && !consultation.consultantAccepted && (
+                  <Button onClick={handleAccept} className="w-full">Accept Consultation</Button>
+              )}
+            </>
         )}
         <form onSubmit={handleSendMessage} className="flex items-center gap-2">
           <Input
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Type your message..."
-            disabled={consultation.status === 'PENDING' || consultation.status === 'COMPLETED'}
+            disabled={isChatDisabled}
           />
-          <Button type="submit" size="icon" disabled={consultation.status === 'PENDING' || consultation.status === 'COMPLETED'}>
+          <Button type="submit" size="icon" disabled={isChatDisabled}>
             <Send className="h-4 w-4" />
           </Button>
         </form>

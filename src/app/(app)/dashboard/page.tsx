@@ -1,12 +1,16 @@
+'use client';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { MessageSquare, Users, Building2, Clock, UserCheck, CheckCircle2, AlertCircle, Pause } from 'lucide-react';
-import { consultations, users, departments } from '@/lib/data';
+import { MessageSquare, Users, Building2, Clock, UserCheck, CheckCircle2, AlertCircle, Pause, UserPlus } from 'lucide-react';
+import { users, departments } from '@/lib/data';
 import { formatDistanceToNow } from 'date-fns';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function DashboardPage() {
-  const activeConsultations = consultations.filter((c) => c.status === 'ACTIVE' || c.status === 'ASSIGNED');
+  const { consultations } = useAuth();
+  const activeConsultations = consultations.filter((c) => c.status === 'ACTIVE' || c.status === 'ASSIGNED' || c.status === 'AWAITING_ACCEPTANCE');
 
   const stats = [
     { title: 'Total Users', value: users.length, icon: Users },
@@ -20,6 +24,7 @@ export default function DashboardPage() {
       case 'ACTIVE': return 'default';
       case 'PENDING': return 'destructive';
       case 'ASSIGNED': return 'secondary';
+      case 'AWAITING_ACCEPTANCE': return 'secondary';
       case 'PAUSED': return 'outline';
       case 'COMPLETED': return 'outline';
       default: return 'secondary';
@@ -31,6 +36,7 @@ export default function DashboardPage() {
         case 'ACTIVE': return <UserCheck className="h-4 w-4" />;
         case 'PENDING': return <AlertCircle className="h-4 w-4" />;
         case 'ASSIGNED': return <Clock className="h-4 w-4" />;
+        case 'AWAITING_ACCEPTANCE': return <UserPlus className="h-4 w-4" />;
         case 'PAUSED': return <Pause className="h-4 w-4" />;
         case 'COMPLETED': return <CheckCircle2 className="h-4 w-4" />;
         default: return null;

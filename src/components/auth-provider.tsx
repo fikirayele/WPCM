@@ -1,7 +1,7 @@
 'use client';
 
-import type { User, UserRole } from '@/lib/types';
-import { users } from '@/lib/data';
+import type { User, Consultation } from '@/lib/types';
+import { users, consultations as initialConsultations } from '@/lib/data';
 import React, { createContext, useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
@@ -10,12 +10,15 @@ interface AuthContextType {
   user: User | null;
   login: (email: string, password?: string) => void;
   logout: () => void;
+  consultations: Consultation[];
+  updateConsultation: (id: string, updates: Partial<Consultation>) => void;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [consultations, setConsultations] = useState<Consultation[]>(initialConsultations);
   const router = useRouter();
   const { toast } = useToast();
 
@@ -57,7 +60,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.push('/');
   }, [router]);
 
-  const value = useMemo(() => ({ user, login, logout }), [user, login, logout]);
+  const updateConsultation = useCallback((id: string, updates: Partial<Consultation>) => {
+    setConsultations(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
+  }, []);
+
+  const value = useMemo(() => ({ user, login, logout, consultations, updateConsultation }), [user, login, logout, consultations, updateConsultation]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

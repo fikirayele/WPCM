@@ -18,7 +18,7 @@ const navLinks = [
 
 export function SiteFooter() {
   return (
-    <footer className="border-t bg-card">
+    <footer className="dark border-t bg-background text-foreground">
       <div className="container py-8">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div className="flex flex-col items-start gap-4">

@@ -1,4 +1,4 @@
-# WPCM Connect
+# WPCM
 
 This is a NextJS starter in Firebase Studio.
 

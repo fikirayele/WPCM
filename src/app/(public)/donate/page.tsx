@@ -5,13 +5,14 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { DollarSign } from 'lucide-react';
+import { Info } from 'lucide-react';
 import React, { useState } from 'react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
-const donationAmounts = [25, 50, 100, 250, 500];
+const donationAmounts = [100, 250, 500, 1000, 2500];
 
 export default function DonatePage() {
-    const [amount, setAmount] = useState(50);
+    const [amount, setAmount] = useState(250);
     const { toast } = useToast();
 
     const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,10 +24,10 @@ export default function DonatePage() {
         e.preventDefault();
         toast({
             title: "Thank You!",
-            description: `Your generous donation of $${amount} has been received.`,
+            description: `Your generous donation of ${amount} Birr has been received.`,
         });
          (e.target as HTMLFormElement).reset();
-         setAmount(50);
+         setAmount(250);
     };
 
   return (
@@ -38,12 +39,12 @@ export default function DonatePage() {
         </p>
       </div>
 
-      <div className="mt-16 mx-auto max-w-xl">
+      <div className="mt-16 mx-auto max-w-xl space-y-8">
         <Card>
             <form onSubmit={handleSubmit}>
           <CardHeader>
             <CardTitle className="font-headline">Make a Donation</CardTitle>
-            <CardDescription>Choose an amount or enter a custom one.</CardDescription>
+            <CardDescription>Choose an amount or enter a custom one (in Birr).</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-3 gap-4">
@@ -54,17 +55,17 @@ export default function DonatePage() {
                   variant={amount === predefinedAmount ? 'default' : 'outline'}
                   onClick={() => setAmount(predefinedAmount)}
                 >
-                  ${predefinedAmount}
+                  {predefinedAmount} Birr
                 </Button>
               ))}
                 <div className="relative col-span-3">
-                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">Birr</span>
                     <Input
                         type="number"
                         placeholder="Custom Amount"
                         value={amount || ''}
                         onChange={handleAmountChange}
-                        className="pl-10"
+                        className="pl-12"
                     />
                 </div>
             </div>
@@ -79,11 +80,19 @@ export default function DonatePage() {
           </CardContent>
           <CardFooter>
             <Button type="submit" className="w-full" size="lg">
-              Donate ${amount}
+              Donate {amount} Birr
             </Button>
           </CardFooter>
           </form>
         </Card>
+        
+        <Alert>
+            <Info className="h-4 w-4" />
+            <AlertTitle>Payment Integration Coming Soon!</AlertTitle>
+            <AlertDescription>
+                We are working on integrating CBE and Telebirr for easier online donations. Please check back soon.
+            </AlertDescription>
+        </Alert>
       </div>
     </div>
   );

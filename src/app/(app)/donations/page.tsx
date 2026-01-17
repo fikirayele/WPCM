@@ -20,7 +20,7 @@ export default function DonationsPage() {
             </CardHeader>
             <CardContent>
                 <div className="text-3xl font-bold">
-                    ${totalDonations.toLocaleString()}
+                    {totalDonations.toLocaleString()} Birr
                 </div>
             </CardContent>
         </Card>
@@ -59,7 +59,7 @@ export default function DonationsPage() {
                   <TableCell className="font-medium">{donation.name}</TableCell>
                   <TableCell>{donation.email}</TableCell>
                   <TableCell>{format(new Date(donation.date), 'PP')}</TableCell>
-                  <TableCell className="text-right font-medium">${donation.amount.toFixed(2)}</TableCell>
+                  <TableCell className="text-right font-medium">{donation.amount.toFixed(2)} Birr</TableCell>
                 </TableRow>
               ))}
             </TableBody>

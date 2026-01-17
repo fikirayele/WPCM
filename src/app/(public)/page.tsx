@@ -27,7 +27,7 @@ export default function HomePage() {
             A Sanctuary for Support &amp; Growth
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-foreground/80">
-            WPCM Connect is a safe and confidential platform for guidance, counseling, and spiritual support from trusted professionals within our church community.
+            WPCM is a safe and confidential platform for guidance, counseling, and spiritual support from trusted professionals within our church community.
           </p>
           <div className="mt-8 flex justify-center gap-4">
             <Button size="lg" asChild>

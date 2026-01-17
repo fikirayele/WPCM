@@ -41,7 +41,7 @@ export function Logo() {
             </defs>
         </svg>
       </div>
-      <span className="text-xl font-headline font-bold text-primary">WPCM Connect</span>
+      <span className="text-xl font-headline font-bold text-primary">WPCM</span>
     </Link>
   );
 }

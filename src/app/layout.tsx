@@ -4,7 +4,7 @@ import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'WPCM Connect',
+  title: 'WPCM',
   description: 'A Church Consultation & Support Platform',
 };
 

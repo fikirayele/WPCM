@@ -1,24 +1,30 @@
 'use client';
 
 import type { User, Consultation } from '@/lib/types';
-import { users, consultations as initialConsultations } from '@/lib/data';
+import { users as initialUsers, consultations as initialConsultations } from '@/lib/data';
 import React, { createContext, useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 
 interface AuthContextType {
   user: User | null;
+  users: User[];
   login: (email: string, password?: string) => void;
   logout: () => void;
+  signup: (name: string, email: string, password?: string) => void;
   consultations: Consultation[];
   updateConsultation: (id: string, updates: Partial<Consultation>) => void;
   addConsultation: (request: Omit<Consultation, 'id' | 'studentId' | 'messages' | 'createdAt'>) => void;
+  addUser: (userPayload: Omit<User, 'id' | 'avatarUrl'>) => void;
+  updateUser: (id: string, updates: Partial<User>) => void;
+  deleteUser: (userId: string) => void;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [users, setUsers] = useState<User[]>(initialUsers);
   const [consultations, setConsultations] = useState<Consultation[]>(initialConsultations);
   const router = useRouter();
   const { toast } = useToast();
@@ -53,8 +59,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
       }
     },
-    [router, toast]
+    [router, toast, users]
   );
+  
+  const signup = useCallback((name: string, email: string, password?: string) => {
+    const existingUser = users.find(u => u.email === email);
+    if (existingUser) {
+        toast({
+            variant: 'destructive',
+            title: 'Signup Failed',
+            description: 'An account with this email already exists.',
+        });
+        return;
+    }
+    const newUser: User = {
+        id: `user-${Date.now()}`,
+        name,
+        email,
+        role: 'student',
+        avatarUrl: `https://picsum.photos/seed/${Date.now()}/100/100`,
+        active: true,
+    };
+    setUsers(prev => [newUser, ...prev]);
+    toast({
+        title: 'Account Created!',
+        description: 'You can now log in with your new account.',
+    });
+    router.push('/login');
+  }, [users, router, toast]);
 
   const logout = useCallback(() => {
     setUser(null);
@@ -80,7 +112,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setConsultations(prev => [newConsultation, ...prev]);
   }, [user, toast]);
 
-  const value = useMemo(() => ({ user, login, logout, consultations, updateConsultation, addConsultation }), [user, login, logout, consultations, updateConsultation, addConsultation]);
+  const addUser = useCallback((userPayload: Omit<User, 'id' | 'avatarUrl'>) => {
+      const newUser: User = {
+        id: `user-${Date.now()}`,
+        avatarUrl: `https://picsum.photos/seed/${Date.now()}/100/100`,
+        ...userPayload,
+      };
+      setUsers(prev => [...prev, newUser]);
+  }, []);
+
+  const updateUser = useCallback((id: string, updates: Partial<User>) => {
+    setUsers(prev => prev.map(u => u.id === id ? { ...u, ...updates } : u));
+  }, []);
+
+  const deleteUser = useCallback((userId: string) => {
+    setUsers(prev => prev.filter(u => u.id !== userId));
+  }, []);
+
+  const value = useMemo(() => ({ user, users, login, logout, signup, consultations, updateConsultation, addConsultation, addUser, updateUser, deleteUser }), [user, users, login, logout, signup, consultations, updateConsultation, addConsultation, addUser, updateUser, deleteUser]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

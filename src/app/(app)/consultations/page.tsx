@@ -1,12 +1,12 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { users, departments } from '@/lib/data';
+import { departments } from '@/lib/data';
 import { useAuth } from '@/hooks/use-auth';
 import { ConsultationActions } from './_components/consultation-actions';
 
 export default function ConsultationsPage() {
-  const { consultations } = useAuth();
+  const { consultations, users } = useAuth();
   
   return (
     <div className="space-y-8">

@@ -1,6 +1,6 @@
 'use client';
 
-import { users, departments } from '@/lib/data';
+import { departments } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -9,7 +9,7 @@ import { ChatClient } from './_components/chat-client';
 import { useAuth } from '@/hooks/use-auth';
 
 export default function ConsultationDetailPage({ params }: { params: { id: string } }) {
-  const { consultations } = useAuth();
+  const { consultations, users } = useAuth();
   const consultation = consultations.find(c => c.id === params.id);
 
   if (!consultation) {

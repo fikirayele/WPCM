@@ -49,15 +49,13 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
-import {
-  departments as initialDepartments,
-  users as initialUsers,
-} from '@/lib/data';
+import { departments as initialDepartments } from '@/lib/data';
 import type { Department, User } from '@/lib/types';
 import { ArrowUpDown, MoreHorizontal, PlusCircle, Pencil, Trash2 } from 'lucide-react';
+import { useAuth } from '@/hooks/use-auth';
 
 export function UserActions() {
-  const [users, setUsers] = useState<User[]>(initialUsers);
+  const { users, addUser, updateUser, deleteUser } = useAuth();
   const [departments] = useState<Department[]>(initialDepartments);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -141,22 +139,13 @@ export function UserActions() {
     };
 
     if (currentUser) {
-      setUsers(
-        users.map((u) =>
-          u.id === currentUser.id ? { ...currentUser, ...userPayload } : u
-        )
-      );
+      updateUser(currentUser.id, userPayload);
       toast({
         title: 'User Updated',
         description: `"${name}" has been successfully updated.`,
       });
     } else {
-      const newUser: User = {
-        id: `user-${Date.now()}`,
-        avatarUrl: `https://picsum.photos/seed/${Date.now()}/100/100`,
-        ...userPayload,
-      };
-      setUsers([...users, newUser]);
+      addUser(userPayload);
       toast({
         title: 'User Added',
         description: `"${name}" has been successfully added.`,
@@ -168,7 +157,7 @@ export function UserActions() {
 
   const handleDelete = (userId: string) => {
     const user = users.find((u) => u.id === userId);
-    setUsers(users.filter((u) => u.id !== userId));
+    deleteUser(userId);
     toast({
       title: 'User Deleted',
       description: `"${user?.name}" has been deleted.`,

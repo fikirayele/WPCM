@@ -235,7 +235,8 @@ export function ContentActions() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem onClick={() => handleOpenDialog(article)}>
-                        <Pencil className="w-4 h-4 mr-2" /> Edit
+                        <Pencil className="w-4 h-4" />
+                        <span className="sr-only">Edit</span>
                       </DropdownMenuItem>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
@@ -243,7 +244,8 @@ export function ContentActions() {
                             onSelect={(e) => e.preventDefault()}
                             className="text-destructive focus:bg-destructive focus:text-destructive-foreground"
                           >
-                            <Trash2 className="w-4 h-4 mr-2" /> Delete
+                            <Trash2 className="w-4 h-4" />
+                            <span className="sr-only">Delete</span>
                           </DropdownMenuItem>
                         </AlertDialogTrigger>
                         <AlertDialogContent>

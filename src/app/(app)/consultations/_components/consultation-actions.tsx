@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
-import { Eye } from 'lucide-react';
+import { Eye, UserPlus } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 
 interface ConsultationActionsProps {
@@ -93,7 +93,10 @@ export function ConsultationActions({ consultations, users, departments }: Consu
                 {c.status === 'PENDING' ? (
                   <Dialog onOpenChange={() => setSelectedConsultant(null)}>
                     <DialogTrigger asChild>
-                      <Button size="sm" onClick={(e) => e.stopPropagation()}>Assign</Button>
+                      <Button variant="ghost" size="icon" onClick={(e) => e.stopPropagation()}>
+                        <UserPlus className="w-4 h-4" />
+                        <span className="sr-only">Assign Consultant</span>
+                      </Button>
                     </DialogTrigger>
                     <DialogContent onClick={(e) => e.stopPropagation()}>
                       <DialogHeader>

@@ -385,6 +385,7 @@ export function UserActions() {
                         }}
                       >
                         <Pencil className="w-4 h-4" />
+                        <span className="sr-only">Edit</span>
                       </DropdownMenuItem>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
@@ -393,6 +394,7 @@ export function UserActions() {
                             className="text-destructive focus:bg-destructive focus:text-destructive-foreground"
                           >
                            <Trash2 className="w-4 h-4" />
+                           <span className="sr-only">Delete</span>
                           </DropdownMenuItem>
                         </AlertDialogTrigger>
                         <AlertDialogContent>

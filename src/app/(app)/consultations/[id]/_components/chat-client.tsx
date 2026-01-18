@@ -71,7 +71,7 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
   const handleSummarize = async () => {
     setIsLoadingSummary(true);
     const chatHistory = consultation.messages.map(msg => {
-        const senderName = msg.senderId === student?.id ? student.name : consultant?.name || 'User';
+        const senderName = msg.senderId === student?.id ? student?.name : consultant?.name || 'User';
         return `${senderName}: ${msg.text}`;
     }).join('\n');
     

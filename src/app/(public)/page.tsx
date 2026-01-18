@@ -1,11 +1,12 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { news } from '@/lib/data';
+import { news, testimonials } from '@/lib/data';
 import { ArrowRight, MessageCircle, Users, HeartHandshake } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { format } from 'date-fns';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export default function HomePage() {
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-image');
@@ -19,7 +20,7 @@ export default function HomePage() {
             alt={heroImage.description}
             data-ai-hint={heroImage.imageHint}
             fill
-            className="object-cover opacity-20"
+            className="object-cover opacity-10"
           />
         )}
         <div className="container relative mx-auto text-center">
@@ -51,7 +52,7 @@ export default function HomePage() {
           <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
             <Card className="text-center">
               <CardHeader>
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent/20 text-accent-foreground">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-accent-foreground">
                    <MessageCircle className="h-6 w-6 text-primary" />
                 </div>
                 <CardTitle className="font-headline text-xl">Confidential Chat</CardTitle>
@@ -64,7 +65,7 @@ export default function HomePage() {
             </Card>
             <Card className="text-center">
               <CardHeader>
-                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent/20 text-accent-foreground">
+                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-accent-foreground">
                    <Users className="h-6 w-6 text-primary" />
                 </div>
                 <CardTitle className="font-headline text-xl">Expert Consultants</CardTitle>
@@ -77,7 +78,7 @@ export default function HomePage() {
             </Card>
             <Card className="text-center">
               <CardHeader>
-                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent/20 text-accent-foreground">
+                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-accent-foreground">
                    <HeartHandshake className="h-6 w-6 text-primary" />
                 </div>
                 <CardTitle className="font-headline text-xl">Spiritual Support</CardTitle>
@@ -127,6 +128,40 @@ export default function HomePage() {
             <Button variant="outline" asChild>
               <Link href="/news">View All News</Link>
             </Button>
+          </div>
+        </div>
+      </section>
+
+       <section className="bg-background py-16 md:py-24">
+        <div className="container">
+          <div className="text-center">
+            <h2 className="font-headline text-3xl font-bold text-primary">What Our Community Says</h2>
+            <p className="mx-auto mt-4 max-w-xl text-foreground/70">
+              Hear from those who have found support and guidance through WPCM.
+            </p>
+          </div>
+          <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
+            {testimonials.map((testimonial) => (
+              <Card key={testimonial.id} className="flex flex-col justify-between text-center">
+                <CardContent className="pt-6">
+                  <blockquote className="text-lg italic text-foreground/80 before:content-['“'] after:content-['”']">
+                    {testimonial.quote}
+                  </blockquote>
+                </CardContent>
+                <CardHeader>
+                  <div className="flex flex-col items-center gap-2">
+                    <Avatar>
+                      <AvatarImage src={testimonial.avatarUrl} alt={testimonial.name} />
+                      <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <CardTitle className="text-base font-semibold">{testimonial.name}</CardTitle>
+                      <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                    </div>
+                  </div>
+                </CardHeader>
+              </Card>
+            ))}
           </div>
         </div>
       </section>

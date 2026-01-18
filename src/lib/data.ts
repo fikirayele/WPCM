@@ -1,4 +1,4 @@
-import type { User, Department, Consultation, NewsArticle, Donation } from './types';
+import type { User, Department, Consultation, NewsArticle, Donation, Testimonial } from './types';
 import { PlaceHolderImages } from './placeholder-images';
 
 const getImage = (id: string) => PlaceHolderImages.find(img => img.id === id)?.imageUrl || '';
@@ -98,4 +98,28 @@ export const donations: Donation[] = [
     { id: 'don-1', name: 'Anonymous', email: 'anon@example.com', amount: 50, date: '2023-11-12' },
     { id: 'don-2', name: 'Mark Johnson', email: 'mark.j@example.com', amount: 100, date: '2023-11-10' },
     { id: 'don-3', name: 'Susan Williams', email: 's.williams@example.com', amount: 25, date: '2023-11-08' },
+];
+
+export const testimonials: Testimonial[] = [
+  {
+    id: 'test-1',
+    name: 'John D.',
+    role: 'Student',
+    quote: 'This platform was a lifeline for me during a really tough semester. The guidance I received was compassionate, practical, and helped me find my footing again. I am incredibly grateful.',
+    avatarUrl: getImage('testimonial-1')
+  },
+  {
+    id: 'test-2',
+    name: 'Sarah K.',
+    role: 'Recent Graduate',
+    quote: 'I was struggling with career decisions, and the mentorship I found here was invaluable. Speaking to a professional in my field who shared my values made all the difference.',
+    avatarUrl: getImage('testimonial-2')
+  },
+  {
+    id: 'test-3',
+    name: 'Michael P.',
+    role: 'Community Member',
+    quote: 'The spiritual counseling provided clarity and peace during a difficult family situation. It\'s a blessing to have such a confidential and caring resource within our church community.',
+    avatarUrl: getImage('testimonial-3')
+  }
 ];

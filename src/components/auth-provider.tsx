@@ -2,7 +2,7 @@
 
 import type { User, Consultation } from '@/lib/types';
 import { users as initialUsers, consultations as initialConsultations } from '@/lib/data';
-import React, { createContext, useState, useCallback, useMemo } from 'react';
+import React, { createContext, useState, useCallback, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 
@@ -28,6 +28,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [consultations, setConsultations] = useState<Consultation[]>(initialConsultations);
   const router = useRouter();
   const { toast } = useToast();
+
+  // Load state from localStorage on initial client-side render
+  useEffect(() => {
+    try {
+      const storedUsers = localStorage.getItem('wpcm-users');
+      const storedConsultations = localStorage.getItem('wpcm-consultations');
+      const storedUser = localStorage.getItem('wpcm-user');
+
+      if (storedUsers) {
+        setUsers(JSON.parse(storedUsers));
+      }
+      if (storedConsultations) {
+        setConsultations(JSON.parse(storedConsultations));
+      }
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    } catch (error) {
+      console.error("Failed to load state from localStorage", error);
+    }
+  }, []); // Empty dependency array ensures this runs only once on mount
+
+  // Save state to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem('wpcm-users', JSON.stringify(users));
+      localStorage.setItem('wpcm-consultations', JSON.stringify(consultations));
+      if (user) {
+        localStorage.setItem('wpcm-user', JSON.stringify(user));
+      } else {
+        localStorage.removeItem('wpcm-user');
+      }
+    } catch (error) {
+      console.error("Failed to save state to localStorage", error);
+    }
+  }, [users, consultations, user]);
+
 
   const login = useCallback(
     (email: string, password?: string) => {
@@ -96,7 +133,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setConsultations(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
   }, []);
   
-  const addConsultation = useCallback((request: Omit<Consultation, 'id' | 'studentId' | 'createdAt' | 'messages' | 'status' | 'fullName' | 'email' | 'photoUrl'>) => {
+  const addConsultation = useCallback((request: Omit<Consultation, 'id' | 'studentId' | 'createdAt' | 'messages' | 'status' | 'fullName' | 'email'>) => {
     if (!user) {
         toast({ variant: 'destructive', title: 'Error', description: 'You must be logged in to make a request.' });
         return;

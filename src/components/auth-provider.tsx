@@ -12,6 +12,7 @@ interface AuthContextType {
   logout: () => void;
   consultations: Consultation[];
   updateConsultation: (id: string, updates: Partial<Consultation>) => void;
+  addConsultation: (request: Omit<Consultation, 'id' | 'studentId' | 'messages' | 'createdAt'>) => void;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -39,7 +40,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(userToLogin);
         if (userToLogin.role === 'admin') {
           router.push('/dashboard');
-        } else if (userToLogin.role === 'consultant') {
+        } else if (userToLogin.role === 'consultant' || userToLogin.role === 'student') {
           router.push('/consultations');
         } else {
           router.push('/');
@@ -63,8 +64,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const updateConsultation = useCallback((id: string, updates: Partial<Consultation>) => {
     setConsultations(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
   }, []);
+  
+  const addConsultation = useCallback((request: Omit<Consultation, 'id' | 'studentId' | 'messages' | 'createdAt'>) => {
+    if (!user) {
+        toast({ variant: 'destructive', title: 'Error', description: 'You must be logged in to make a request.' });
+        return;
+    };
+    const newConsultation: Consultation = {
+        ...request,
+        id: `cons-${Date.now()}`,
+        studentId: user.id,
+        createdAt: new Date().toISOString(),
+        messages: [],
+    };
+    setConsultations(prev => [newConsultation, ...prev]);
+  }, [user, toast]);
 
-  const value = useMemo(() => ({ user, login, logout, consultations, updateConsultation }), [user, login, logout, consultations, updateConsultation]);
+  const value = useMemo(() => ({ user, login, logout, consultations, updateConsultation, addConsultation }), [user, login, logout, consultations, updateConsultation, addConsultation]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

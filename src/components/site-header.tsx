@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/use-auth';
 import { cn } from '@/lib/utils';
 import { Logo } from './logo';
-import { User as UserIcon, LogOut, LayoutDashboard } from 'lucide-react';
+import { User as UserIcon, LogOut, LayoutDashboard, BookUser } from 'lucide-react';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -75,6 +75,14 @@ export function SiteHeader() {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                {user.role === 'student' && (
+                    <DropdownMenuItem asChild>
+                      <Link href="/consultations">
+                        <BookUser className="mr-2 h-4 w-4" />
+                        <span>My Consultations</span>
+                      </Link>
+                    </DropdownMenuItem>
+                )}
                 {(user.role === 'admin' || user.role === 'consultant') && (
                   <>
                     <DropdownMenuItem asChild>
@@ -83,9 +91,9 @@ export function SiteHeader() {
                         <span>Dashboard</span>
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator />
                   </>
                 )}
+                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={logout}>
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>

@@ -51,7 +51,7 @@ export function ConsultationActions({ consultations, users, departments }: Consu
     });
     
     const consultant = users.find(u => u.id === selectedConsultant);
-    toast({ title: "Consultant Assigned", description: `${consultant?.name} has been assigned. A notification has been sent to the student and the consultant.` });
+    toast({ title: "Consultant Assigned", description: `${consultant?.fullName} has been assigned. A notification has been sent to the student and the consultant.` });
 
     // This is a hack to force close the dialog.
     // In a real app, dialog open state would be managed more cleanly.
@@ -83,7 +83,7 @@ export function ConsultationActions({ consultations, users, departments }: Consu
 
           return (
             <TableRow key={c.id} className="cursor-pointer" onClick={() => handleRowClick(c.id)}>
-              <TableCell>{student?.name || 'N/A'}</TableCell>
+              <TableCell>{student?.fullName || 'N/A'}</TableCell>
               <TableCell>{department?.name || 'N/A'}</TableCell>
               <TableCell>{format(new Date(c.createdAt), 'PP')}</TableCell>
               <TableCell>
@@ -109,7 +109,7 @@ export function ConsultationActions({ consultations, users, departments }: Consu
                         </SelectTrigger>
                         <SelectContent>
                           {availableConsultants.map(consultant => (
-                            <SelectItem key={consultant.id} value={consultant.id}>{consultant.name}</SelectItem>
+                            <SelectItem key={consultant.id} value={consultant.id}>{consultant.fullName}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>

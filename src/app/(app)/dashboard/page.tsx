@@ -83,8 +83,8 @@ export default function DashboardPage() {
                 const department = departments.find(d => d.id === c.departmentId);
                 return (
                   <TableRow key={c.id}>
-                    <TableCell>{student?.name || 'N/A'}</TableCell>
-                    <TableCell>{consultant?.name || 'N/A'}</TableCell>
+                    <TableCell>{student?.fullName || 'N/A'}</TableCell>
+                    <TableCell>{consultant?.fullName || 'N/A'}</TableCell>
                     <TableCell>{department?.name || 'N/A'}</TableCell>
                     <TableCell>
                       {c.lastMessageAt ? `${formatDistanceToNow(new Date(c.lastMessageAt))} ago` : 'No messages'}

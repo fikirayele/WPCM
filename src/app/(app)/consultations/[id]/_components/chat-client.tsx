@@ -71,7 +71,7 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
   const handleSummarize = async () => {
     setIsLoadingSummary(true);
     const chatHistory = consultation.messages.map(msg => {
-        const senderName = msg.senderId === student?.id ? student?.name : consultant?.name || 'User';
+        const senderName = msg.senderId === student?.id ? student?.fullName : consultant?.fullName || 'User';
         return `${senderName}: ${msg.text}`;
     }).join('\n');
     
@@ -104,7 +104,7 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
                 {!isCurrentUser && (
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={sender?.avatarUrl} />
-                    <AvatarFallback>{getInitials(sender?.name)}</AvatarFallback>
+                    <AvatarFallback>{getInitials(sender?.fullName)}</AvatarFallback>
                   </Avatar>
                 )}
                 <div className={cn('max-w-xs md:max-w-md lg:max-w-lg rounded-lg px-4 py-2', 
@@ -118,7 +118,7 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
                  {isCurrentUser && (
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={sender?.avatarUrl} />
-                    <AvatarFallback>{getInitials(sender?.name)}</AvatarFallback>
+                    <AvatarFallback>{getInitials(sender?.fullName)}</AvatarFallback>
                   </Avatar>
                 )}
               </div>
@@ -150,7 +150,7 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
                     <CheckCircle className="h-4 w-4 text-primary" />
                     <AlertTitle>Ready to Chat!</AlertTitle>
                     <AlertDescription>
-                       Both parties have accepted. You can now begin your conversation with {isCurrentUserStudent ? consultant?.name : student?.name}.
+                       Both parties have accepted. You can now begin your conversation with {isCurrentUserStudent ? consultant?.fullName : student?.fullName}.
                     </AlertDescription>
                 </Alert>
             )}

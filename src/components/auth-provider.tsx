@@ -11,10 +11,10 @@ interface AuthContextType {
   users: User[];
   login: (email: string, password?: string) => void;
   logout: () => void;
-  signup: (userData: Omit<User, 'id' | 'role' | 'active'>, password?: string) => void;
+  signup: (userData: Pick<User, 'fullName' | 'email'>, password?: string) => void;
   consultations: Consultation[];
   updateConsultation: (id: string, updates: Partial<Consultation>) => void;
-  addConsultation: (request: Omit<Consultation, 'id' | 'studentId' | 'messages' | 'createdAt'>) => void;
+  addConsultation: (request: Omit<Consultation, 'id' | 'studentId' | 'createdAt' | 'messages' | 'status' | 'fullName' | 'email'>) => void;
   addUser: (userPayload: Omit<User, 'id' | 'avatarUrl'>) => void;
   updateUser: (id: string, updates: Partial<User>) => void;
   deleteUser: (userId: string) => void;
@@ -31,7 +31,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(
     (email: string, password?: string) => {
-      // Find user by email. For demo, we ignore password.
       const userToLogin = users.find((u) => u.email === email);
 
       if (userToLogin) {
@@ -62,7 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [router, toast, users]
   );
   
-  const signup = useCallback((userData: Omit<User, 'id' | 'role' | 'active'>, password?: string) => {
+  const signup = useCallback((userData: Pick<User, 'fullName' | 'email'>, password?: string) => {
     const existingUser = users.find(u => u.email === userData.email);
     if (existingUser) {
         toast({
@@ -74,7 +73,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     const newUser: User = {
         id: `user-${Date.now()}`,
-        ...userData,
+        fullName: userData.fullName,
+        email: userData.email,
+        avatarUrl: `https://picsum.photos/seed/${Date.now()}/100/100`,
         role: 'student',
         active: true,
     };
@@ -95,7 +96,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setConsultations(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
   }, []);
   
-  const addConsultation = useCallback((request: Omit<Consultation, 'id' | 'studentId' | 'messages' | 'createdAt'>) => {
+  const addConsultation = useCallback((request: Omit<Consultation, 'id' | 'studentId' | 'createdAt' | 'messages' | 'status' | 'fullName' | 'email' | 'photoUrl'>) => {
     if (!user) {
         toast({ variant: 'destructive', title: 'Error', description: 'You must be logged in to make a request.' });
         return;
@@ -106,6 +107,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         studentId: user.id,
         createdAt: new Date().toISOString(),
         messages: [],
+        status: 'PENDING',
+        fullName: user.fullName,
+        email: user.email,
+        photoUrl: user.avatarUrl,
     };
     setConsultations(prev => [newConsultation, ...prev]);
   }, [user, toast]);

@@ -4,19 +4,6 @@ export interface User {
   id: string;
   fullName: string;
   email: string;
-  phoneNumber: string;
-  telegramUsername?: string;
-  motherChurch: string;
-  entryYear: string;
-  departmentName: string;
-  schoolLevel: 'Remedial' | 'First Year' | 'Second Year' | 'Third Year' | 'Fourth Year' | 'Fifth Year' | 'Sixth Year' | 'Seventh Year';
-  graduationYear: string;
-  studentStatus1: 'Regular' | 'Irregular (Private)';
-  studentStatus2: 'Degree Program' | 'MS Program';
-  studentStatus3: 'Current WPCM' | 'Alumni WPCM';
-  talents: string[];
-  specialCare: string[];
-  comments?: string;
   avatarUrl: string;
   role: UserRole;
   departmentId?: string; // For consultants
@@ -40,9 +27,11 @@ export interface Message {
 }
 
 export interface Consultation {
-  id: string;
+  id:string;
   studentId: string;
   consultantId?: string;
+  
+  // Consultation specific
   departmentId: string;
   problemDescription: string;
   preferredTime: string;
@@ -52,7 +41,26 @@ export interface Consultation {
   messages: Message[];
   studentAccepted?: boolean;
   consultantAccepted?: boolean;
+
+  // Submitter's info at time of request
+  fullName: string;
+  phoneNumber: string;
+  email: string;
+  telegramUsername?: string;
+  motherChurch: string;
+  entryYear: string;
+  departmentName: string;
+  schoolLevel: 'Remedial' | 'First Year' | 'Second Year' | 'Third Year' | 'Fourth Year' | 'Fifth Year' | 'Sixth Year' | 'Seventh Year';
+  graduationYear: string;
+  studentStatus1: 'Regular' | 'Irregular (Private)';
+  studentStatus2: 'Degree Program' | 'MS Program';
+  studentStatus3: 'Current WPCM' | 'Alumni WPCM';
+  talents: string[];
+  specialCare: string[];
+  photoUrl?: string;
+  comments?: string;
 }
+
 
 export interface NewsArticle {
   id: string;

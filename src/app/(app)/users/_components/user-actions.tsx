@@ -137,30 +137,18 @@ export function UserActions() {
         description: `"${fullName}" has been successfully updated.`,
       });
     } else {
-        // This part is now handled by the new signup form
-        // For simplicity, we assume admins won't create complex users from here
-        // or we'd need the full form.
-        const mockUser: Omit<User, 'id' | 'avatarUrl' | 'role' | 'active'> = {
+        const userPayload = {
             fullName,
             email,
-            phoneNumber: '000-000-0000',
-            motherChurch: 'N/A',
-            entryYear: 'N/A',
-            departmentName: 'N/A',
-            schoolLevel: 'First Year',
-            graduationYear: 'N/A',
-            studentStatus1: 'Regular',
-            studentStatus2: 'Degree Program',
-            studentStatus3: 'Current WPCM',
-            talents: [],
-            specialCare: [],
+            role,
             departmentId: role === 'consultant' ? departmentId : undefined,
-        };
-      addUser({...mockUser, role, active});
-      toast({
-        title: 'User Added',
-        description: `"${fullName}" has been successfully added.`,
-      });
+            active,
+        }
+        addUser(userPayload);
+        toast({
+            title: 'User Added',
+            description: `"${fullName}" has been successfully added.`,
+        });
     }
     setIsDialogOpen(false);
     setCurrentUser(null);

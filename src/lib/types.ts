@@ -2,13 +2,27 @@ export type UserRole = 'student' | 'consultant' | 'admin';
 
 export interface User {
   id: string;
-  name: string;
+  fullName: string;
   email: string;
-  role: UserRole;
+  phoneNumber: string;
+  telegramUsername?: string;
+  motherChurch: string;
+  entryYear: string;
+  departmentName: string;
+  schoolLevel: 'Remedial' | 'First Year' | 'Second Year' | 'Third Year' | 'Fourth Year' | 'Fifth Year' | 'Sixth Year' | 'Seventh Year';
+  graduationYear: string;
+  studentStatus1: 'Regular' | 'Irregular (Private)';
+  studentStatus2: 'Degree Program' | 'MS Program';
+  studentStatus3: 'Current WPCM' | 'Alumni WPCM';
+  talents: string[];
+  specialCare: string[];
+  comments?: string;
   avatarUrl: string;
-  departmentId?: string;
+  role: UserRole;
+  departmentId?: string; // For consultants
   active?: boolean;
 }
+
 
 export interface Department {
   id:string;

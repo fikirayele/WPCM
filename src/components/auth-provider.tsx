@@ -11,7 +11,7 @@ interface AuthContextType {
   users: User[];
   login: (email: string, password?: string) => void;
   logout: () => void;
-  signup: (name: string, email: string, password?: string) => void;
+  signup: (userData: Omit<User, 'id' | 'role' | 'active'>, password?: string) => void;
   consultations: Consultation[];
   updateConsultation: (id: string, updates: Partial<Consultation>) => void;
   addConsultation: (request: Omit<Consultation, 'id' | 'studentId' | 'messages' | 'createdAt'>) => void;
@@ -62,8 +62,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [router, toast, users]
   );
   
-  const signup = useCallback((name: string, email: string, password?: string) => {
-    const existingUser = users.find(u => u.email === email);
+  const signup = useCallback((userData: Omit<User, 'id' | 'role' | 'active'>, password?: string) => {
+    const existingUser = users.find(u => u.email === userData.email);
     if (existingUser) {
         toast({
             variant: 'destructive',
@@ -74,10 +74,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     const newUser: User = {
         id: `user-${Date.now()}`,
-        name,
-        email,
+        ...userData,
         role: 'student',
-        avatarUrl: `https://picsum.photos/seed/${Date.now()}/100/100`,
         active: true,
     };
     setUsers(prev => [newUser, ...prev]);

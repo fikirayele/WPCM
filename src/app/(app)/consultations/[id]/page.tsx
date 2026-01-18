@@ -56,10 +56,10 @@ export default function ConsultationDetailPage({ params }: { params: { id: strin
                 <CardContent className="flex items-center gap-3">
                     <Avatar>
                         <AvatarImage src={student.avatarUrl} />
-                        <AvatarFallback>{getInitials(student.name)}</AvatarFallback>
+                        <AvatarFallback>{getInitials(student.fullName)}</AvatarFallback>
                     </Avatar>
                     <div>
-                        <p className="font-semibold">{student.name}</p>
+                        <p className="font-semibold">{student.fullName}</p>
                         <p className="text-xs text-muted-foreground">{student.email}</p>
                     </div>
                 </CardContent>
@@ -72,10 +72,10 @@ export default function ConsultationDetailPage({ params }: { params: { id: strin
                 <CardContent className="flex items-center gap-3">
                     <Avatar>
                         <AvatarImage src={consultant.avatarUrl} />
-                        <AvatarFallback>{getInitials(consultant.name)}</AvatarFallback>
+                        <AvatarFallback>{getInitials(consultant.fullName)}</AvatarFallback>
                     </Avatar>
                     <div>
-                        <p className="font-semibold">{consultant.name}</p>
+                        <p className="font-semibold">{consultant.fullName}</p>
                         <p className="text-xs text-muted-foreground">{consultant.email}</p>
                     </div>
                 </CardContent>

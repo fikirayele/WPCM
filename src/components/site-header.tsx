@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils';
 import { Logo } from './logo';
 import { User as UserIcon, LogOut, LayoutDashboard, BookUser, Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
+import { useState, useEffect } from 'react';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -29,6 +30,12 @@ const navLinks = [
 export function SiteHeader() {
   const pathname = usePathname();
   const { user, logout } = useAuth();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
 
   const getInitials = (name: string) => {
     return name
@@ -36,6 +43,16 @@ export function SiteHeader() {
       .map((n) => n[0])
       .join('');
   };
+  
+  if (!isClient) {
+      return (
+        <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="container flex h-14 items-center justify-between px-4 sm:px-6 lg:px-8">
+                 <Logo />
+            </div>
+        </header>
+      )
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -70,15 +87,15 @@ export function SiteHeader() {
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                         <Avatar className="h-8 w-8">
-                            <AvatarImage src={user.avatarUrl} alt={user.name} />
-                            <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+                            <AvatarImage src={user.avatarUrl} alt={user.fullName} />
+                            <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
                         </Avatar>
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56" align="end" forceMount>
                         <DropdownMenuLabel className="font-normal">
                         <div className="flex flex-col space-y-1">
-                            <p className="text-sm font-medium leading-none">{user.name}</p>
+                            <p className="text-sm font-medium leading-none">{user.fullName}</p>
                             <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
                         </div>
                         </DropdownMenuLabel>
@@ -153,10 +170,10 @@ export function SiteHeader() {
                         <div className="flex items-center gap-4">
                             <Avatar className="h-10 w-10">
                             <AvatarImage src={user.avatarUrl} />
-                            <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+                            <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
                             </Avatar>
                             <div className="flex-1 overflow-hidden">
-                            <p className="truncate font-semibold">{user.name}</p>
+                            <p className="truncate font-semibold">{user.fullName}</p>
                             <p className="truncate text-xs text-muted-foreground">{user.email}</p>
                             </div>
                             <Button variant="ghost" size="icon" onClick={logout}>

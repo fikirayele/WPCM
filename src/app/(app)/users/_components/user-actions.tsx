@@ -96,7 +96,7 @@ export function UserActions() {
   const filteredUsers = useMemo(() => {
     return sortedUsers.filter(
       (user) =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.role.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -124,31 +124,42 @@ export function UserActions() {
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const name = formData.get('name') as string;
+    const fullName = formData.get('fullName') as string;
     const email = formData.get('email') as string;
     const role = formData.get('role') as User['role'];
     const departmentId = formData.get('departmentId') as string | undefined;
     const active = formData.get('active') === 'on';
 
-    const userPayload: Omit<User, 'id' | 'avatarUrl'> = {
-      name,
-      email,
-      role,
-      departmentId: role === 'consultant' ? departmentId : undefined,
-      active,
-    };
-
     if (currentUser) {
-      updateUser(currentUser.id, userPayload);
+      updateUser(currentUser.id, { fullName, email, role, departmentId: role === 'consultant' ? departmentId : undefined, active });
       toast({
         title: 'User Updated',
-        description: `"${name}" has been successfully updated.`,
+        description: `"${fullName}" has been successfully updated.`,
       });
     } else {
-      addUser(userPayload);
+        // This part is now handled by the new signup form
+        // For simplicity, we assume admins won't create complex users from here
+        // or we'd need the full form.
+        const mockUser: Omit<User, 'id' | 'avatarUrl' | 'role' | 'active'> = {
+            fullName,
+            email,
+            phoneNumber: '000-000-0000',
+            motherChurch: 'N/A',
+            entryYear: 'N/A',
+            departmentName: 'N/A',
+            schoolLevel: 'First Year',
+            graduationYear: 'N/A',
+            studentStatus1: 'Regular',
+            studentStatus2: 'Degree Program',
+            studentStatus3: 'Current WPCM',
+            talents: [],
+            specialCare: [],
+            departmentId: role === 'consultant' ? departmentId : undefined,
+        };
+      addUser({...mockUser, role, active});
       toast({
         title: 'User Added',
-        description: `"${name}" has been successfully added.`,
+        description: `"${fullName}" has been successfully added.`,
       });
     }
     setIsDialogOpen(false);
@@ -160,7 +171,7 @@ export function UserActions() {
     deleteUser(userId);
     toast({
       title: 'User Deleted',
-      description: `"${user?.name}" has been deleted.`,
+      description: `"${user?.fullName}" has been deleted.`,
       variant: 'destructive',
     });
   };
@@ -197,13 +208,13 @@ export function UserActions() {
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid items-center grid-cols-4 gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
+            <Label htmlFor="fullName" className="text-right">
+              Full Name
             </Label>
             <Input
-              id="name"
-              name="name"
-              defaultValue={aUser?.name}
+              id="fullName"
+              name="fullName"
+              defaultValue={aUser?.fullName}
               className="col-span-3"
               required
             />
@@ -305,7 +316,7 @@ export function UserActions() {
           <TableHeader>
             <TableRow>
               <TableHead>
-                <Button variant="ghost" onClick={() => requestSort('name')}>
+                <Button variant="ghost" onClick={() => requestSort('fullName')}>
                   Name <ArrowUpDown className="w-4 h-4 ml-2" />
                 </Button>
               </TableHead>
@@ -329,11 +340,11 @@ export function UserActions() {
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <Avatar>
-                      <AvatarImage src={user.avatarUrl} alt={user.name} />
-                      <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+                      <AvatarImage src={user.avatarUrl} alt={user.fullName} />
+                      <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
                     </Avatar>
                     <div>
-                      <div className="font-medium">{user.name}</div>
+                      <div className="font-medium">{user.fullName}</div>
                       <div className="text-sm text-muted-foreground">
                         {user.email}
                       </div>

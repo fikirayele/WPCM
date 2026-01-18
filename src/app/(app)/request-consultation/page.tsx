@@ -82,7 +82,7 @@ export default function RequestConsultationPage() {
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
             <CardTitle>New Consultation Request</CardTitle>
-            <CardDescription>Welcome, {user.name}. Your request will be kept confidential.</CardDescription>
+            <CardDescription>Welcome, {user.fullName}. Your request will be kept confidential.</CardDescription>
         </CardHeader>
         <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-6">

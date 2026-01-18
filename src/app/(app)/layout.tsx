@@ -40,7 +40,7 @@ export default function AppLayout({
           </div>
         </header>
 
-        <main className="flex-1 overflow-auto bg-background p-6 md:p-8">
+        <main className="flex-1 overflow-auto bg-background p-4 sm:p-6 md:p-8">
           {children}
         </main>
       </div>

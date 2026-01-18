@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export default function HomePage() {
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-image');
+  const adLogo = PlaceHolderImages.find((img) => img.id === 'adventist-logo');
 
   return (
     <div className="flex flex-col">
@@ -96,6 +97,29 @@ export default function HomePage() {
       <section className="bg-primary/5 py-16 md:py-24">
         <div className="container">
           <div className="text-center">
+            <h2 className="font-headline text-3xl font-bold text-primary">Our Affiliations</h2>
+            <p className="mx-auto mt-4 max-w-xl text-foreground/70">
+              We are a proud part of a larger, global community of faith.
+            </p>
+          </div>
+          <div className="mt-12 flex justify-center">
+            {adLogo && (
+               <Image
+                src={adLogo.imageUrl}
+                alt={adLogo.description}
+                data-ai-hint={adLogo.imageHint}
+                width={180}
+                height={180}
+                className="rounded-lg"
+              />
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-background py-16 md:py-24">
+        <div className="container">
+          <div className="text-center">
             <h2 className="font-headline text-3xl font-bold text-primary">Latest News &amp; Announcements</h2>
           </div>
           <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
@@ -132,7 +156,7 @@ export default function HomePage() {
         </div>
       </section>
 
-       <section className="bg-background py-16 md:py-24">
+       <section className="bg-primary/10 py-16 md:py-24">
         <div className="container">
           <div className="text-center">
             <h2 className="font-headline text-3xl font-bold text-primary">What Our Community Says</h2>
@@ -142,7 +166,7 @@ export default function HomePage() {
           </div>
           <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
             {testimonials.map((testimonial) => (
-              <Card key={testimonial.id} className="flex flex-col justify-between text-center">
+              <Card key={testimonial.id} className="flex flex-col justify-between text-center bg-card">
                 <CardContent className="pt-6">
                   <blockquote className="text-lg italic text-foreground/80 before:content-['“'] after:content-['”']">
                     {testimonial.quote}

@@ -15,6 +15,9 @@ import type { Consultation } from '@/lib/types';
 import { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import Image from 'next/image';
+import { Separator } from '@/components/ui/separator';
+import { Upload } from 'lucide-react';
+
 
 const schoolLevels = ['Remedial', 'First Year', 'Second Year', 'Third Year', 'Fourth Year', 'Fifth Year', 'Sixth Year', 'Seventh Year'];
 const talentsOptions = ['Song', 'Preach', 'Leadership', 'Pray', 'Decorations', 'Media & Communication', 'Special Talents'];
@@ -101,7 +104,7 @@ export default function RequestConsultationPage() {
             toast({
                 variant: 'destructive',
                 title: 'Missing Information',
-                description: 'Please fill out all required fields.',
+                description: 'Please fill out all required fields in the Consultation Details section.',
             });
             return;
         }
@@ -131,60 +134,45 @@ export default function RequestConsultationPage() {
       
       <Card className="max-w-4xl mx-auto">
         <CardHeader>
-            <CardTitle>New Consultation Request</CardTitle>
-            <CardDescription>Welcome, {user.fullName}. Your request will be kept confidential.</CardDescription>
+            <CardTitle>New Consultation Request Form</CardTitle>
+            <CardDescription>Welcome, {user.fullName}. Please fill out the form below.</CardDescription>
         </CardHeader>
-        <CardContent className="pt-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-8">
             
-            <Card>
-                <CardHeader><CardTitle className="text-lg font-headline">Consultation Details</CardTitle></CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                        <Label htmlFor="departmentId">Select a Consultation Department</Label>
-                        <Select onValueChange={(value) => handleSelectChange('departmentId', value)} value={formData.departmentId} required>
-                            <SelectTrigger id="departmentId">
-                                <SelectValue placeholder="Choose a department..." />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {departments.map(dept => (
-                                    <SelectItem key={dept.id} value={dept.id}>{dept.name}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+            <div>
+                <h3 className="text-lg font-medium font-headline text-primary">Your Information</h3>
+                <p className="text-sm text-muted-foreground">This information helps us understand your background. It will be sent with your request.</p>
+                <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="md:col-span-1 flex flex-col items-center space-y-4">
+                        <Label>Your Photo</Label>
+                        <div className="relative w-32 h-32">
+                           <Image 
+                             src={imagePreview || user.avatarUrl} 
+                             alt="Avatar Preview" 
+                             fill 
+                             className="rounded-full object-cover border-2 border-primary/20"
+                           />
+                        </div>
+                        <Button asChild variant="outline" size="sm">
+                            <Label htmlFor="photo" className="cursor-pointer">
+                                <Upload className="mr-2 h-4 w-4" />
+                                Upload Photo
+                                <Input id="photo" type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+                            </Label>
+                        </Button>
+                        <p className="text-xs text-muted-foreground text-center">If you don't upload a new photo, your current profile picture will be used.</p>
                     </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="problemDescription">Describe Your Issue</Label>
-                        <Textarea
-                            id="problemDescription"
-                            name="problemDescription"
-                            placeholder="Briefly describe the reason for your consultation request..."
-                            className="min-h-[150px]"
-                            value={formData.problemDescription}
-                            onChange={handleInputChange}
-                            required
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="preferredTime">Preferred Time for Consultation</Label>
-                        <Input 
-                            id="preferredTime"
-                            name="preferredTime" 
-                            placeholder="e.g., Weekday evenings, Weekend mornings"
-                            value={formData.preferredTime}
-                            onChange={handleInputChange}
-                            required 
-                        />
-                    </div>
-                </CardContent>
-            </Card>
-
-            <Card>
-                 <CardHeader><CardTitle className="text-lg font-headline">Your Information</CardTitle><CardDescription>This information helps us understand your background. It will be sent with your request.</CardDescription></CardHeader>
-                 <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                         <div className="space-y-2">
+                            <Label htmlFor="fullName">Full Name</Label>
+                            <Input id="fullName" value={user.fullName} disabled />
+                        </div>
+                         <div className="space-y-2">
+                            <Label htmlFor="email">Email</Label>
+                            <Input id="email" value={user.email} disabled />
+                        </div>
                         <div className="space-y-2">
                             <Label htmlFor="phoneNumber">Phone Number</Label>
                             <Input id="phoneNumber" name="phoneNumber" required onChange={handleInputChange} value={formData.phoneNumber} />
@@ -193,112 +181,137 @@ export default function RequestConsultationPage() {
                             <Label htmlFor="telegramUsername">Telegram User Name (Optional)</Label>
                             <Input id="telegramUsername" name="telegramUsername" onChange={handleInputChange} value={formData.telegramUsername} />
                         </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="motherChurch">Mother Church</Label>
-                            <Input id="motherChurch" name="motherChurch" required onChange={handleInputChange} value={formData.motherChurch} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="entryYear">Year of Entry</Label>
-                            <Input id="entryYear" name="entryYear" type="number" required onChange={handleInputChange} value={formData.entryYear}/>
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="departmentName">Name of Department</Label>
-                            <Input id="departmentName" name="departmentName" required onChange={handleInputChange} value={formData.departmentName} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="schoolLevel">Level in Your Schooling</Label>
-                            <Select name="schoolLevel" onValueChange={(value) => handleSelectChange('schoolLevel', value)} required value={formData.schoolLevel}>
-                                <SelectTrigger><SelectValue placeholder="Select Level" /></SelectTrigger>
-                                <SelectContent>
-                                    {schoolLevels.map(level => <SelectItem key={level} value={level}>{level}</SelectItem>)}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="graduationYear">Year of Graduation</Label>
-                            <Input id="graduationYear" name="graduationYear" type="number" required onChange={handleInputChange} value={formData.graduationYear} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Status 1</Label>
-                            <Select name="studentStatus1" onValueChange={(value) => handleSelectChange('studentStatus1', value)} defaultValue="Regular" value={formData.studentStatus1}>
-                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="Regular">Regular</SelectItem>
-                                    <SelectItem value="Irregular (Private)">Irregular (Private)</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Status 2</Label>
-                            <Select name="studentStatus2" onValueChange={(value) => handleSelectChange('studentStatus2', value)} defaultValue="Degree Program" value={formData.studentStatus2}>
-                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="Degree Program">Degree Program</SelectItem>
-                                    <SelectItem value="MS Program">MS Program</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Status 3</Label>
-                            <Select name="studentStatus3" onValueChange={(value) => handleSelectChange('studentStatus3', value)} defaultValue="Current WPCM" value={formData.studentStatus3}>
-                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="Current WPCM">Current WPCM</SelectItem>
-                                    <SelectItem value="Alumni WPCM">Alumni WPCM</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
                     </div>
-                 </CardContent>
-            </Card>
+                </div>
+            </div>
 
-            <Card>
-                <CardHeader><CardTitle className="text-lg font-headline">Additional Details</CardTitle></CardHeader>
-                <CardContent className="space-y-6">
+            <Separator />
+            
+            <div>
+                <h3 className="text-lg font-medium font-headline text-primary">Consultation Details</h3>
+                <p className="text-sm text-muted-foreground">Describe the support you are looking for. <span className="text-destructive">* Required</span></p>
+                <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
+                        <Label htmlFor="departmentId">Consultation Department*</Label>
+                        <Select onValueChange={(value) => handleSelectChange('departmentId', value)} value={formData.departmentId} required>
+                            <SelectTrigger id="departmentId"><SelectValue placeholder="Choose a department..." /></SelectTrigger>
+                            <SelectContent>
+                                {departments.map(dept => <SelectItem key={dept.id} value={dept.id}>{dept.name}</SelectItem>)}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="preferredTime">Preferred Time*</Label>
+                        <Input id="preferredTime" name="preferredTime" placeholder="e.g., Weekday evenings" value={formData.preferredTime} onChange={handleInputChange} required />
+                    </div>
+                </div>
+                <div className="mt-4 space-y-2">
+                    <Label htmlFor="problemDescription">Describe Your Issue*</Label>
+                    <Textarea id="problemDescription" name="problemDescription" placeholder="Briefly describe the reason for your consultation request..." className="min-h-[150px]" value={formData.problemDescription} onChange={handleInputChange} required />
+                </div>
+            </div>
+
+            <Separator />
+
+            <div>
+                <h3 className="text-lg font-medium font-headline text-primary">Academic & Personal Background</h3>
+                <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                     <div className="space-y-2">
+                        <Label htmlFor="motherChurch">Mother Church</Label>
+                        <Input id="motherChurch" name="motherChurch" required onChange={handleInputChange} value={formData.motherChurch} />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="entryYear">Year of Entry</Label>
+                        <Input id="entryYear" name="entryYear" type="number" required onChange={handleInputChange} value={formData.entryYear}/>
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="departmentName">Name of Department</Label>
+                        <Input id="departmentName" name="departmentName" required onChange={handleInputChange} value={formData.departmentName} />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="schoolLevel">Level in Your Schooling</Label>
+                        <Select name="schoolLevel" onValueChange={(value) => handleSelectChange('schoolLevel', value)} required value={formData.schoolLevel}>
+                            <SelectTrigger><SelectValue placeholder="Select Level" /></SelectTrigger>
+                            <SelectContent>
+                                {schoolLevels.map(level => <SelectItem key={level} value={level}>{level}</SelectItem>)}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="graduationYear">Year of Graduation</Label>
+                        <Input id="graduationYear" name="graduationYear" type="number" required onChange={handleInputChange} value={formData.graduationYear} />
+                    </div>
+                    <div className="space-y-2">
+                        <Label>Status 1</Label>
+                        <Select name="studentStatus1" onValueChange={(value) => handleSelectChange('studentStatus1', value)} defaultValue="Regular" value={formData.studentStatus1}>
+                            <SelectTrigger><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Regular">Regular</SelectItem>
+                                <SelectItem value="Irregular (Private)">Irregular (Private)</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="space-y-2">
+                        <Label>Status 2</Label>
+                        <Select name="studentStatus2" onValueChange={(value) => handleSelectChange('studentStatus2', value)} defaultValue="Degree Program" value={formData.studentStatus2}>
+                            <SelectTrigger><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Degree Program">Degree Program</SelectItem>
+                                <SelectItem value="MS Program">MS Program</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="space-y-2">
+                        <Label>Status 3</Label>
+                        <Select name="studentStatus3" onValueChange={(value) => handleSelectChange('studentStatus3', value)} defaultValue="Current WPCM" value={formData.studentStatus3}>
+                            <SelectTrigger><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Current WPCM">Current WPCM</SelectItem>
+                                <SelectItem value="Alumni WPCM">Alumni WPCM</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+            </div>
+
+            <Separator />
+
+            <div>
+                <h3 className="text-lg font-medium font-headline text-primary">Additional Details</h3>
+                 <div className="mt-6 space-y-6">
+                    <div className="space-y-4">
                         <Label>Talent (Interest to Service)</Label>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                         {talentsOptions.map(talent => (
                             <div key={talent} className="flex items-center space-x-2">
                                 <Checkbox id={`talent-${talent}`} onCheckedChange={() => handleCheckboxChange('talents', talent)} />
-                                <Label htmlFor={`talent-${talent}`} className="font-normal">{talent}</Label>
+                                <Label htmlFor={`talent-${talent}`} className="font-normal cursor-pointer">{talent}</Label>
                             </div>
                         ))}
                         </div>
                     </div>
                     
-                    <div className="space-y-2">
+                    <div className="space-y-4">
                         <Label>Special Care Needed</Label>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                         {specialCareOptions.map(care => (
                             <div key={care} className="flex items-center space-x-2">
                                 <Checkbox id={`care-${care}`} onCheckedChange={() => handleCheckboxChange('specialCare', care)} />
-                                <Label htmlFor={`care-${care}`} className="font-normal">{care}</Label>
+                                <Label htmlFor={`care-${care}`} className="font-normal cursor-pointer">{care}</Label>
                             </div>
                         ))}
                         </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label>Upload Photo (Optional)</Label>
-                        <div className="flex items-center gap-4">
-                            {imagePreview ? <Image src={imagePreview} alt="Avatar Preview" width={64} height={64} className="rounded-full object-cover" /> :
-                             <Image src={user.avatarUrl} alt="Your current avatar" width={64} height={64} className="rounded-full object-cover" />
-                            }
-                            <Input id="photo" type="file" accept="image/*" onChange={handleImageChange} />
-                        </div>
-                        <p className="text-xs text-muted-foreground">If you don't upload a new photo, your current profile picture will be used.</p>
                     </div>
                     
                     <div className="space-y-2">
                         <Label htmlFor="comments">Any Comments</Label>
                         <Textarea id="comments" name="comments" onChange={handleInputChange} value={formData.comments} />
                     </div>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
             
-            <Button type="submit" className="w-full">
-              Submit Request
+            <Button type="submit" size="lg" className="w-full">
+              Submit Consultation Request
             </Button>
           </form>
         </CardContent>
@@ -306,3 +319,5 @@ export default function RequestConsultationPage() {
     </div>
   );
 }
+
+    

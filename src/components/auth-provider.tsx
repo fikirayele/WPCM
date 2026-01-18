@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(
     (email: string, password?: string) => {
-      const userToLogin = users.find((u) => u.email === email);
+      const userToLogin = users.find((u) => u.email.toLowerCase() === email.toLowerCase());
 
       if (userToLogin) {
         if (!userToLogin.active) {
@@ -62,7 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
   
   const signup = useCallback((userData: Pick<User, 'fullName' | 'email'>, password?: string) => {
-    const existingUser = users.find(u => u.email === userData.email);
+    const existingUser = users.find(u => u.email.toLowerCase() === userData.email.toLowerCase());
     if (existingUser) {
         toast({
             variant: 'destructive',
@@ -74,7 +74,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const newUser: User = {
         id: `user-${Date.now()}`,
         fullName: userData.fullName,
-        email: userData.email,
+        email: userData.email.toLowerCase(),
         avatarUrl: `https://picsum.photos/seed/${Date.now()}/100/100`,
         role: 'student',
         active: true,

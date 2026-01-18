@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 
-const getInitials = (name: string) => name.split(' ').map((n) => n[0]).join('');
+const getInitials = (name = '') => name.split(' ').map((n) => n[0]).join('');
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -64,11 +64,11 @@ export function AppSidebar() {
         {user && (
           <div className="flex items-center gap-4">
             <Avatar className="h-10 w-10">
-              <AvatarImage src={user.avatarUrl} />
-              <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+              <AvatarImage src={user.avatarUrl} alt={user.fullName} />
+              <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
             </Avatar>
             <div className="flex-1 overflow-hidden">
-              <p className="truncate font-semibold">{user.name}</p>
+              <p className="truncate font-semibold">{user.fullName}</p>
               <p className="truncate text-xs text-muted-foreground">{user.email}</p>
             </div>
             <Button variant="ghost" size="icon" onClick={logout}>

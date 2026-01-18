@@ -20,7 +20,7 @@ export default function AuthLayout({
       </div>
       <div className="hidden bg-muted lg:block">
         <Image
-          src="/co.webp"
+          src="/co1.jpg"
           alt="A beautiful, calming image for the authentication screen."
           width="1920"
           height="1080"

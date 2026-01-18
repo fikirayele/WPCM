@@ -10,11 +10,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export default function HomePage() {
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-image');
-  const adLogo = PlaceHolderImages.find((img) => img.id === 'adventist-logo');
 
   return (
     <div className="flex flex-col">
-      <section className="relative w-full bg-primary/10 py-20 md:py-32">
+      <section className="relative flex h-screen w-full items-center justify-center bg-primary/10">
         {heroImage && (
           <Image
             src={heroImage.imageUrl}
@@ -90,29 +89,6 @@ export default function HomePage() {
                 </p>
               </CardContent>
             </Card>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-primary/5 py-16 md:py-24">
-        <div className="container">
-          <div className="text-center">
-            <h2 className="font-headline text-3xl font-bold text-primary">Our Affiliations</h2>
-            <p className="mx-auto mt-4 max-w-xl text-foreground/70">
-              We are a proud part of a larger, global community of faith.
-            </p>
-          </div>
-          <div className="mt-12 flex justify-center">
-            {adLogo && (
-               <Image
-                src={adLogo.imageUrl}
-                alt={adLogo.description}
-                data-ai-hint={adLogo.imageHint}
-                width={180}
-                height={180}
-                className="rounded-lg"
-              />
-            )}
           </div>
         </div>
       </section>

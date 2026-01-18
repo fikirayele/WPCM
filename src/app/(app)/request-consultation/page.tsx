@@ -15,7 +15,6 @@ import type { Consultation } from '@/lib/types';
 import { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import Image from 'next/image';
-import { Separator } from '@/components/ui/separator';
 import { Upload } from 'lucide-react';
 
 
@@ -124,26 +123,22 @@ export default function RequestConsultationPage() {
     };
 
     return (
-    <div className="space-y-8">
+    <div className="max-w-4xl mx-auto space-y-8">
        <div className="text-center">
-        <h1 className="font-headline text-3xl font-bold text-primary">Request a Consultation</h1>
-        <p className="text-muted-foreground mt-2 max-w-3xl mx-auto">
-            Please provide details about the support you are looking for. This will help us assign the right consultant for your needs. Your personal information will be kept confidential.
+        <h1 className="font-headline text-3xl font-bold text-primary">New Consultation Request</h1>
+        <p className="text-muted-foreground mt-2">
+            Welcome, {user.fullName}. Please fill out the form below. This will help us assign the right consultant for your needs.
         </p>
       </div>
       
-      <Card className="max-w-4xl mx-auto">
-        <CardHeader>
-            <CardTitle>New Consultation Request Form</CardTitle>
-            <CardDescription>Welcome, {user.fullName}. Please fill out the form below.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-8">
-            
-            <div>
-                <h3 className="text-lg font-medium font-headline text-primary">Your Information</h3>
-                <p className="text-sm text-muted-foreground">This information helps us understand your background. It will be sent with your request.</p>
-                <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <Card>
+            <CardHeader>
+                <CardTitle className="font-headline text-lg">Your Information</CardTitle>
+                <CardDescription>This information helps us understand your background. It will be sent with your request.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div className="md:col-span-1 flex flex-col items-center space-y-4">
                         <Label>Your Photo</Label>
                         <div className="relative w-32 h-32">
@@ -161,7 +156,7 @@ export default function RequestConsultationPage() {
                                 <Input id="photo" type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
                             </Label>
                         </Button>
-                        <p className="text-xs text-muted-foreground text-center">If you don't upload a new photo, your current profile picture will be used.</p>
+                        <p className="text-xs text-muted-foreground text-center">Your current profile picture will be used if you don't upload a new one.</p>
                     </div>
 
                     <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -183,14 +178,16 @@ export default function RequestConsultationPage() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </CardContent>
+        </Card>
 
-            <Separator />
-            
-            <div>
-                <h3 className="text-lg font-medium font-headline text-primary">Consultation Details</h3>
-                <p className="text-sm text-muted-foreground">Describe the support you are looking for. <span className="text-destructive">* Required</span></p>
-                <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Card>
+            <CardHeader>
+                <CardTitle className="font-headline text-lg">Consultation Details</CardTitle>
+                <CardDescription>Describe the support you are looking for. <span className="text-destructive">* Required</span></CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                         <Label htmlFor="departmentId">Consultation Department*</Label>
                         <Select onValueChange={(value) => handleSelectChange('departmentId', value)} value={formData.departmentId} required>
@@ -209,13 +206,16 @@ export default function RequestConsultationPage() {
                     <Label htmlFor="problemDescription">Describe Your Issue*</Label>
                     <Textarea id="problemDescription" name="problemDescription" placeholder="Briefly describe the reason for your consultation request..." className="min-h-[150px]" value={formData.problemDescription} onChange={handleInputChange} required />
                 </div>
-            </div>
+            </CardContent>
+        </Card>
 
-            <Separator />
-
-            <div>
-                <h3 className="text-lg font-medium font-headline text-primary">Academic & Personal Background</h3>
-                <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <Card>
+            <CardHeader>
+                <CardTitle className="font-headline text-lg">Academic & Personal Background</CardTitle>
+                <CardDescription>All fields in this section are required.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                      <div className="space-y-2">
                         <Label htmlFor="motherChurch">Mother Church</Label>
                         <Input id="motherChurch" name="motherChurch" required onChange={handleInputChange} value={formData.motherChurch} />
@@ -272,13 +272,16 @@ export default function RequestConsultationPage() {
                         </Select>
                     </div>
                 </div>
-            </div>
+            </CardContent>
+        </Card>
 
-            <Separator />
-
-            <div>
-                <h3 className="text-lg font-medium font-headline text-primary">Additional Details</h3>
-                 <div className="mt-6 space-y-6">
+        <Card>
+            <CardHeader>
+                <CardTitle className="font-headline text-lg">Additional Details</CardTitle>
+                <CardDescription>Help us understand more about you. (Optional)</CardDescription>
+            </CardHeader>
+            <CardContent>
+                 <div className="space-y-6">
                     <div className="space-y-4">
                         <Label>Talent (Interest to Service)</Label>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -308,16 +311,13 @@ export default function RequestConsultationPage() {
                         <Textarea id="comments" name="comments" onChange={handleInputChange} value={formData.comments} />
                     </div>
                 </div>
-            </div>
-            
-            <Button type="submit" size="lg" className="w-full">
-              Submit Consultation Request
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+            </CardContent>
+        </Card>
+        
+        <Button type="submit" size="lg" className="w-full">
+            Submit Consultation Request
+        </Button>
+      </form>
     </div>
   );
 }
-
-    

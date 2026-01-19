@@ -14,6 +14,8 @@ import { summarizeConsultationChat } from '@/ai/flows/consultation-chat-summariz
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 interface ChatClientProps {
   consultation: Consultation;
@@ -28,6 +30,8 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
   const [summary, setSummary] = useState('');
   const [isLoadingSummary, setIsLoadingSummary] = useState(false);
   const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
+  const [testimonial, setTestimonial] = useState(consultation.testimonial || '');
+
 
   const getInitials = (name = '') => name.split(' ').map((n) => n[0]).join('');
 
@@ -84,6 +88,19 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
         setSummary("Failed to generate summary.");
     } finally {
         setIsLoadingSummary(false);
+    }
+  };
+
+  const handleCompleteConsultation = () => {
+    updateConsultation(consultation.id, { status: 'COMPLETED' });
+    toast({ title: 'Consultation Completed', description: 'This consultation has been archived.' });
+  };
+
+  const handleSaveTestimonial = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (testimonial.trim()) {
+      updateConsultation(consultation.id, { testimonial: testimonial.trim() });
+      toast({ title: 'Thank You!', description: 'Your feedback has been submitted.' });
     }
   };
   
@@ -154,10 +171,25 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
                     </AlertDescription>
                 </Alert>
             )}
+            {consultation.status === 'COMPLETED' && (
+                 <Alert variant="default" className="border-green-500/50 text-green-600">
+                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <AlertTitle>Consultation Completed</AlertTitle>
+                    <AlertDescription>
+                       This consultation is complete. You can view the chat history above.
+                    </AlertDescription>
+                </Alert>
+            )}
         </div>
       </ScrollArea>
-      <div className="border-t p-4 space-y-2">
-        {user?.role === 'consultant' && (
+      <div className="border-t p-4 space-y-4">
+        {user?.role === 'consultant' && consultation.status === 'ACTIVE' && (
+          <Button onClick={handleCompleteConsultation} className="w-full" variant="outline">
+            <CheckCircle className="mr-2 h-4 w-4" />
+            Mark Consultation as Complete
+          </Button>
+        )}
+        {user?.role === 'consultant' && consultation.status !== 'COMPLETED' && (
              <Button onClick={handleSummarize} disabled={isLoadingSummary} className="w-full" variant="outline">
                 <Bot className="mr-2 h-4 w-4" />
                 {isLoadingSummary ? 'Generating Summary...' : 'Summarize Chat'}
@@ -173,17 +205,41 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
               )}
             </>
         )}
-        <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-          <Input
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="Type your message..."
-            disabled={isChatDisabled}
-          />
-          <Button type="submit" size="icon" disabled={isChatDisabled}>
-            <Send className="h-4 w-4" />
-          </Button>
-        </form>
+        {consultation.status !== 'COMPLETED' ? (
+          <form onSubmit={handleSendMessage} className="flex items-center gap-2">
+            <Input
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              placeholder="Type your message..."
+              disabled={isChatDisabled}
+            />
+            <Button type="submit" size="icon" disabled={isChatDisabled}>
+              <Send className="h-4 w-4" />
+            </Button>
+          </form>
+        ) : (
+          <div>
+            <h3 className="font-semibold text-lg mb-2">Feedback & Testimonial</h3>
+            {consultation.testimonial ? (
+                <blockquote className="mt-2 border-l-2 pl-4 italic text-muted-foreground">
+                    "{consultation.testimonial}"
+                </blockquote>
+            ) : isCurrentUserStudent ? (
+                <form onSubmit={handleSaveTestimonial} className="space-y-2">
+                    <Label htmlFor="testimonial">Share your experience to help us improve.</Label>
+                    <Textarea 
+                        id="testimonial"
+                        placeholder="How was your experience?"
+                        value={testimonial}
+                        onChange={(e) => setTestimonial(e.target.value)}
+                    />
+                    <Button type="submit" className="w-full">Submit Feedback</Button>
+                </form>
+            ) : (
+                 <p className="text-sm text-muted-foreground">The student has not yet submitted feedback for this consultation.</p>
+            )}
+          </div>
+        )}
       </div>
 
        <Dialog open={isSummaryDialogOpen} onOpenChange={setIsSummaryDialogOpen}>

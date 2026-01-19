@@ -9,6 +9,7 @@ import {
   LogOut,
   MessageSquare,
   Users,
+  Star,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth';
@@ -17,7 +18,7 @@ import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 
-const getInitials = (name = '') => name.split(' ').map((n) => n[0]).join('');
+const getInitials = (name = '') => name ? name.split(' ').map((n) => n[0]).join('') : '';
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -28,6 +29,7 @@ export function AppSidebar() {
     { href: '/users', label: 'Users', icon: Users },
     { href: '/departments', label: 'Departments', icon: Building2 },
     { href: '/consultations', label: 'Consultations', icon: MessageSquare },
+    { href: '/testimonials', label: 'Testimonials', icon: Star },
     { href: '/public-content', label: 'News', icon: Bell },
   ];
 

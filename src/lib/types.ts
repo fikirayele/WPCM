@@ -41,6 +41,7 @@ export interface Consultation {
   messages: Message[];
   studentAccepted?: boolean;
   consultantAccepted?: boolean;
+  testimonial?: string;
 
   // Submitter's info at time of request
   fullName: string;

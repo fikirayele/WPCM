@@ -23,7 +23,7 @@ export function ConsultationActions({ consultations, users, departments }: Consu
   const [selectedConsultant, setSelectedConsultant] = useState<string | null>(null);
   const { toast } = useToast();
   const router = useRouter();
-  const { updateConsultation } = useAuth();
+  const { updateConsultation, user } = useAuth();
 
   const getStatusVariant = (status: string) => {
     switch (status) {
@@ -87,10 +87,10 @@ export function ConsultationActions({ consultations, users, departments }: Consu
               <TableCell>{department?.name || 'N/A'}</TableCell>
               <TableCell>{format(new Date(c.createdAt), 'PP')}</TableCell>
               <TableCell>
-                <Badge variant={getStatusVariant(c.status)}>{c.status.replace('_', ' ')}</Badge>
+                <Badge variant={getStatusVariant(c.status)}>{c.status.replace(/_/g, ' ')}</Badge>
               </TableCell>
               <TableCell className="text-right">
-                {c.status === 'PENDING' ? (
+                {user?.role === 'admin' && c.status === 'PENDING' ? (
                   <Dialog onOpenChange={() => setSelectedConsultant(null)}>
                     <DialogTrigger asChild>
                       <Button variant="ghost" size="icon" onClick={(e) => e.stopPropagation()}>

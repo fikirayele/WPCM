@@ -44,16 +44,6 @@ export function SiteHeader() {
       .map((n) => n[0])
       .join('');
   };
-  
-  if (!isClient) {
-      return (
-        <header className="sticky top-0 z-50 w-full border-b bg-card">
-            <div className="container flex h-14 items-center justify-between px-4 sm:px-6 lg:px-8">
-                 <Logo />
-            </div>
-        </header>
-      )
-  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card">
@@ -83,59 +73,63 @@ export function SiteHeader() {
             
             {/* Auth Buttons */}
             <div className="hidden md:flex items-center gap-2">
-            {user ? (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                        <Avatar className="h-8 w-8">
-                            <AvatarImage src={user.avatarUrl} alt={user.fullName} />
-                            <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
-                        </Avatar>
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56" align="end" forceMount>
-                        <DropdownMenuLabel className="font-normal">
-                        <div className="flex flex-col space-y-1">
-                            <p className="text-sm font-medium leading-none">{user.fullName}</p>
-                            <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
-                        </div>
-                        </DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        {user.role === 'student' && (
-                            <DropdownMenuItem asChild>
-                                <Link href="/consultations">
-                                <BookUser className="mr-2 h-4 w-4" />
-                                <span>My Consultations</span>
-                                </Link>
-                            </DropdownMenuItem>
-                        )}
-                        {(user.role === 'admin' || user.role === 'consultant') && (
-                        <>
-                            <DropdownMenuItem asChild>
-                                <Link href="/dashboard">
-                                <LayoutDashboard className="mr-2 h-4 w-4" />
-                                <span>Dashboard</span>
-                                </Link>
-                            </DropdownMenuItem>
-                        </>
-                        )}
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={logout}>
-                        <LogOut className="mr-2 h-4 w-4" />
-                        <span>Log out</span>
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            ) : (
+              {isClient && (
                 <>
-                <Button variant="ghost" asChild>
-                    <Link href="/login">Login</Link>
-                </Button>
-                <Button asChild>
-                    <Link href="/signup">Sign Up</Link>
-                </Button>
+                  {user ? (
+                      <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                              <Avatar className="h-8 w-8">
+                                  <AvatarImage src={user.avatarUrl} alt={user.fullName} />
+                                  <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
+                              </Avatar>
+                              </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent className="w-56" align="end" forceMount>
+                              <DropdownMenuLabel className="font-normal">
+                              <div className="flex flex-col space-y-1">
+                                  <p className="text-sm font-medium leading-none">{user.fullName}</p>
+                                  <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                              </div>
+                              </DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              {user.role === 'student' && (
+                                  <DropdownMenuItem asChild>
+                                      <Link href="/consultations">
+                                      <BookUser className="mr-2 h-4 w-4" />
+                                      <span>My Consultations</span>
+                                      </Link>
+                                  </DropdownMenuItem>
+                              )}
+                              {(user.role === 'admin' || user.role === 'consultant') && (
+                              <>
+                                  <DropdownMenuItem asChild>
+                                      <Link href="/dashboard">
+                                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                                      <span>Dashboard</span>
+                                      </Link>
+                                  </DropdownMenuItem>
+                              </>
+                              )}
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem onClick={logout}>
+                              <LogOut className="mr-2 h-4 w-4" />
+                              <span>Log out</span>
+                              </DropdownMenuItem>
+                          </DropdownMenuContent>
+                      </DropdownMenu>
+                  ) : (
+                      <>
+                      <Button variant="ghost" asChild>
+                          <Link href="/login">Login</Link>
+                      </Button>
+                      <Button asChild>
+                          <Link href="/signup">Sign Up</Link>
+                      </Button>
+                      </>
+                  )}
                 </>
-            )}
+              )}
             </div>
 
             {/* Mobile Menu Trigger */}
@@ -167,25 +161,29 @@ export function SiteHeader() {
                     ))}
                 </nav>
                  <div className="mt-auto border-t p-4">
-                    {user ? (
-                        <div className="flex items-center gap-4">
-                            <Avatar className="h-10 w-10">
-                            <AvatarImage src={user.avatarUrl} />
-                            <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1 overflow-hidden">
-                            <p className="truncate font-semibold">{user.fullName}</p>
-                            <p className="truncate text-xs text-muted-foreground">{user.email}</p>
+                    {isClient && (
+                      <>
+                        {user ? (
+                            <div className="flex items-center gap-4">
+                                <Avatar className="h-10 w-10">
+                                <AvatarImage src={user.avatarUrl} />
+                                <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
+                                </Avatar>
+                                <div className="flex-1 overflow-hidden">
+                                <p className="truncate font-semibold">{user.fullName}</p>
+                                <p className="truncate text-xs text-muted-foreground">{user.email}</p>
+                                </div>
+                                <Button variant="ghost" size="icon" onClick={logout}>
+                                <LogOut className="h-4 w-4" />
+                                </Button>
                             </div>
-                            <Button variant="ghost" size="icon" onClick={logout}>
-                            <LogOut className="h-4 w-4" />
-                            </Button>
-                        </div>
-                    ) : (
-                        <div className="grid gap-2">
-                            <Button variant="outline" asChild><Link href="/login">Login</Link></Button>
-                            <Button asChild><Link href="/signup">Sign Up</Link></Button>
-                        </div>
+                        ) : (
+                            <div className="grid gap-2">
+                                <Button variant="outline" asChild><Link href="/login">Login</Link></Button>
+                                <Button asChild><Link href="/signup">Sign Up</Link></Button>
+                            </div>
+                        )}
+                      </>
                     )}
                  </div>
                 </SheetContent>

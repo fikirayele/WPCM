@@ -31,30 +31,10 @@ export function SiteHeader() {
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const [isClient, setIsClient] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  const isHome = pathname === '/';
 
   useEffect(() => {
     setIsClient(true);
-    
-    if (!isHome) {
-      setIsScrolled(true);
-      return;
-    }
-
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Check on initial render
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [pathname, isHome]);
-
+  }, []);
 
   const getInitials = (name: string) => {
     if (!name) return '';
@@ -65,11 +45,7 @@ export function SiteHeader() {
   };
 
   return (
-    <header className={cn(
-      "top-0 z-50 w-full border-b transition-colors duration-300",
-      isHome ? 'absolute' : 'sticky',
-      isScrolled ? 'bg-card border-border' : 'bg-transparent border-transparent'
-    )}>
+    <header className="sticky top-0 z-50 w-full border-b bg-card">
       <div className="container flex h-14 items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Left side */}
         <div className="flex items-center">
@@ -86,7 +62,7 @@ export function SiteHeader() {
                 href={link.href}
                 className={cn(
                     'transition-colors hover:text-foreground/80',
-                     isHome && !isScrolled ? 'text-background/80 hover:text-background' : (pathname === link.href ? 'text-foreground' : 'text-foreground/60')
+                     pathname === link.href ? 'text-foreground' : 'text-foreground/60'
                 )}
                 >
                 {link.label}
@@ -101,7 +77,7 @@ export function SiteHeader() {
                   {user ? (
                       <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" className={cn("relative h-8 w-8 rounded-full", isHome && !isScrolled && "hover:bg-white/10")}>
+                              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                               <Avatar className="h-8 w-8">
                                   <AvatarImage src={user.avatarUrl} alt={user.fullName} />
                                   <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
@@ -143,10 +119,10 @@ export function SiteHeader() {
                       </DropdownMenu>
                   ) : (
                       <>
-                      <Button variant="ghost" asChild className={cn(isHome && !isScrolled && 'text-background/80 hover:text-background hover:bg-white/10')}>
+                      <Button variant="ghost" asChild>
                           <Link href="/login">Login</Link>
                       </Button>
-                      <Button asChild variant={isHome && !isScrolled ? 'secondary' : 'default'} className={cn(isHome && !isScrolled && 'bg-white text-primary hover:bg-white/90')}>
+                      <Button asChild>
                           <Link href="/signup">Sign Up</Link>
                       </Button>
                       </>
@@ -159,7 +135,7 @@ export function SiteHeader() {
             <div className="md:hidden">
             <Sheet>
                 <SheetTrigger asChild>
-                <Button size="icon" variant="outline" className={cn(isHome && !isScrolled && 'border-white/50 text-white hover:bg-white/10 hover:text-white')}>
+                <Button size="icon" variant="outline">
                     <Menu className="h-5 w-5" />
                     <span className="sr-only">Toggle Menu</span>
                 </Button>

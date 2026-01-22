@@ -12,10 +12,10 @@ export default function AboutPage() {
       <section className="grid md:grid-cols-2 gap-12 items-center">
         <div className="space-y-4">
           <h1 className="font-headline text-4xl font-bold text-primary">About WPCM</h1>
-          <p className="text-lg text-foreground/80">
+          <p className="font-headline text-lg text-foreground/80 font-normal">
             WPCM is a dedicated ministry within the Seventh-day Adventist Church, focused on nurturing the spiritual, mental, and social well-being of students on non-Adventist campuses. We provide a sanctuary for support and growth, guided by our core principles of faith and community.
           </p>
-           <p className="text-foreground/70">
+           <p className="font-headline text-lg text-foreground/70 font-normal">
             Our mission is to empower students to become strong ambassadors for Christ, equipped to handle the challenges of campus life while strengthening their relationship with God. We offer confidential counseling, mentorship, and a vibrant community to help them thrive.
           </p>
         </div>

@@ -8,7 +8,7 @@ body {
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
+    --background: 240 10% 98%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
@@ -95,15 +95,6 @@ body {
     @apply transition-all duration-300 ease-in-out;
   }
   .card-hover-effect:hover {
-    @apply bg-primary text-primary-foreground shadow-xl -translate-y-2;
-  }
-  .card-hover-effect:hover [class*="text-muted-foreground"] {
-    @apply text-primary-foreground/80;
-  }
-  .card-hover-effect:hover [class*="text-primary"] {
-      @apply text-primary-foreground;
-  }
-  .card-hover-effect:hover [class*="bg-primary/10"] {
-      @apply bg-white/10;
+    @apply bg-muted shadow-xl -translate-y-2;
   }
 }

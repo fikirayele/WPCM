@@ -1,7 +1,7 @@
 'use client';
 
-import type { User, Consultation } from '@/lib/types';
-import { users as initialUsers, consultations as initialConsultations } from '@/lib/data';
+import type { User, Consultation, Donation } from '@/lib/types';
+import { users as initialUsers, consultations as initialConsultations, donations as initialDonations } from '@/lib/data';
 import React, { createContext, useState, useCallback, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
@@ -18,6 +18,8 @@ interface AuthContextType {
   addUser: (userPayload: Omit<User, 'id' | 'avatarUrl'>) => void;
   updateUser: (id: string, updates: Partial<User>) => void;
   deleteUser: (userId: string) => void;
+  donations: Donation[];
+  addDonation: (donationData: Omit<Donation, 'id' | 'date'>) => void;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -26,6 +28,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>(initialUsers);
   const [consultations, setConsultations] = useState<Consultation[]>(initialConsultations);
+  const [donations, setDonations] = useState<Donation[]>(initialDonations);
+
   const router = useRouter();
   const { toast } = useToast();
 
@@ -34,27 +38,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const storedUsers = localStorage.getItem('wpcm-users');
       const storedConsultations = localStorage.getItem('wpcm-consultations');
+      const storedDonations = localStorage.getItem('wpcm-donations');
       const storedUser = localStorage.getItem('wpcm-user');
 
-      if (storedUsers) {
-        setUsers(JSON.parse(storedUsers));
-      }
-      if (storedConsultations) {
-        setConsultations(JSON.parse(storedConsultations));
-      }
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      }
+      if (storedUsers) setUsers(JSON.parse(storedUsers));
+      if (storedConsultations) setConsultations(JSON.parse(storedConsultations));
+      if (storedDonations) setDonations(JSON.parse(storedDonations));
+      if (storedUser) setUser(JSON.parse(storedUser));
+      
     } catch (error) {
       console.error("Failed to load state from localStorage", error);
     }
-  }, []); // Empty dependency array ensures this runs only once on mount
+  }, []);
 
   // Save state to localStorage whenever it changes
   useEffect(() => {
     try {
       localStorage.setItem('wpcm-users', JSON.stringify(users));
       localStorage.setItem('wpcm-consultations', JSON.stringify(consultations));
+      localStorage.setItem('wpcm-donations', JSON.stringify(donations));
       if (user) {
         localStorage.setItem('wpcm-user', JSON.stringify(user));
       } else {
@@ -63,7 +65,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error("Failed to save state to localStorage", error);
     }
-  }, [users, consultations, user]);
+  }, [users, consultations, user, donations]);
 
 
   const login = useCallback(
@@ -169,7 +171,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUsers(prev => prev.filter(u => u.id !== userId));
   }, []);
 
-  const value = useMemo(() => ({ user, users, login, logout, signup, consultations, updateConsultation, addConsultation, addUser, updateUser, deleteUser }), [user, users, login, logout, signup, consultations, updateConsultation, addConsultation, addUser, updateUser, deleteUser]);
+  const addDonation = useCallback((donationData: Omit<Donation, 'id' | 'date'>) => {
+    const newDonation: Donation = {
+        ...donationData,
+        id: `don-${Date.now()}`,
+        date: new Date().toISOString(),
+    };
+    setDonations(prev => [newDonation, ...prev]);
+  }, []);
+
+  const value = useMemo(() => ({ user, users, login, logout, signup, consultations, updateConsultation, addConsultation, addUser, updateUser, deleteUser, donations, addDonation }), [user, users, login, logout, signup, consultations, updateConsultation, addConsultation, addUser, updateUser, deleteUser, donations, addDonation]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

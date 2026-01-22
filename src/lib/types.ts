@@ -73,11 +73,14 @@ export interface NewsArticle {
 }
 
 export interface Donation {
-    id: string;
-    name: string;
-    email: string;
-    amount: number;
-    date: string;
+  id: string;
+  name: string;
+  email?: string;
+  amount: number;
+  date: string;
+  phoneNumber: string;
+  transactionId: string;
+  screenshotUrl: string;
 }
 
 export interface Testimonial {

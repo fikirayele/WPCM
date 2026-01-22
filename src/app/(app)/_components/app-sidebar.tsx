@@ -4,6 +4,7 @@ import {
   Bell,
   BookUser,
   Building2,
+  CircleDollarSign,
   HeartHandshake,
   Home,
   LogOut,
@@ -29,6 +30,7 @@ export function AppSidebar() {
     { href: '/users', label: 'Users', icon: Users },
     { href: '/departments', label: 'Departments', icon: Building2 },
     { href: '/consultations', label: 'Consultations', icon: MessageSquare },
+    { href: '/donations', label: 'Donations', icon: CircleDollarSign },
     { href: '/testimonials', label: 'Testimonials', icon: Star },
     { href: '/public-content', label: 'News', icon: Bell },
   ];

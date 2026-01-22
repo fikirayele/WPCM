@@ -220,9 +220,9 @@ export const news: NewsArticle[] = [
 ];
 
 export const donations: Donation[] = [
-    { id: 'don-1', name: 'Anonymous', email: 'anon@example.com', amount: 50, date: '2023-11-12' },
-    { id: 'don-2', name: 'Mark Johnson', email: 'mark.j@example.com', amount: 100, date: '2023-11-10' },
-    { id: 'don-3', name: 'Susan Williams', email: 's.williams@example.com', amount: 25, date: '2023-11-08' },
+    { id: 'don-1', name: 'Anonymous Donor', phoneNumber: '0911000001', amount: 500, date: '2023-11-12', transactionId: 'TXN12345ABC', screenshotUrl: getImage('screenshot-1') },
+    { id: 'don-2', name: 'Mark Johnson', phoneNumber: '0911000002', amount: 1000, date: '2023-11-10', transactionId: 'TXN67890DEF', screenshotUrl: getImage('screenshot-2') },
+    { id: 'don-3', name: 'Susan Williams', phoneNumber: '0911000003', amount: 250, date: '2023-11-08', transactionId: 'TXN54321GHI', screenshotUrl: getImage('screenshot-3') },
 ];
 
 export const testimonials: Testimonial[] = [

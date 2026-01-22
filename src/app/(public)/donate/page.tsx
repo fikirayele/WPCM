@@ -82,8 +82,9 @@ export default function DonatePage() {
                     <Banknote className="h-4 w-4" />
                     <AlertTitle>CBE (Commercial Bank of Ethiopia)</AlertTitle>
                     <AlertDescription className="font-mono">
-                        Account: 1000123456789<br/>
-                        Name: WPCM Ministry
+                        Account: 1000556225072<br/>
+                        Name: WCU SDA CHURCH PCM<br/>
+                        Branch: Ambicho Gode Branch, Hosanna
                     </AlertDescription>
                 </Alert>
                 <Alert>

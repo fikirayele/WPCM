@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 
 export default function NewsPage() {
   return (
-    <div className="container py-16 md:py-24">
+    <div className="container py-12 md:py-16">
       <div className="text-center">
         <h1 className="font-headline text-4xl font-bold text-primary">News &amp; Announcements</h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-foreground/80">
@@ -18,7 +18,7 @@ export default function NewsPage() {
         {news.map((article) => {
           const articleImage = PlaceHolderImages.find(img => img.id === `news-${article.id.split('-')[1]}`);
           return (
-          <Card key={article.id} className="flex flex-col overflow-hidden">
+          <Card key={article.id} className="flex flex-col overflow-hidden card-hover-effect">
              {articleImage && (
                <div className="aspect-video relative">
                 <Image

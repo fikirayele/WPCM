@@ -31,7 +31,7 @@ export default function DonatePage() {
     };
 
   return (
-    <div className="container py-16 md:py-24">
+    <div className="container py-12 md:py-16">
       <div className="mx-auto max-w-3xl text-center">
         <h1 className="font-headline text-4xl font-bold text-primary">Support Our Mission</h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-foreground/80">

@@ -8,7 +8,7 @@ body {
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
+    --background: 210 20% 98%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
@@ -87,5 +87,14 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .card-hover-effect {
+    @apply transition-all duration-300 ease-in-out;
+  }
+  .card-hover-effect:hover {
+    @apply -translate-y-2 transform shadow-xl;
   }
 }

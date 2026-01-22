@@ -41,7 +41,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-background py-16 md:py-24">
+      <section className="bg-background py-12 md:py-20">
         <div className="container">
           <div className="text-center">
             <h2 className="font-headline text-3xl font-bold text-primary">How We Can Help</h2>
@@ -50,7 +50,7 @@ export default function HomePage() {
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
-            <Card className="text-center">
+            <Card className="text-center card-hover-effect">
               <CardHeader>
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-accent-foreground">
                    <MessageCircle className="h-6 w-6 text-primary" />
@@ -63,7 +63,7 @@ export default function HomePage() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="text-center">
+            <Card className="text-center card-hover-effect">
               <CardHeader>
                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-accent-foreground">
                    <Users className="h-6 w-6 text-primary" />
@@ -76,7 +76,7 @@ export default function HomePage() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="text-center">
+            <Card className="text-center card-hover-effect">
               <CardHeader>
                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-accent-foreground">
                    <HeartHandshake className="h-6 w-6 text-primary" />
@@ -93,7 +93,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-background py-16 md:py-24">
+      <section className="bg-background py-12 md:py-20">
         <div className="container">
           <div className="text-center">
             <h2 className="font-headline text-3xl font-bold text-primary">Latest News &amp; Announcements</h2>
@@ -102,7 +102,7 @@ export default function HomePage() {
             {news.slice(0, 3).map((article) => {
                const articleImage = PlaceHolderImages.find(img => img.id === `news-${article.id.split('-')[1]}`);
               return (
-                <Card key={article.id} className="overflow-hidden">
+                <Card key={article.id} className="overflow-hidden card-hover-effect">
                   {articleImage && (
                      <Image
                       src={articleImage.imageUrl}
@@ -132,7 +132,7 @@ export default function HomePage() {
         </div>
       </section>
 
-       <section className="bg-primary/10 py-16 md:py-24">
+       <section className="bg-primary/10 py-12 md:py-20">
         <div className="container">
           <div className="text-center">
             <h2 className="font-headline text-3xl font-bold text-primary">What Our Community Says</h2>
@@ -142,7 +142,7 @@ export default function HomePage() {
           </div>
           <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
             {testimonials.map((testimonial) => (
-              <Card key={testimonial.id} className="flex flex-col justify-between text-center bg-card">
+              <Card key={testimonial.id} className="flex flex-col justify-between text-center bg-card card-hover-effect">
                 <CardContent className="pt-6">
                   <blockquote className="text-lg italic text-foreground/80 before:content-['“'] after:content-['”']">
                     {testimonial.quote}

@@ -7,7 +7,7 @@ export default function AboutPage() {
   const aboutImage = PlaceHolderImages.find((img) => img.id === 'about-us-image');
 
   return (
-    <div className="container py-16 md:py-24 space-y-24">
+    <div className="container py-12 md:py-16 space-y-16">
 
       <section className="grid md:grid-cols-2 gap-12 items-center">
         <div className="space-y-4">
@@ -35,7 +35,7 @@ export default function AboutPage() {
 
       {/* Vision and Mission */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <Card className="flex flex-col">
+          <Card className="flex flex-col card-hover-effect">
             <CardHeader className="items-center text-center">
               <Eye className="h-10 w-10 text-primary mb-2" />
               <CardTitle className="font-headline text-2xl text-primary">Aim/Vision</CardTitle>
@@ -47,7 +47,7 @@ export default function AboutPage() {
             </CardContent>
           </Card>
           
-          <Card className="flex flex-col">
+          <Card className="flex flex-col card-hover-effect">
             <CardHeader className="items-center text-center">
               <Target className="h-10 w-10 text-primary mb-2" />
               <CardTitle className="font-headline text-2xl text-primary">Mission</CardTitle>
@@ -66,7 +66,7 @@ export default function AboutPage() {
           <h2 className="font-headline text-3xl font-bold text-primary">Our Core Values (The 3Cs)</h2>
         </div>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          <Card className="text-center">
+          <Card className="text-center card-hover-effect">
             <CardHeader>
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
                 <UserCheck className="h-8 w-8 text-primary" />
@@ -77,7 +77,7 @@ export default function AboutPage() {
               <p className="text-muted-foreground italic">Character over competency.</p>
             </CardContent>
           </Card>
-          <Card className="text-center">
+          <Card className="text-center card-hover-effect">
             <CardHeader>
                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
                  <Handshake className="h-8 w-8 text-primary" />
@@ -88,7 +88,7 @@ export default function AboutPage() {
               <p className="text-muted-foreground italic">Collaboration over competition.</p>
             </CardContent>
           </Card>
-          <Card className="text-center">
+          <Card className="text-center card-hover-effect">
             <CardHeader>
                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
                  <Mountain className="h-8 w-8 text-primary" />

@@ -40,12 +40,12 @@ export default function ConsultationDetailPage() {
   };
   
   const InfoItem = ({ label, value }: { label: string; value?: string | string[] | null }) => {
-    if (!value) return null;
+    if (!value || (Array.isArray(value) && value.length === 0)) return null;
     const displayValue = Array.isArray(value) ? value.join(', ') : value;
     return (
         <div>
             <p className="text-xs text-muted-foreground">{label}</p>
-            <p className="text-sm font-medium">{displayValue}</p>
+            <p className="text-sm font-medium break-words">{displayValue}</p>
         </div>
     )
   };
@@ -64,57 +64,49 @@ export default function ConsultationDetailPage() {
                     </Button>
                 )}
             </div>
-            
+
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-base">Status</CardTitle>
+                    <CardTitle className="text-base">Overview</CardTitle>
                 </CardHeader>
-                <CardContent>
-                    <Badge variant={getStatusVariant(consultation.status)}>{consultation.status.replace(/_/g, ' ')}</Badge>
+                <CardContent className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                    <div>
+                        <p className="text-xs font-medium text-muted-foreground">Status</p>
+                        <Badge variant={getStatusVariant(consultation.status)} className="mt-1">{consultation.status.replace(/_/g, ' ')}</Badge>
+                    </div>
+                    {department && (
+                        <div>
+                            <p className="text-xs font-medium text-muted-foreground">Department</p>
+                            <p className="font-semibold">{department.name}</p>
+                        </div>
+                    )}
+                    {student && (
+                      <div className="flex items-center gap-3">
+                          <Avatar className="h-10 w-10">
+                              <AvatarImage src={student.avatarUrl} />
+                              <AvatarFallback>{getInitials(student.fullName)}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                              <p className="text-xs text-muted-foreground">Student</p>
+                              <p className="font-semibold">{student.fullName}</p>
+                          </div>
+                      </div>
+                    )}
+                    {consultant && (
+                        <div className="flex items-center gap-3">
+                            <Avatar className="h-10 w-10">
+                                <AvatarImage src={consultant.avatarUrl} />
+                                <AvatarFallback>{getInitials(consultant.fullName)}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                                <p className="text-xs text-muted-foreground">Consultant</p>
+                                <p className="font-semibold">{consultant.fullName}</p>
+                            </div>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
             
-            {student && (
-              <Card>
-                  <CardHeader><CardTitle className="text-base">Student</CardTitle></CardHeader>
-                  <CardContent className="flex items-center gap-3">
-                      <Avatar>
-                          <AvatarImage src={student.avatarUrl} />
-                          <AvatarFallback>{getInitials(student.fullName)}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                          <p className="font-semibold">{student.fullName}</p>
-                          <p className="text-xs text-muted-foreground">{student.email}</p>
-                      </div>
-                  </CardContent>
-              </Card>
-            )}
-
-            {consultant && (
-                <Card>
-                    <CardHeader><CardTitle className="text-base">Consultant</CardTitle></CardHeader>
-                    <CardContent className="flex items-center gap-3">
-                        <Avatar>
-                            <AvatarImage src={consultant.avatarUrl} />
-                            <AvatarFallback>{getInitials(consultant.fullName)}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                            <p className="font-semibold">{consultant.fullName}</p>
-                            <p className="text-xs text-muted-foreground">{consultant.email}</p>
-                        </div>
-                    </CardContent>
-                </Card>
-            )}
-            
-            {department && (
-                <Card>
-                    <CardHeader><CardTitle className="text-base">Consultation Department</CardTitle></CardHeader>
-                    <CardContent>
-                        <p className="font-semibold">{department.name}</p>
-                    </CardContent>
-                </Card>
-            )}
-
             <Card>
                 <CardHeader>
                     <CardTitle className="text-base">Problem Description</CardTitle>
@@ -137,7 +129,7 @@ export default function ConsultationDetailPage() {
                             <p className="text-xs text-muted-foreground">{consultation.email}</p>
                         </div>
                     </div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 pt-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-4 pt-4">
                         <InfoItem label="Phone Number" value={consultation.phoneNumber} />
                         <InfoItem label="Telegram" value={consultation.telegramUsername} />
                         <InfoItem label="Mother Church" value={consultation.motherChurch} />
@@ -148,10 +140,10 @@ export default function ConsultationDetailPage() {
                         <InfoItem label="Student Status 1" value={consultation.studentStatus1} />
                         <InfoItem label="Student Status 2" value={consultation.studentStatus2} />
                         <InfoItem label="Student Status 3" value={consultation.studentStatus3} />
+                        <div className="md:col-span-2"><InfoItem label="Talents / Service Interests" value={consultation.talents} /></div>
+                        <div className="md:col-span-2"><InfoItem label="Special Care Needs" value={consultation.specialCare} /></div>
                     </div>
-                     <div className="space-y-4 pt-4">
-                         <InfoItem label="Talents / Service Interests" value={consultation.talents} />
-                         <InfoItem label="Special Care Needs" value={consultation.specialCare} />
+                     <div className="pt-4">
                          <InfoItem label="Additional Comments" value={consultation.comments} />
                      </div>
                 </CardContent>
@@ -165,45 +157,45 @@ export default function ConsultationDetailPage() {
       <div className="flex-1 flex flex-col">
           <ChatClient consultation={consultation} student={student} consultant={consultant} />
       </div>
-      <div className="hidden w-96 flex-shrink-0 border-l bg-card p-4 lg:flex flex-col gap-4 overflow-y-auto">
+      <aside className="hidden w-96 flex-shrink-0 border-l bg-card p-4 lg:flex flex-col gap-4 overflow-y-auto">
         <h2 className="font-headline text-xl text-primary">Consultation Details</h2>
+        
         <Card>
             <CardHeader>
-                <CardTitle className="text-base">Status</CardTitle>
+                <CardTitle className="text-sm">Overview</CardTitle>
             </CardHeader>
-            <CardContent>
-                <Badge variant={getStatusVariant(consultation.status)}>{consultation.status.replace(/_/g, ' ')}</Badge>
+            <CardContent className="space-y-4">
+                <div>
+                    <p className="text-xs font-medium text-muted-foreground">Status</p>
+                    <Badge variant={getStatusVariant(consultation.status)} className="mt-1">{consultation.status.replace(/_/g, ' ')}</Badge>
+                </div>
+                 {department && (
+                    <div>
+                        <p className="text-xs font-medium text-muted-foreground">Department</p>
+                        <p className="font-semibold">{department.name}</p>
+                    </div>
+                )}
+                 {(user?.role === 'student' ? consultant : student) && (
+                  <div>
+                      <p className="text-xs font-medium text-muted-foreground">{user?.role === 'student' ? 'Consultant' : 'Student'}</p>
+                      <div className="flex items-center gap-3 mt-1">
+                          <Avatar className="h-9 w-9">
+                              <AvatarImage src={user?.role === 'student' ? consultant?.avatarUrl : student?.avatarUrl} />
+                              <AvatarFallback>{getInitials(user?.role === 'student' ? consultant?.fullName : student?.fullName)}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                              <p className="font-semibold">{user?.role === 'student' ? consultant?.fullName : student?.fullName}</p>
+                              <p className="text-xs text-muted-foreground">{user?.role === 'student' ? consultant?.email : student?.email}</p>
+                          </div>
+                      </div>
+                  </div>
+                )}
             </CardContent>
         </Card>
 
-        {consultant && (
-            <Card>
-                <CardHeader><CardTitle className="text-base">Consultant</CardTitle></CardHeader>
-                <CardContent className="flex items-center gap-3">
-                    <Avatar>
-                        <AvatarImage src={consultant.avatarUrl} />
-                        <AvatarFallback>{getInitials(consultant.fullName)}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                        <p className="font-semibold">{consultant.fullName}</p>
-                        <p className="text-xs text-muted-foreground">{consultant.email}</p>
-                    </div>
-                </CardContent>
-            </Card>
-        )}
-        
-        {department && (
-            <Card>
-                <CardHeader><CardTitle className="text-base">Consultation Department</CardTitle></CardHeader>
-                <CardContent>
-                    <p className="font-semibold">{department.name}</p>
-                </CardContent>
-            </Card>
-        )}
-
         <Card>
             <CardHeader>
-                <CardTitle className="text-base">Problem Description</CardTitle>
+                <CardTitle className="text-sm">Problem Description</CardTitle>
             </CardHeader>
             <CardContent>
                 <p className="text-sm text-muted-foreground">{consultation.problemDescription}</p>
@@ -212,18 +204,12 @@ export default function ConsultationDetailPage() {
 
         <Card>
             <CardHeader>
-                <CardTitle className="text-base">Submitter Information</CardTitle>
-                <CardDescription>This information was submitted with the request.</CardDescription>
+                <CardTitle className="text-sm">Your Submitted Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-                <div className="flex items-center gap-4">
-                    {consultation.photoUrl && <Image src={consultation.photoUrl} alt={consultation.fullName} width={64} height={64} className="rounded-full object-cover aspect-square" />}
-                    <div>
-                        <p className="font-semibold">{consultation.fullName}</p>
-                        <p className="text-xs text-muted-foreground">{consultation.email}</p>
-                    </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4 pt-4">
+                <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+                    <InfoItem label="Full Name" value={consultation.fullName} />
+                    <InfoItem label="Email" value={consultation.email} />
                     <InfoItem label="Phone Number" value={consultation.phoneNumber} />
                     <InfoItem label="Telegram" value={consultation.telegramUsername} />
                     <InfoItem label="Mother Church" value={consultation.motherChurch} />
@@ -242,7 +228,7 @@ export default function ConsultationDetailPage() {
                  </div>
             </CardContent>
         </Card>
-      </div>
+      </aside>
     </div>
   );
 }

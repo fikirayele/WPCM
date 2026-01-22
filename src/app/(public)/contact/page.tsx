@@ -29,91 +29,90 @@ export default function ContactPage() {
         </p>
       </div>
 
-      <div className="mt-16 grid grid-cols-1 gap-16 lg:grid-cols-5">
-        <div className="lg:col-span-2 space-y-8">
-            <div>
-                <h3 className="font-headline text-xl font-semibold text-primary">Our Address</h3>
-                <div className="mt-2 flex items-start gap-4 text-foreground/80">
-                    <MapPin className="h-6 w-6 flex-shrink-0 text-primary mt-1" />
-                    <span>Wachemo PCM, Hossana, Ethiopia</span>
-                </div>
-            </div>
-             <div>
-                <h3 className="font-headline text-xl font-semibold text-primary">Contact Details</h3>
-                <div className="mt-2 space-y-2">
-                    <div className="flex items-center gap-4 text-foreground/80">
-                        <Phone className="h-5 w-5 flex-shrink-0 text-primary" />
-                        <span>+251 957 939 740</span>
-                    </div>
-                    <div className="flex items-center gap-4 text-foreground/80">
-                        <Mail className="h-5 w-5 flex-shrink-0 text-primary" />
-                        <span>HossanaPCM@gmail.com</span>
-                    </div>
-                </div>
-            </div>
-             <div>
-                <h3 className="font-headline text-xl font-semibold text-primary">Follow Us</h3>
-                <div className="mt-2 flex items-center space-x-4">
-                     <a href="https://www.youtube.com/@wachemoPCM" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-primary"><Youtube className="h-6 w-6"/></a>
-                    <a href="https://www.facebook.com/WACHEMOPCM" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-primary"><Facebook className="h-6 w-6"/></a>
-                    <a href="#" target="_blank" rel="noreferrer" className="font-medium text-muted-foreground hover:text-primary">TikTok</a>
-                    <a href="https://t.me/WachemoPCM12" target="_blank" rel="noreferrer" className="font-medium text-muted-foreground hover:text-primary">Telegram</a>
-                </div>
-            </div>
-        </div>
-
-        <div className="lg:col-span-3">
-             <Card>
-                <CardHeader>
-                    <CardTitle className="font-headline">Send us a Message</CardTitle>
-                    <CardDescription>Fill out the form below and we'll get back to you.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <form className="space-y-4" onSubmit={handleSubmit}>
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <div className="space-y-2">
-                        <Label htmlFor="name">Name</Label>
-                        <Input id="name" placeholder="Your Name" required />
-                        </div>
-                        <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" type="email" placeholder="your@email.com" required />
-                        </div>
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="subject">Subject</Label>
-                        <Input id="subject" placeholder="Subject of your message" required />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="message">Message</Label>
-                        <Textarea id="message" placeholder="Type your message here." className="min-h-[120px]" required />
-                    </div>
-                    <Button type="submit" className="w-full">Send Message</Button>
-                    </form>
-                </CardContent>
-            </Card>
-        </div>
-      </div>
-      
-       <Card className="mt-16">
+      <div className="mt-16 grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16 items-start">
+        <Card>
             <CardHeader>
-                <CardTitle className="font-headline">Our Location</CardTitle>
-                <CardDescription>Find us in Hossana, Ethiopia.</CardDescription>
+                <CardTitle className="font-headline">Send us a Message</CardTitle>
+                <CardDescription>Fill out the form below and we'll get back to you.</CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="aspect-video w-full overflow-hidden rounded-lg">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31683.791519129528!2d37.8485299696285!3d7.556510344443834!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x17b374828f011c39%3A0x95c8f828a2b53857!2sHosaena!5e0!3m2!1sen!2sus!4v1700000000000!5m2!1sen!2sus"
-                        width="100%"
-                        height="100%"
-                        style={{ border: 0 }}
-                        allowFullScreen={true}
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                    ></iframe>
+                <form className="space-y-4" onSubmit={handleSubmit}>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                    <Label htmlFor="name">Name</Label>
+                    <Input id="name" placeholder="Your Name" required />
+                    </div>
+                    <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input id="email" type="email" placeholder="your@email.com" required />
+                    </div>
                 </div>
+                <div className="space-y-2">
+                    <Label htmlFor="subject">Subject</Label>
+                    <Input id="subject" placeholder="Subject of your message" required />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="message">Message</Label>
+                    <Textarea id="message" placeholder="Type your message here." className="min-h-[120px]" required />
+                </div>
+                <Button type="submit" className="w-full">Send Message</Button>
+                </form>
             </CardContent>
         </Card>
+
+        <div className="space-y-8">
+            <Card>
+                <CardHeader>
+                    <CardTitle className="font-headline">Our Location</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="aspect-video w-full overflow-hidden rounded-lg">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31683.791519129528!2d37.8485299696285!3d7.556510344443834!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x17b374828f011c39%3A0x95c8f828a2b53857!2sHosaena!5e0!3m2!1sen!2sus!4v1700000000000!5m2!1sen!2sus"
+                            width="100%"
+                            height="450"
+                            style={{ border: 0 }}
+                            allowFullScreen={true}
+                            loading="lazy"
+                            referrerPolicy="no-referrer-when-downgrade"
+                        ></iframe>
+                    </div>
+                </CardContent>
+            </Card>
+            
+            <div className="space-y-8">
+                <div>
+                    <h3 className="font-headline text-xl font-semibold text-primary">Our Address</h3>
+                    <div className="mt-2 flex items-start gap-4 text-foreground/80">
+                        <MapPin className="h-6 w-6 flex-shrink-0 text-primary mt-1" />
+                        <span>Wachemo PCM, Hossana, Ethiopia</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 className="font-headline text-xl font-semibold text-primary">Contact Details</h3>
+                    <div className="mt-2 space-y-2">
+                        <div className="flex items-center gap-4 text-foreground/80">
+                            <Phone className="h-5 w-5 flex-shrink-0 text-primary" />
+                            <span>+251 957 939 740</span>
+                        </div>
+                        <div className="flex items-center gap-4 text-foreground/80">
+                            <Mail className="h-5 w-5 flex-shrink-0 text-primary" />
+                            <span>HossanaPCM@gmail.com</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 className="font-headline text-xl font-semibold text-primary">Follow Us</h3>
+                    <div className="mt-2 flex items-center space-x-4">
+                        <a href="https://www.youtube.com/@wachemoPCM" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-primary"><Youtube className="h-6 w-6"/></a>
+                        <a href="https://www.facebook.com/WACHEMOPCM" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-primary"><Facebook className="h-6 w-6"/></a>
+                        <a href="#" target="_blank" rel="noreferrer" className="font-medium text-muted-foreground hover:text-primary">TikTok</a>
+                        <a href="https://t.me/WachemoPCM12" target="_blank" rel="noreferrer" className="font-medium text-muted-foreground hover:text-primary">Telegram</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
     </div>
   );
 }

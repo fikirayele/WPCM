@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useAuth } from '@/hooks/use-auth';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 
@@ -53,17 +53,22 @@ export default function DonationsPage() {
                         <DialogTrigger asChild>
                             <Button variant="outline" size="sm">View</Button>
                         </DialogTrigger>
-                        <DialogContent className="max-w-md">
+                        <DialogContent className="sm:max-w-lg">
                             <DialogHeader>
                                 <DialogTitle>Transaction Screenshot</DialogTitle>
+                                <DialogDescription>
+                                    Transaction ID: {donation.transactionId}
+                                </DialogDescription>
                             </DialogHeader>
-                            <div className="relative mt-4 aspect-[9/16] w-full rounded-md overflow-hidden">
-                                <Image 
-                                    src={donation.screenshotUrl} 
-                                    alt={`Screenshot for ${donation.transactionId}`} 
-                                    fill 
-                                    className="object-contain"
-                                />
+                            <div className="mt-4 rounded-lg border bg-muted p-2">
+                                <div className="relative h-[60vh] w-full">
+                                    <Image 
+                                        src={donation.screenshotUrl} 
+                                        alt={`Screenshot for ${donation.transactionId}`} 
+                                        fill 
+                                        className="object-contain rounded-md"
+                                    />
+                                </div>
                             </div>
                         </DialogContent>
                     </Dialog>

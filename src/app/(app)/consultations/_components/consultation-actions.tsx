@@ -93,9 +93,9 @@ export function ConsultationActions({ consultations, users, departments }: Consu
                 {user?.role === 'admin' && c.status === 'PENDING' ? (
                   <Dialog onOpenChange={() => setSelectedConsultant(null)}>
                     <DialogTrigger asChild>
-                      <Button variant="ghost" size="icon" onClick={(e) => e.stopPropagation()}>
-                        <UserPlus className="w-4 h-4" />
-                        <span className="sr-only">Assign Consultant</span>
+                      <Button size="sm" onClick={(e) => e.stopPropagation()}>
+                        <UserPlus className="h-4 w-4" />
+                        Assign
                       </Button>
                     </DialogTrigger>
                     <DialogContent onClick={(e) => e.stopPropagation()}>
@@ -119,9 +119,9 @@ export function ConsultationActions({ consultations, users, departments }: Consu
                     </DialogContent>
                   </Dialog>
                 ) : (
-                  <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); handleRowClick(c.id); }}>
+                  <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleRowClick(c.id); }}>
                     <Eye className="w-4 h-4" />
-                    <span className="sr-only">View</span>
+                    View
                   </Button>
                 )}
               </TableCell>

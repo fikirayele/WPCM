@@ -1,7 +1,7 @@
 'use client';
 
 import { departments } from '@/lib/data';
-import { notFound, useRouter } from 'next/navigation';
+import { notFound, useRouter, useParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -11,7 +11,8 @@ import Image from 'next/image';
 import { UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export default function ConsultationDetailPage({ params }: { params: { id: string } }) {
+export default function ConsultationDetailPage() {
+  const params = useParams<{ id: string }>();
   const { user, consultations, users } = useAuth();
   const router = useRouter();
   const consultation = consultations.find(c => c.id === params.id);

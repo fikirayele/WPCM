@@ -1,45 +1,70 @@
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { UserCheck, Handshake, Mountain, Target } from 'lucide-react';
+import { UserCheck, Handshake, Mountain, Target, Eye } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function AboutPage() {
   const adventistLogo = PlaceHolderImages.find((img) => img.id === 'adventist-logo');
+  const aboutImage = PlaceHolderImages.find((img) => img.id === 'about-us-image');
 
   return (
     <div className="container py-16 md:py-24 space-y-24">
-      
-      {/* Aim/Vision Section */}
-      <section className="text-center">
-        <h1 className="font-headline text-4xl font-bold text-primary">Our Vision</h1>
-        <p className="mx-auto mt-4 max-w-3xl text-lg text-foreground/80">
-          To transform students on non-Adventist campuses into Seventh-day Adventist ambassadors of Christ
-in colleges/universities, churches, communities, and the world at large.
-        </p>
+
+      <section className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="space-y-4">
+          <h1 className="font-headline text-4xl font-bold text-primary">About WPCM</h1>
+          <p className="text-lg text-foreground/80">
+            WPCM is a dedicated ministry within the Seventh-day Adventist Church, focused on nurturing the spiritual, mental, and social well-being of students on non-Adventist campuses. We provide a sanctuary for support and growth, guided by our core principles of faith and community.
+          </p>
+           <p className="text-foreground/70">
+            Our mission is to empower students to become strong ambassadors for Christ, equipped to handle the challenges of campus life while strengthening their relationship with God. We offer confidential counseling, mentorship, and a vibrant community to help them thrive.
+          </p>
+        </div>
+        <div>
+          {aboutImage && (
+            <Image
+              src={aboutImage.imageUrl}
+              alt={aboutImage.description}
+              data-ai-hint={aboutImage.imageHint}
+              width={600}
+              height={400}
+              className="rounded-lg shadow-md object-cover"
+            />
+          )}
+        </div>
       </section>
 
-      {/* Mission Section */}
-      <section className="max-w-4xl mx-auto">
-        <Card className="bg-primary/5 border-primary/20">
-          <CardHeader className="items-center text-center">
-            <Target className="h-10 w-10 text-primary mb-2" />
-            <CardTitle className="font-headline text-3xl text-primary">Our Mission</CardTitle>
-          </CardHeader>
-          <CardContent className="text-center">
-            <p className="text-lg text-foreground/80">
-              To inspire Seventh-day Adventist students to be disciples of Christ and
-empower them to share the everlasting
-gospel on campus.
-            </p>
-          </CardContent>
-        </Card>
+      {/* Vision and Mission */}
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <Card className="flex flex-col">
+            <CardHeader className="items-center text-center">
+              <Eye className="h-10 w-10 text-primary mb-2" />
+              <CardTitle className="font-headline text-2xl text-primary">Aim/Vision</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center text-muted-foreground flex-grow">
+              <p>
+                To transform students on non-Adventist campuses into Seventh-day Adventist ambassadors of Christ in colleges/universities, churches, communities, and the world at large.
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card className="flex flex-col">
+            <CardHeader className="items-center text-center">
+              <Target className="h-10 w-10 text-primary mb-2" />
+              <CardTitle className="font-headline text-2xl text-primary">Mission</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center text-muted-foreground flex-grow">
+              <p>
+                To inspire Seventh-day Adventist students to be disciples of Christ and empower them to share the everlasting gospel on campus.
+              </p>
+            </CardContent>
+          </Card>
       </section>
 
       {/* Core Values Section */}
       <section>
         <div className="text-center mb-12">
           <h2 className="font-headline text-3xl font-bold text-primary">Our Core Values (The 3Cs)</h2>
-          <p className="text-lg text-muted-foreground mt-2">Guiding our actions and decisions.</p>
         </div>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <Card className="text-center">
@@ -47,7 +72,7 @@ gospel on campus.
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
                 <UserCheck className="h-8 w-8 text-primary" />
               </div>
-              <CardTitle className="font-headline text-2xl mt-4">Character</CardTitle>
+              <CardTitle className="font-headline text-xl mt-4">Character</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground italic">Character over competency.</p>
@@ -58,7 +83,7 @@ gospel on campus.
                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
                  <Handshake className="h-8 w-8 text-primary" />
               </div>
-              <CardTitle className="font-headline text-2xl mt-4">Collaboration</CardTitle>
+              <CardTitle className="font-headline text-xl mt-4">Collaboration</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground italic">Collaboration over competition.</p>
@@ -69,34 +94,13 @@ gospel on campus.
                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
                  <Mountain className="h-8 w-8 text-primary" />
               </div>
-              <CardTitle className="font-headline text-2xl mt-4">Challenge</CardTitle>
+              <CardTitle className="font-headline text-xl mt-4">Challenge</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground italic">Challenge over criticism.</p>
             </CardContent>
           </Card>
         </div>
-      </section>
-      
-      {/* Motto & Slogan */}
-      <section className="text-center bg-muted/50 py-16 rounded-lg">
-        <div className="space-y-4">
-            <h3 className="font-headline text-xl text-muted-foreground">Motto</h3>
-            <p className="font-headline text-3xl font-bold text-primary">Follow Jesus. Embrace His Mission. Change the World.</p>
-        </div>
-        <div className="mt-8 space-y-2">
-            <h3 className="font-headline text-xl text-muted-foreground">Slogan</h3>
-            <p className="text-2xl text-foreground/80">Inspire to Be. Empower to Share.</p>
-        </div>
-      </section>
-
-      {/* Key Text */}
-      <section className="max-w-3xl mx-auto text-center">
-        <h2 className="font-headline text-3xl font-bold text-primary mb-4">Our Key Text</h2>
-         <blockquote className="text-2xl italic text-foreground/90 border-l-4 border-primary pl-6">
-            “Be ye followers of me, even as I also am of Christ”
-        </blockquote>
-        <p className="mt-4 text-right text-lg text-muted-foreground">(1 Corinthians 11:1, KJV)</p>
       </section>
 
       {adventistLogo && (
@@ -114,7 +118,6 @@ gospel on campus.
             </p>
         </section>
       )}
-
     </div>
   );
 }

@@ -29,11 +29,44 @@ export default function ContactPage() {
         </p>
       </div>
 
-      <div className="mt-16 grid grid-cols-1 gap-12 md:grid-cols-2">
-        <div className="space-y-8">
-            <Card>
+      <div className="mt-16 grid grid-cols-1 gap-16 lg:grid-cols-5">
+        <div className="lg:col-span-2 space-y-8">
+            <div>
+                <h3 className="font-headline text-xl font-semibold text-primary">Our Address</h3>
+                <div className="mt-2 flex items-start gap-4 text-foreground/80">
+                    <MapPin className="h-6 w-6 flex-shrink-0 text-primary mt-1" />
+                    <span>Wachemo PCM, Hossana, Ethiopia</span>
+                </div>
+            </div>
+             <div>
+                <h3 className="font-headline text-xl font-semibold text-primary">Contact Details</h3>
+                <div className="mt-2 space-y-2">
+                    <div className="flex items-center gap-4 text-foreground/80">
+                        <Phone className="h-5 w-5 flex-shrink-0 text-primary" />
+                        <span>+251 957 939 740</span>
+                    </div>
+                    <div className="flex items-center gap-4 text-foreground/80">
+                        <Mail className="h-5 w-5 flex-shrink-0 text-primary" />
+                        <span>HossanaPCM@gmail.com</span>
+                    </div>
+                </div>
+            </div>
+             <div>
+                <h3 className="font-headline text-xl font-semibold text-primary">Follow Us</h3>
+                <div className="mt-2 flex items-center space-x-4">
+                     <a href="https://www.youtube.com/@wachemoPCM" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-primary"><Youtube className="h-6 w-6"/></a>
+                    <a href="https://www.facebook.com/WACHEMOPCM" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-primary"><Facebook className="h-6 w-6"/></a>
+                    <a href="#" target="_blank" rel="noreferrer" className="font-medium text-muted-foreground hover:text-primary">TikTok</a>
+                    <a href="https://t.me/WachemoPCM12" target="_blank" rel="noreferrer" className="font-medium text-muted-foreground hover:text-primary">Telegram</a>
+                </div>
+            </div>
+        </div>
+
+        <div className="lg:col-span-3">
+             <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline">Contact Form</CardTitle>
+                    <CardTitle className="font-headline">Send us a Message</CardTitle>
+                    <CardDescription>Fill out the form below and we'll get back to you.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form className="space-y-4" onSubmit={handleSubmit}>
@@ -59,38 +92,10 @@ export default function ContactPage() {
                     </form>
                 </CardContent>
             </Card>
-            <Card>
-                <CardHeader>
-                    <CardTitle className="font-headline">Our Information</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4 text-foreground/80">
-                    <div className="flex items-start gap-4">
-                        <MapPin className="h-6 w-6 flex-shrink-0 text-primary" />
-                        <span>Wachemo PCM, Hossana, Ethiopia</span>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <Phone className="h-6 w-6 flex-shrink-0 text-primary" />
-                        <span>+251 957 939 740</span>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <Mail className="h-6 w-6 flex-shrink-0 text-primary" />
-                        <span>HossanaPCM@gmail.com</span>
-                    </div>
-                </CardContent>
-            </Card>
-            <Card>
-                <CardHeader>
-                    <CardTitle className="font-headline">Follow Us</CardTitle>
-                </CardHeader>
-                <CardContent className="flex items-center space-x-4">
-                     <a href="https://www.youtube.com/@wachemoPCM" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-primary"><Youtube className="h-6 w-6"/></a>
-                    <a href="https://www.facebook.com/WACHEMOPCM" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-primary"><Facebook className="h-6 w-6"/></a>
-                    <a href="#" target="_blank" rel="noreferrer" className="font-medium text-muted-foreground hover:text-primary">TikTok</a>
-                    <a href="https://t.me/WachemoPCM12" target="_blank" rel="noreferrer" className="font-medium text-muted-foreground hover:text-primary">Telegram</a>
-                </CardContent>
-            </Card>
         </div>
-        <Card>
+      </div>
+      
+       <Card className="mt-16">
             <CardHeader>
                 <CardTitle className="font-headline">Our Location</CardTitle>
                 <CardDescription>Find us in Hossana, Ethiopia.</CardDescription>
@@ -109,7 +114,6 @@ export default function ContactPage() {
                 </div>
             </CardContent>
         </Card>
-      </div>
     </div>
   );
 }

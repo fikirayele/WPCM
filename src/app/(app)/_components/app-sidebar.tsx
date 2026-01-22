@@ -18,6 +18,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 const getInitials = (name = '') => name ? name.split(' ').map((n) => n[0]).join('') : '';
 
@@ -75,6 +76,7 @@ export function AppSidebar() {
               <p className="truncate font-semibold">{user.fullName}</p>
               <p className="truncate text-xs text-muted-foreground">{user.email}</p>
             </div>
+            <ThemeToggle />
             <Button variant="ghost" size="icon" onClick={logout}>
               <LogOut className="h-4 w-4" />
             </Button>

@@ -38,6 +38,7 @@ export function SiteHeader() {
 
 
   const getInitials = (name: string) => {
+    if (!name) return '';
     return name
       .split(' ')
       .map((n) => n[0])
@@ -46,7 +47,7 @@ export function SiteHeader() {
   
   if (!isClient) {
       return (
-        <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <header className="sticky top-0 z-50 w-full border-b bg-card">
             <div className="container flex h-14 items-center justify-between px-4 sm:px-6 lg:px-8">
                  <Logo />
             </div>
@@ -55,7 +56,7 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-card">
       <div className="container flex h-14 items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Left side */}
         <div className="flex items-center">
@@ -146,7 +147,7 @@ export function SiteHeader() {
                     <span className="sr-only">Toggle Menu</span>
                 </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="flex w-full flex-col p-0 sm:max-w-xs">
+                <SheetContent side="right" className="flex w-full flex-col bg-card p-0 sm:max-w-xs">
                 <SheetTitle className="sr-only">Sidebar Menu</SheetTitle>
                 <div className="flex h-16 shrink-0 items-center border-b px-6">
                     <Logo />

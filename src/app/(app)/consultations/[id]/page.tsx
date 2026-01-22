@@ -8,9 +8,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ChatClient } from './_components/chat-client';
 import { useAuth } from '@/hooks/use-auth';
 import Image from 'next/image';
+import { MessageSquare } from 'lucide-react';
 
 export default function ConsultationDetailPage({ params }: { params: { id: string } }) {
-  const { consultations, users } = useAuth();
+  const { user, consultations, users } = useAuth();
   const consultation = consultations.find(c => c.id === params.id);
 
   if (!consultation) {
@@ -46,11 +47,28 @@ export default function ConsultationDetailPage({ params }: { params: { id: strin
     )
   };
 
+  const isAdminView = user?.role === 'admin';
+
 
   return (
     <div className="flex h-[calc(100vh-4rem)]">
       <div className="flex-1 flex flex-col">
+          {isAdminView ? (
+             <div className="flex h-full items-center justify-center bg-background p-4">
+                 <Card className="w-full max-w-md">
+                     <CardHeader>
+                         <CardTitle>Chat History</CardTitle>
+                         <CardDescription>As an admin, you cannot participate in or view the conversation to protect user privacy.</CardDescription>
+                     </CardHeader>
+                     <CardContent className="text-center text-muted-foreground py-16">
+                         <MessageSquare className="mx-auto h-12 w-12" />
+                         <p className="mt-4">Chat is disabled for administrators.</p>
+                     </CardContent>
+                 </Card>
+             </div>
+        ) : (
           <ChatClient consultation={consultation} student={student} consultant={consultant} />
+        )}
       </div>
       <div className="hidden w-96 flex-shrink-0 border-l bg-card p-4 lg:flex flex-col gap-4 overflow-y-auto">
         <h2 className="font-headline text-xl text-primary">Consultation Details</h2>

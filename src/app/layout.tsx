@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { AuthProvider } from '@/components/auth-provider';
 import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
-import { ThemeProvider } from '@/components/theme-provider';
 
 export const metadata: Metadata = {
   title: 'WPCM',
@@ -22,12 +21,10 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
-        <ThemeProvider>
-          <AuthProvider>
-            {children}
-            <Toaster />
-          </AuthProvider>
-        </ThemeProvider>
+        <AuthProvider>
+          {children}
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );

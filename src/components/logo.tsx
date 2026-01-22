@@ -35,8 +35,8 @@ export function Logo() {
             </g>
             <defs>
                 <linearGradient id="pcmb_grad" x1="0" y1="0" x2="108" y2="108" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#3B35A6"/>
-                    <stop offset="1" stopColor="#D52E88"/>
+                    <stop stopColor="#2563EB"/>
+                    <stop offset="1" stopColor="#60A5FA"/>
                 </linearGradient>
             </defs>
         </svg>

@@ -50,41 +50,41 @@ export default function HomePage() {
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
-            <Card className="text-center card-hover-effect">
+            <Card className="text-center card-hover-effect group">
               <CardHeader>
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-accent-foreground">
-                   <MessageCircle className="h-6 w-6 text-primary" />
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 group-hover:bg-background/20 text-accent-foreground">
+                   <MessageCircle className="h-6 w-6 text-primary group-hover:text-background" />
                 </div>
-                <CardTitle className="font-headline text-xl">Confidential Chat</CardTitle>
+                <CardTitle className="font-headline text-xl group-hover:text-background">Confidential Chat</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground group-hover:text-background/80">
                   Engage in private, one-on-one conversations with assigned pastors, doctors, and counselors.
                 </p>
               </CardContent>
             </Card>
-            <Card className="text-center card-hover-effect">
+            <Card className="text-center card-hover-effect group">
               <CardHeader>
-                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-accent-foreground">
-                   <Users className="h-6 w-6 text-primary" />
+                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 group-hover:bg-background/20 text-accent-foreground">
+                   <Users className="h-6 w-6 text-primary group-hover:text-background" />
                 </div>
-                <CardTitle className="font-headline text-xl">Expert Consultants</CardTitle>
+                <CardTitle className="font-headline text-xl group-hover:text-background">Expert Consultants</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground group-hover:text-background/80">
                   Our team includes certified professionals from various fields, ready to provide expert guidance.
                 </p>
               </CardContent>
             </Card>
-            <Card className="text-center card-hover-effect">
+            <Card className="text-center card-hover-effect group">
               <CardHeader>
-                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-accent-foreground">
-                   <HeartHandshake className="h-6 w-6 text-primary" />
+                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 group-hover:bg-background/20 text-accent-foreground">
+                   <HeartHandshake className="h-6 w-6 text-primary group-hover:text-background" />
                 </div>
-                <CardTitle className="font-headline text-xl">Spiritual Support</CardTitle>
+                <CardTitle className="font-headline text-xl group-hover:text-background">Spiritual Support</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground group-hover:text-background/80">
                   Find spiritual direction and grow in your faith with dedicated support from our pastoral team.
                 </p>
               </CardContent>
@@ -102,7 +102,7 @@ export default function HomePage() {
             {news.slice(0, 3).map((article) => {
                const articleImage = PlaceHolderImages.find(img => img.id === `news-${article.id.split('-')[1]}`);
               return (
-                <Card key={article.id} className="overflow-hidden card-hover-effect">
+                <Card key={article.id} className="overflow-hidden card-hover-effect group">
                   {articleImage && (
                      <Image
                       src={articleImage.imageUrl}
@@ -114,11 +114,11 @@ export default function HomePage() {
                     />
                   )}
                   <CardHeader>
-                    <CardTitle className="font-headline text-lg">{article.title}</CardTitle>
-                    <p className="text-sm text-muted-foreground">{format(new Date(article.publishedAt), 'MMMM d, yyyy')}</p>
+                    <CardTitle className="font-headline text-lg group-hover:text-background">{article.title}</CardTitle>
+                    <p className="text-sm text-muted-foreground group-hover:text-background/80">{format(new Date(article.publishedAt), 'MMMM d, yyyy')}</p>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground line-clamp-3">{article.content}</p>
+                    <p className="text-sm text-muted-foreground group-hover:text-background/80 line-clamp-3">{article.content}</p>
                   </CardContent>
                 </Card>
               );
@@ -142,9 +142,9 @@ export default function HomePage() {
           </div>
           <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
             {testimonials.map((testimonial) => (
-              <Card key={testimonial.id} className="flex flex-col justify-between text-center bg-card card-hover-effect">
+              <Card key={testimonial.id} className="flex flex-col justify-between text-center bg-card card-hover-effect group">
                 <CardContent className="pt-6">
-                  <blockquote className="text-lg italic text-foreground/80 before:content-['“'] after:content-['”']">
+                  <blockquote className="text-lg italic text-foreground/80 group-hover:text-background/80 before:content-['“'] after:content-['”']">
                     {testimonial.quote}
                   </blockquote>
                 </CardContent>
@@ -155,8 +155,8 @@ export default function HomePage() {
                       <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <div>
-                      <CardTitle className="text-base font-semibold">{testimonial.name}</CardTitle>
-                      <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                      <CardTitle className="text-base font-semibold group-hover:text-background">{testimonial.name}</CardTitle>
+                      <p className="text-sm text-muted-foreground group-hover:text-background/80">{testimonial.role}</p>
                     </div>
                   </div>
                 </CardHeader>

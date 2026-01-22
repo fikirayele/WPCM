@@ -18,7 +18,7 @@ export default function NewsPage() {
         {news.map((article) => {
           const articleImage = PlaceHolderImages.find(img => img.id === `news-${article.id.split('-')[1]}`);
           return (
-          <Card key={article.id} className="flex flex-col overflow-hidden card-hover-effect">
+          <Card key={article.id} className="flex flex-col overflow-hidden card-hover-effect group">
              {articleImage && (
                <div className="aspect-video relative">
                 <Image
@@ -31,13 +31,13 @@ export default function NewsPage() {
                 </div>
             )}
             <CardHeader>
-              <CardTitle className="font-headline text-xl">{article.title}</CardTitle>
-              <p className="text-sm text-muted-foreground">
+              <CardTitle className="font-headline text-xl group-hover:text-background">{article.title}</CardTitle>
+              <p className="text-sm text-muted-foreground group-hover:text-background/80">
                 By {article.author} on {format(new Date(article.publishedAt), 'MMMM d, yyyy')}
               </p>
             </CardHeader>
             <CardContent className="flex-grow">
-              <p className="text-muted-foreground">{article.content}</p>
+              <p className="text-muted-foreground group-hover:text-background/80">{article.content}</p>
             </CardContent>
           </Card>
         )})}

@@ -7,7 +7,7 @@ export default function AboutPage() {
   const aboutImage = PlaceHolderImages.find((img) => img.id === 'about-us-image');
 
   return (
-    <div className="container px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+    <div className="container px-4 sm:px-6 lg:px-8 py-16 md:py-24 space-y-24">
 
       <section className="grid md:grid-cols-2 gap-12 items-center">
         <div className="space-y-4">
@@ -34,7 +34,7 @@ export default function AboutPage() {
       </section>
 
       {/* Vision and Mission */}
-      <section className="mt-24 grid grid-cols-1 md:grid-cols-2 gap-8">
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <Card className="flex flex-col card-hover-effect group">
             <CardHeader className="items-center text-center">
               <Eye className="h-10 w-10 text-primary group-hover:text-background mb-2" />
@@ -61,7 +61,7 @@ export default function AboutPage() {
       </section>
 
       {/* Core Values Section */}
-      <section className="mt-24">
+      <section>
         <div className="text-center mb-12">
           <h2 className="font-headline text-3xl font-bold text-primary">Our Core Values (The 3Cs)</h2>
         </div>

@@ -95,6 +95,15 @@ body {
     @apply transition-all duration-300 ease-in-out;
   }
   .card-hover-effect:hover {
-    @apply -translate-y-2 transform shadow-xl;
+    @apply bg-primary text-primary-foreground shadow-xl -translate-y-2;
+  }
+  .card-hover-effect:hover [class*="text-muted-foreground"] {
+    @apply text-primary-foreground/80;
+  }
+  .card-hover-effect:hover [class*="text-primary"] {
+      @apply text-primary-foreground;
+  }
+  .card-hover-effect:hover [class*="bg-primary/10"] {
+      @apply bg-white/10;
   }
 }

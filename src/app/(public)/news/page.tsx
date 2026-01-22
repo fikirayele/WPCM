@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 
 export default function NewsPage() {
   return (
-    <div className="container py-12 md:py-16">
+    <div className="container px-4 sm:px-6 lg:px-8 py-12 md:py-20">
       <div className="text-center">
         <h1 className="font-headline text-4xl font-bold text-primary">News &amp; Announcements</h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-foreground/80">

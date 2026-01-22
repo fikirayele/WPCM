@@ -23,7 +23,7 @@ export default function HomePage() {
             className="object-cover opacity-10"
           />
         )}
-        <div className="container relative mx-auto text-center">
+        <div className="container relative mx-auto px-4 text-center sm:px-6 lg:px-8">
           <h1 className="font-headline text-4xl font-bold tracking-tight text-primary md:text-6xl">
             A Sanctuary for Support &amp; Growth
           </h1>
@@ -42,7 +42,7 @@ export default function HomePage() {
       </section>
 
       <section className="bg-background py-12 md:py-20">
-        <div className="container">
+        <div className="container px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="font-headline text-3xl font-bold text-primary">How We Can Help</h2>
             <p className="mx-auto mt-4 max-w-xl text-foreground/70">
@@ -94,7 +94,7 @@ export default function HomePage() {
       </section>
 
       <section className="bg-background py-12 md:py-20">
-        <div className="container">
+        <div className="container px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="font-headline text-3xl font-bold text-primary">Latest News &amp; Announcements</h2>
           </div>
@@ -133,7 +133,7 @@ export default function HomePage() {
       </section>
 
        <section className="bg-primary/10 py-12 md:py-20">
-        <div className="container">
+        <div className="container px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="font-headline text-3xl font-bold text-primary">What Our Community Says</h2>
             <p className="mx-auto mt-4 max-w-xl text-foreground/70">

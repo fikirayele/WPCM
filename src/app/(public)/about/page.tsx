@@ -7,7 +7,7 @@ export default function AboutPage() {
   const aboutImage = PlaceHolderImages.find((img) => img.id === 'about-us-image');
 
   return (
-    <div className="container py-12 md:py-16 space-y-16">
+    <div className="container px-4 sm:px-6 lg:px-8 py-12 md:py-20 space-y-16">
 
       <section className="grid md:grid-cols-2 gap-12 items-center">
         <div className="space-y-4">

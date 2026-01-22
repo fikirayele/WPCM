@@ -4,7 +4,6 @@ import { UserCheck, Handshake, Mountain, Target, Eye } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function AboutPage() {
-  const adventistLogo = PlaceHolderImages.find((img) => img.id === 'adventist-logo');
   const aboutImage = PlaceHolderImages.find((img) => img.id === 'about-us-image');
 
   return (
@@ -102,22 +101,6 @@ export default function AboutPage() {
           </Card>
         </div>
       </section>
-
-      {adventistLogo && (
-        <section className="flex flex-col items-center text-center border-t pt-12">
-            <Image 
-                src={adventistLogo.imageUrl}
-                alt={adventistLogo.description}
-                data-ai-hint={adventistLogo.imageHint}
-                width={100}
-                height={100}
-                className="mb-4"
-            />
-            <p className="text-sm text-muted-foreground max-w-md">
-                WPCM operates in harmony with the mission and values of the Seventh-day Adventist Church.
-            </p>
-        </section>
-      )}
     </div>
   );
 }

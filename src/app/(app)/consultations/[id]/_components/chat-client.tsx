@@ -8,10 +8,8 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAuth } from '@/hooks/use-auth';
 import { cn } from '@/lib/utils';
-import { Bot, Send, User as UserIcon, CheckCircle, Hand } from 'lucide-react';
+import { Send, User as UserIcon, CheckCircle, Hand } from 'lucide-react';
 import { format } from 'date-fns';
-import { summarizeConsultationChat } from '@/ai/flows/consultation-chat-summarization';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
@@ -27,9 +25,6 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
   const { user, updateConsultation, acceptConsultation } = useAuth();
   const { toast } = useToast();
   const [newMessage, setNewMessage] = useState('');
-  const [summary, setSummary] = useState('');
-  const [isLoadingSummary, setIsLoadingSummary] = useState(false);
-  const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
   const [testimonial, setTestimonial] = useState(consultation.testimonial || '');
 
 
@@ -56,25 +51,6 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
   const handleAccept = () => {
     if (!user) return;
     acceptConsultation(consultation.id, user.id);
-  };
-
-  const handleSummarize = async () => {
-    setIsLoadingSummary(true);
-    const chatHistory = consultation.messages.map(msg => {
-        const senderName = msg.senderId === student?.id ? student?.fullName : consultant?.fullName || 'User';
-        return `${senderName}: ${msg.text}`;
-    }).join('\n');
-    
-    try {
-        const result = await summarizeConsultationChat({ chatHistory });
-        setSummary(result.summary);
-        setIsSummaryDialogOpen(true);
-    } catch (error) {
-        console.error("Error summarizing chat:", error);
-        setSummary("Failed to generate summary.");
-    } finally {
-        setIsLoadingSummary(false);
-    }
   };
 
   const handleCompleteConsultation = () => {
@@ -192,16 +168,10 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
       </ScrollArea>
       <div className="border-t p-4 space-y-4">
         {consultation.status === 'ACTIVE' && isCurrentUserConsultant && (
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Button onClick={handleSummarize} disabled={isLoadingSummary} className="w-full" variant="outline">
-                <Bot className="mr-2 h-4 w-4" />
-                {isLoadingSummary ? 'Generating Summary...' : 'Summarize Chat'}
-            </Button>
             <Button onClick={handleCompleteConsultation} className="w-full" variant="outline">
               <CheckCircle className="mr-2 h-4 w-4" />
               Mark as Complete
             </Button>
-          </div>
         )}
         
         {consultation.status === 'AWAITING_ACCEPTANCE' && (
@@ -251,20 +221,6 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
           </div>
         )}
       </div>
-
-       <Dialog open={isSummaryDialogOpen} onOpenChange={setIsSummaryDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="font-headline">Chat Summary</DialogTitle>
-            <DialogDescription>
-              An AI-generated summary of the conversation so far.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="prose prose-sm max-h-[60vh] overflow-y-auto rounded-md border p-4">
-             <p>{summary}</p>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

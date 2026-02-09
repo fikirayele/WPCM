@@ -184,14 +184,14 @@ service cloud.firestore {
     /**
      * @description Controls access to donation records.
      * @path /donations/{donationId}
-     * @allow (create) An authenticated user creating a donation record for themselves.
-     * @deny (get) A user trying to view another user's donation record.
-     * @principle Enforces document ownership and immutability for sensitive records.
+     * @allow (create) Any user (authenticated or not) can create a donation record for verification.
+     * @deny (get) Only admins can view donation records.
+     * @principle Allows public submission of donation proofs while restricting access to admins.
      */
     match /donations/{donationId} {
       allow get: if isAdmin();
       allow list: if isAdmin();
-      allow create: if isSignedIn();
+      allow create: if true;
       allow update: if false;
       allow delete: if false;
     }

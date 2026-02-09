@@ -54,28 +54,31 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
   };
   
   const handleAccept = () => {
-    const updates: Partial<Consultation> = {};
-    const isStudentAccepting = user?.id === student?.id;
-    const isConsultantAccepting = user?.id === consultant?.id;
+    const isStudentAction = user?.id === student?.id;
 
-    if (isStudentAccepting) {
-      updates.studentAccepted = true;
-      if (consultation.consultantAccepted) {
+    // Determine what the new acceptance state will be *after* this action.
+    const newStudentAccepted = isStudentAction ? true : consultation.studentAccepted;
+    const newConsultantAccepted = !isStudentAction ? true : consultation.consultantAccepted;
+
+    const updates: Partial<Consultation> = {};
+
+    if (isStudentAction) {
+        updates.studentAccepted = true;
+    } else {
+        updates.consultantAccepted = true;
+    }
+    
+    // Check if the new state (post-action) means both have accepted.
+    if (newStudentAccepted && newConsultantAccepted) {
         updates.status = 'ACTIVE';
-      }
-    } else if (isConsultantAccepting) {
-      updates.consultantAccepted = true;
-      if (consultation.studentAccepted) {
-        updates.status = 'ACTIVE';
-      }
     }
     
     updateConsultation(consultation.id, updates);
 
     if (updates.status === 'ACTIVE') {
-      toast({ title: "Consultation Active", description: "You can now start chatting." });
+        toast({ title: "Consultation Active", description: "You can now start chatting." });
     } else {
-      toast({ title: "Accepted!", description: "You have accepted the consultation." });
+        toast({ title: "Accepted!", description: `You have accepted. Waiting for the other party.` });
     }
   };
 

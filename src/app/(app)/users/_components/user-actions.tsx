@@ -44,15 +44,13 @@ import {
 } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
 import type { Department, User } from '@/lib/types';
-import { ArrowUpDown, PlusCircle, Pencil, Trash2 } from 'lucide-react';
+import { ArrowUpDown, Pencil, Trash2 } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { deleteDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase';
 import { doc } from 'firebase/firestore';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 export function UserActions() {
-  const { users, departments, firestore, auth, isLoaded } = useAuth();
+  const { users, departments, firestore } = useAuth();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const { toast } = useToast();
@@ -72,7 +70,7 @@ export function UserActions() {
       .join('');
 
   const sortedUsers = useMemo(() => {
-    let sortableItems = [...users];
+    let sortableItems = [...(users || [])];
     if (sortConfig !== null) {
       sortableItems.sort((a, b) => {
         const aValue = a[sortConfig.key] ?? '';
@@ -119,7 +117,7 @@ export function UserActions() {
 
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!firestore || !auth) return;
+    if (!firestore || !currentUser) return;
     const formData = new FormData(e.currentTarget);
     const fullName = formData.get('fullName') as string;
     const email = formData.get('email') as string;
@@ -127,47 +125,14 @@ export function UserActions() {
     const departmentId = formData.get('departmentId') as string | undefined;
     const active = formData.get('active') === 'on';
 
-    if (currentUser) {
-      const userDocRef = doc(firestore, 'users', currentUser.id);
-      updateDocumentNonBlocking(userDocRef, { fullName, email, role, departmentId: role === 'consultant' ? departmentId : undefined, active });
-      toast({
-        title: 'User Updated',
-        description: `"${fullName}" has been successfully updated.`,
-      });
-    } else {
-        const password = formData.get('password') as string;
-        if (!password) {
-            toast({ title: 'Password required', description: 'A password is required to create a new user.', variant: 'destructive'});
-            return;
-        }
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const firebaseUser = userCredential.user;
-
-            const userProfile: User = {
-                id: firebaseUser.uid,
-                fullName,
-                email: firebaseUser.email!,
-                role,
-                departmentId: role === 'consultant' ? departmentId : undefined,
-                active,
-                avatarUrl: `https://picsum.photos/seed/${firebaseUser.uid}/100/100`,
-            };
-
-            const userDocRef = doc(firestore, 'users', firebaseUser.uid);
-            setDocumentNonBlocking(userDocRef, userProfile, {});
-            toast({
-                title: 'User Added',
-                description: `"${fullName}" has been successfully added.`,
-            });
-        } catch (error: any) {
-             toast({
-                title: 'Error creating user',
-                description: error.message,
-                variant: 'destructive',
-            });
-        }
-    }
+    
+    const userDocRef = doc(firestore, 'users', currentUser.id);
+    updateDocumentNonBlocking(userDocRef, { fullName, email, role, departmentId: role === 'consultant' ? departmentId : undefined, active });
+    toast({
+      title: 'User Updated',
+      description: `"${fullName}" has been successfully updated.`,
+    });
+    
     setIsDialogOpen(false);
     setCurrentUser(null);
   };
@@ -206,12 +171,10 @@ export function UserActions() {
       <form onSubmit={handleSave}>
         <DialogHeader>
           <DialogTitle className="font-headline">
-            {aUser ? 'Edit' : 'Add'} User
+            Edit User
           </DialogTitle>
           <DialogDescription>
-            {aUser
-              ? 'Update the details for this user.'
-              : 'Create a new user account.'}
+            Update the details for this user.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -241,12 +204,6 @@ export function UserActions() {
               disabled={!!aUser}
             />
           </div>
-          {!aUser && (
-            <div className="grid items-center grid-cols-4 gap-4">
-                <Label htmlFor="password"className="text-right">Password</Label>
-                <Input id="password" name="password" type="password" className="col-span-3" required />
-            </div>
-          )}
           <div className="grid items-center grid-cols-4 gap-4">
             <Label htmlFor="role" className="text-right">
               Role
@@ -315,12 +272,13 @@ export function UserActions() {
           }}
           className="max-w-sm"
         />
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={() => setCurrentUser(null)}>
-              <PlusCircle className="w-4 h-4 mr-2" /> Add User
-            </Button>
-          </DialogTrigger>
+        <Dialog open={isDialogOpen} onOpenChange={(open) => {
+            if (!open) {
+                setCurrentUser(null);
+            }
+            setIsDialogOpen(open);
+        }}>
+          {/* Add User button has been removed for security. Users should sign up, then be promoted. */}
           <DialogContent className="sm:max-w-[425px]">
             <UserForm aUser={currentUser} deps={departments} />
           </DialogContent>
@@ -386,17 +344,19 @@ export function UserActions() {
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex items-center justify-end gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        setCurrentUser(user);
-                        setIsDialogOpen(true);
-                      }}
-                    >
-                      <Pencil className="w-4 h-4" />
-                      <span className="sr-only">Edit</span>
-                    </Button>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setCurrentUser(user);
+                          setIsDialogOpen(true);
+                        }}
+                      >
+                        <Pencil className="w-4 h-4" />
+                        <span className="sr-only">Edit</span>
+                      </Button>
+                    </DialogTrigger>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
@@ -492,5 +452,3 @@ export function UserActions() {
     </>
   );
 }
-
-    

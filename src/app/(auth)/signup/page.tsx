@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirebase } from '@/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc, collection, getDocs, query, limit } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 
 export default function SignupPage() {
@@ -38,12 +38,8 @@ export default function SignupPage() {
     }
 
     try {
-        // Check if any users exist to determine if this is the first signup
-        const usersRef = collection(firestore, 'users');
-        const q = query(usersRef, limit(1));
-        const querySnapshot = await getDocs(q);
-        const isFirstUser = querySnapshot.empty;
-        const role = isFirstUser ? 'admin' : 'student';
+        // All new users are created as students. The first user must be promoted to admin in the Firebase Console.
+        const role = 'student';
 
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const firebaseUser = userCredential.user;
@@ -60,7 +56,7 @@ export default function SignupPage() {
         await setDoc(doc(firestore, 'users', firebaseUser.uid), userProfile);
         
         toast({
-            title: `Account Created as ${role === 'admin' ? 'Admin' : 'Student'}!`,
+            title: `Account Created!`,
             description: 'You can now log in with your new account.',
         });
         router.push('/login');

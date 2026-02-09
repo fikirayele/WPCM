@@ -108,6 +108,28 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
   const isCurrentUserStudent = user?.id === student?.id;
   const isCurrentUserConsultant = user?.id === consultant?.id;
 
+  const getPlaceholderText = () => {
+    if (isChatDisabled) {
+      switch(consultation.status) {
+        case 'PENDING':
+          return "Waiting for a consultant to be assigned...";
+        case 'AWAITING_ACCEPTANCE':
+          if (isCurrentUserStudent && !consultation.studentAccepted) return "Please accept the consultation to enable chat.";
+          if (isCurrentUserStudent && consultation.studentAccepted) return "Waiting for the consultant to accept...";
+          if (isCurrentUserConsultant && !consultation.consultantAccepted) return "Please accept the consultation to enable chat.";
+          if (isCurrentUserConsultant && consultation.consultantAccepted) return "Waiting for the student to accept...";
+          return "Waiting for both parties to accept...";
+        case 'COMPLETED':
+            return "This consultation is complete.";
+        case 'PAUSED':
+            return "This consultation is paused.";
+        default:
+          return "Chat is currently disabled.";
+      }
+    }
+    return "Type your message...";
+  };
+
   return (
     <div className="flex flex-col h-full bg-card rounded-lg">
       <ScrollArea className="flex-1 p-4">
@@ -212,7 +234,7 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
             <Input
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type your message..."
+              placeholder={getPlaceholderText()}
               disabled={isChatDisabled}
             />
             <Button type="submit" size="icon" disabled={isChatDisabled}>

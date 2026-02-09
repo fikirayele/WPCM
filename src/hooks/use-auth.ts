@@ -5,6 +5,8 @@ import type { User, Consultation, Department, Donation } from '@/lib/types';
 import { collection, doc, query, where } from 'firebase/firestore';
 import { useCollection } from '@/firebase/firestore/use-collection';
 import { useDoc } from '@/firebase/firestore/use-doc';
+import { useMemo } from 'react';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export function useAuth() {
   const { user: authUser, isUserLoading } = useUser();
@@ -64,9 +66,28 @@ export function useAuth() {
 
   const isLoading = isUserLoading || isUserDocLoading || areUsersLoading || areConsultationsLoading || areDepartmentsLoading || areDonationsLoading;
 
+  const defaultAvatar = useMemo(() => PlaceHolderImages.find(img => img.id === 'default-avatar')?.imageUrl, []);
+
+  const processedUser = useMemo(() => {
+    if (!user) return null;
+    return {
+      ...user,
+      avatarUrl: user.avatarUrl || defaultAvatar,
+    };
+  }, [user, defaultAvatar]);
+
+  const processedUsers = useMemo(() => {
+    if (!users) return [];
+    return users.map(u => ({
+      ...u,
+      avatarUrl: u.avatarUrl || defaultAvatar,
+    }));
+  }, [users, defaultAvatar]);
+
+
   return {
-    user,
-    users: users || [],
+    user: processedUser,
+    users: processedUsers,
     consultations: consultations || [],
     departments: departments || [],
     donations: donations || [],

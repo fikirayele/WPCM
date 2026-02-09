@@ -19,12 +19,13 @@ import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const getInitials = (name = '') => name ? name.split(' ').map((n) => n[0]).join('') : '';
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const { user, logout } = useAuth();
+  const { user, logout, isLoaded } = useAuth();
 
   const adminNav = [
     { href: '/dashboard', label: 'Dashboard', icon: Home },
@@ -47,6 +48,28 @@ export function AppSidebar() {
   ];
   
   const navItems = user?.role === 'admin' ? adminNav : user?.role === 'consultant' ? consultantNav : studentNav;
+
+  if (!isLoaded) {
+    return (
+        <div className="flex h-full flex-col p-4">
+            <div className="flex-1 space-y-2">
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-8 w-full" />
+            </div>
+            <div className="mt-auto border-t pt-4">
+                <div className="flex items-center gap-4">
+                    <Skeleton className="h-10 w-10 rounded-full" />
+                    <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-24" />
+                        <Skeleton className="h-3 w-32" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+  }
 
   return (
     <div className="flex h-full flex-col">

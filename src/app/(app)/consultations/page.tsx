@@ -1,14 +1,13 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { departments } from '@/lib/data';
 import { useAuth } from '@/hooks/use-auth';
 import { ConsultationActions } from './_components/consultation-actions';
 import { useMemo } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ConsultationsPage() {
-  const { user, consultations, users, isLoaded } = useAuth();
+  const { user, consultations, users, departments, isLoaded } = useAuth();
   
   const filteredConsultations = useMemo(() => {
     if (!user) return [];
@@ -89,3 +88,5 @@ export default function ConsultationsPage() {
     </div>
   );
 }
+
+    

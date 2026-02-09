@@ -43,14 +43,16 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
-import { departments as initialDepartments } from '@/lib/data';
 import type { Department, User } from '@/lib/types';
 import { ArrowUpDown, PlusCircle, Pencil, Trash2 } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
+import { deleteDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase';
+import { doc } from 'firebase/firestore';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 export function UserActions() {
-  const { users, addUser, updateUser, deleteUser } = useAuth();
-  const [departments] = useState<Department[]>(initialDepartments);
+  const { users, departments, firestore, auth, isLoaded } = useAuth();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const { toast } = useToast();
@@ -115,8 +117,9 @@ export function UserActions() {
     setSortConfig({ key, direction });
   };
 
-  const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!firestore || !auth) return;
     const formData = new FormData(e.currentTarget);
     const fullName = formData.get('fullName') as string;
     const email = formData.get('email') as string;
@@ -125,32 +128,55 @@ export function UserActions() {
     const active = formData.get('active') === 'on';
 
     if (currentUser) {
-      updateUser(currentUser.id, { fullName, email, role, departmentId: role === 'consultant' ? departmentId : undefined, active });
+      const userDocRef = doc(firestore, 'users', currentUser.id);
+      updateDocumentNonBlocking(userDocRef, { fullName, email, role, departmentId: role === 'consultant' ? departmentId : undefined, active });
       toast({
         title: 'User Updated',
         description: `"${fullName}" has been successfully updated.`,
       });
     } else {
-        const userPayload = {
-            fullName,
-            email,
-            role,
-            departmentId: role === 'consultant' ? departmentId : undefined,
-            active,
+        const password = formData.get('password') as string;
+        if (!password) {
+            toast({ title: 'Password required', description: 'A password is required to create a new user.', variant: 'destructive'});
+            return;
         }
-        addUser(userPayload);
-        toast({
-            title: 'User Added',
-            description: `"${fullName}" has been successfully added.`,
-        });
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const firebaseUser = userCredential.user;
+
+            const userProfile: User = {
+                id: firebaseUser.uid,
+                fullName,
+                email: firebaseUser.email!,
+                role,
+                departmentId: role === 'consultant' ? departmentId : undefined,
+                active,
+                avatarUrl: `https://picsum.photos/seed/${firebaseUser.uid}/100/100`,
+            };
+
+            const userDocRef = doc(firestore, 'users', firebaseUser.uid);
+            setDocumentNonBlocking(userDocRef, userProfile, {});
+            toast({
+                title: 'User Added',
+                description: `"${fullName}" has been successfully added.`,
+            });
+        } catch (error: any) {
+             toast({
+                title: 'Error creating user',
+                description: error.message,
+                variant: 'destructive',
+            });
+        }
     }
     setIsDialogOpen(false);
     setCurrentUser(null);
   };
 
   const handleDelete = (userId: string) => {
+    if (!firestore) return;
     const user = users.find((u) => u.id === userId);
-    deleteUser(userId);
+    const userDocRef = doc(firestore, 'users', userId);
+    deleteDocumentNonBlocking(userDocRef);
     toast({
       title: 'User Deleted',
       description: `"${user?.fullName}" has been deleted.`,
@@ -212,8 +238,15 @@ export function UserActions() {
               defaultValue={aUser?.email}
               className="col-span-3"
               required
+              disabled={!!aUser}
             />
           </div>
+          {!aUser && (
+            <div className="grid items-center grid-cols-4 gap-4">
+                <Label htmlFor="password"className="text-right">Password</Label>
+                <Input id="password" name="password" type="password" className="col-span-3" required />
+            </div>
+          )}
           <div className="grid items-center grid-cols-4 gap-4">
             <Label htmlFor="role" className="text-right">
               Role
@@ -459,3 +492,5 @@ export function UserActions() {
     </>
   );
 }
+
+    

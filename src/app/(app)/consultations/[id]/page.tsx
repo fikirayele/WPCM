@@ -1,6 +1,5 @@
 'use client';
 
-import { departments } from '@/lib/data';
 import { notFound, useParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -27,10 +26,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { useFirebase } from '@/firebase';
+import { updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { doc } from 'firebase/firestore';
 
 export default function ConsultationDetailPage() {
   const params = useParams<{ id: string }>();
-  const { user, consultations, users, updateConsultation, isLoaded } = useAuth();
+  const { user, consultations, users, departments, isLoaded, firestore } = useAuth();
   const { toast } = useToast();
   
   const consultation = consultations.find(c => c.id === params.id);
@@ -51,12 +53,13 @@ export default function ConsultationDetailPage() {
   }
 
   const handleAssign = () => {
-    if (!selectedConsultant) {
+    if (!selectedConsultant || !firestore) {
       toast({ title: "Error", description: "Please select a consultant.", variant: "destructive" });
       return;
     }
     
-    updateConsultation(consultation.id, {
+    const consultationRef = doc(firestore, 'consultations', consultation.id);
+    updateDocumentNonBlocking(consultationRef, {
         status: 'AWAITING_ACCEPTANCE',
         consultantId: selectedConsultant,
         studentAccepted: false,
@@ -321,3 +324,5 @@ export default function ConsultationDetailPage() {
     </div>
   );
 }
+
+    

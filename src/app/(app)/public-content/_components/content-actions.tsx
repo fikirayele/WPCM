@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import {
   AlertDialog,
@@ -35,14 +35,24 @@ import {
 } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { news as initialNews } from '@/lib/data';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import type { NewsArticle } from '@/lib/types';
 import { format } from 'date-fns';
 import { PlusCircle, Pencil, Trash2, FileUp, Image as ImageIcon } from 'lucide-react';
+import { useAuth } from '@/hooks/use-auth';
+import { useCollection, useMemoFirebase } from '@/firebase';
+import { collection, doc } from 'firebase/firestore';
+import { setDocumentNonBlocking, updateDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export function ContentActions() {
-  const [articles, setArticles] = useState<NewsArticle[]>(initialNews);
+  const { firestore } = useAuth();
+  
+  const newsCollectionRef = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return collection(firestore, 'newsAnnouncements');
+  }, [firestore]);
+  const { data: articles, isLoading } = useCollection<NewsArticle>(newsCollectionRef);
+  
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentArticle, setCurrentArticle] = useState<NewsArticle | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -73,31 +83,33 @@ export function ContentActions() {
 
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!firestore) return;
+
     const formData = new FormData(e.currentTarget);
     const title = formData.get('title') as string;
     const content = formData.get('content') as string;
     const author = formData.get('author') as string;
-    const imageUrl = imagePreview || currentArticle?.imageUrl || PlaceHolderImages.find((img) => img.id === 'news-1')?.imageUrl || '';
+    const imageUrl = imagePreview || 'https://picsum.photos/seed/news/400/250';
 
     if (currentArticle) {
-      const updatedArticle = { ...currentArticle, title, content, author, imageUrl };
-      setArticles(
-        articles.map((a) => (a.id === currentArticle.id ? updatedArticle : a))
-      );
+      const articleDocRef = doc(firestore, 'newsAnnouncements', currentArticle.id);
+      updateDocumentNonBlocking(articleDocRef, { title, content, author, imageUrl });
       toast({
         title: 'Article Updated',
         description: `"${title}" has been successfully updated.`,
       });
     } else {
+      const newId = doc(collection(firestore, 'newsAnnouncements')).id;
+      const articleDocRef = doc(firestore, 'newsAnnouncements', newId);
       const newArticle: NewsArticle = {
-        id: `news-${Date.now()}`,
+        id: newId,
         title,
         content,
         author,
         imageUrl,
         publishedAt: new Date().toISOString(),
       };
-      setArticles([newArticle, ...articles]);
+      setDocumentNonBlocking(articleDocRef, newArticle, {});
       toast({
         title: 'Article Added',
         description: `"${title}" has been successfully published.`,
@@ -107,14 +119,33 @@ export function ContentActions() {
   };
 
   const handleDelete = (articleId: string) => {
-    const article = articles.find((a) => a.id === articleId);
-    setArticles(articles.filter((a) => a.id !== articleId));
+    if(!firestore) return;
+    const article = articles?.find((a) => a.id === articleId);
+    const articleDocRef = doc(firestore, 'newsAnnouncements', articleId);
+    deleteDocumentNonBlocking(articleDocRef);
     toast({
       title: 'Article Deleted',
       description: `"${article?.title}" has been deleted.`,
       variant: 'destructive',
     });
   };
+
+  if (isLoading) {
+    return (
+        <div className="space-y-4">
+            <div className="flex justify-end">
+                <Skeleton className="h-10 w-44" />
+            </div>
+            <div className="border rounded-md">
+                <div className="space-y-2 p-4">
+                    <Skeleton className="h-12 w-full" />
+                    <Skeleton className="h-12 w-full" />
+                    <Skeleton className="h-12 w-full" />
+                </div>
+            </div>
+        </div>
+    )
+  }
 
   return (
     <>
@@ -214,7 +245,7 @@ export function ContentActions() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {articles.map((article) => (
+            {articles && articles.map((article) => (
               <TableRow key={article.id}>
                 <TableCell className="font-medium">{article.title}</TableCell>
                 <TableCell>{article.author}</TableCell>
@@ -263,3 +294,5 @@ export function ContentActions() {
     </>
   );
 }
+
+    

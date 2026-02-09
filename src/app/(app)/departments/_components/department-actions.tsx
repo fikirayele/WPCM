@@ -41,13 +41,14 @@ import {
 } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { departments as initialDepartments } from '@/lib/data';
 import type { Department } from '@/lib/types';
 import { ArrowUpDown, PlusCircle, Pencil, Trash2 } from 'lucide-react';
+import { useAuth } from '@/hooks/use-auth';
+import { addDocumentNonBlocking, deleteDocumentNonBlocking, setDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase';
+import { collection, doc } from 'firebase/firestore';
 
 export function DepartmentActions() {
-  const [departments, setDepartments] =
-    useState<Department[]>(initialDepartments);
+  const { departments, firestore } = useAuth();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentDepartment, setCurrentDepartment] = useState<Department | null>(
     null
@@ -63,7 +64,7 @@ export function DepartmentActions() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const sortedDepartments = useMemo(() => {
-    let sortableItems = [...departments];
+    let sortableItems = [...(departments || [])];
     if (sortConfig !== null) {
       sortableItems.sort((a, b) => {
         if (a[sortConfig.key] < b[sortConfig.key]) {
@@ -107,27 +108,28 @@ export function DepartmentActions() {
 
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!firestore) return;
+
     const formData = new FormData(e.currentTarget);
     const name = formData.get('name') as string;
     const description = formData.get('description') as string;
 
     if (currentDepartment) {
-      setDepartments(
-        departments.map((d) =>
-          d.id === currentDepartment.id ? { ...d, name, description } : d
-        )
-      );
+      const deptDocRef = doc(firestore, 'departments', currentDepartment.id);
+      updateDocumentNonBlocking(deptDocRef, { name, description });
       toast({
         title: 'Department Updated',
         description: `"${name}" has been successfully updated.`,
       });
     } else {
+      const newId = doc(collection(firestore, 'departments')).id;
+      const newDocRef = doc(firestore, 'departments', newId);
       const newDepartment: Department = {
-        id: `dept-${Date.now()}`,
+        id: newId,
         name,
         description,
       };
-      setDepartments([...departments, newDepartment]);
+      setDocumentNonBlocking(newDocRef, newDepartment, {});
       toast({
         title: 'Department Added',
         description: `"${name}" has been successfully added.`,
@@ -138,8 +140,10 @@ export function DepartmentActions() {
   };
 
   const handleDelete = (departmentId: string) => {
+    if (!firestore) return;
     const department = departments.find((d) => d.id === departmentId);
-    setDepartments(departments.filter((d) => d.id !== departmentId));
+    const deptDocRef = doc(firestore, 'departments', departmentId);
+    deleteDocumentNonBlocking(deptDocRef);
     toast({
       title: 'Department Deleted',
       description: `"${department?.name}" has been deleted.`,
@@ -345,3 +349,5 @@ export function DepartmentActions() {
     </>
   );
 }
+
+    

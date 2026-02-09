@@ -59,6 +59,13 @@ service cloud.firestore {
     function isOwner(userId) {
       return request.auth.uid == userId;
     }
+    
+    /**
+     * Checks if the current user has an 'admin' role.
+     */
+    function isAdmin() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
 
     /**
      * Checks if the document being accessed already exists.
@@ -92,11 +99,11 @@ service cloud.firestore {
      * @principle Restricts access to a user's own data tree.
      */
     match /users/{userId} {
-      allow get: if isOwner(userId);
-      allow list: if false;
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
       allow create: if isOwner(userId) && request.resource.data.id == userId;
-      allow update: if isOwner(userId) && isExistingDoc() && request.resource.data.id == resource.data.id;
-      allow delete: if false;
+      allow update: if (isOwner(userId) || isAdmin()) && isExistingDoc() && request.resource.data.id == resource.data.id;
+      allow delete: if isAdmin();
     }
 
     /**
@@ -109,9 +116,9 @@ service cloud.firestore {
     match /departments/{departmentId} {
       allow get: if isSignedIn();
       allow list: if isSignedIn();
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+      allow create: if isAdmin() && request.resource.data.id == departmentId;
+      allow update: if isAdmin() && request.resource.data.id == departmentId;
+      allow delete: if isAdmin();
     }
 
     /**
@@ -136,12 +143,12 @@ service cloud.firestore {
      * @deny (get) A different student trying to read another user's request.
      * @principle Implements shared access between two specific users (student and consultant).
      */
-    match /users/{studentId}/consultationRequests/{consultationRequestId} {
-      allow get: if isOwner(studentId) || isOwner(resource.data.assignedConsultantId);
-      allow list: if isOwner(studentId);
-      allow create: if isOwner(studentId) && request.resource.data.studentId == studentId;
-      allow update: if (isOwner(studentId) || isOwner(resource.data.assignedConsultantId)) && isExistingDoc() && request.resource.data.studentId == resource.data.studentId;
-      allow delete: if isOwner(studentId) && isExistingDoc();
+    match /consultations/{consultationId} {
+      allow get: if isOwner(resource.data.studentId) || isOwner(resource.data.consultantId) || isAdmin();
+      allow list: if isSignedIn();
+      allow create: if isOwner(request.resource.data.studentId);
+      allow update: if (isOwner(resource.data.studentId) || isOwner(resource.data.consultantId) || isAdmin()) && isExistingDoc() && request.resource.data.studentId == resource.data.studentId;
+      allow delete: if (isOwner(resource.data.studentId) || isAdmin()) && isExistingDoc();
     }
 
     /**
@@ -151,12 +158,12 @@ service cloud.firestore {
      * @deny (list) An un-involved user trying to list messages from a private chat.
      * @principle Enforces subcollection access based on the state of a parent document.
      */
-    match /users/{studentId}/consultationRequests/{consultationRequestId}/chatMessages/{chatMessageId} {
-      allow get: if isRequestParticipant(studentId, consultationRequestId);
-      allow list: if isRequestParticipant(studentId, consultationRequestId);
-      allow create: if isRequestParticipant(studentId, consultationRequestId) && isOwner(request.resource.data.senderId);
+    match /consultations/{consultationId}/messages/{messageId} {
+      allow get: if isRequestParticipant(consultationId);
+      allow list: if isRequestParticipant(consultationId);
+      allow create: if isRequestParticipant(consultationId) && isOwner(request.resource.data.senderId);
       allow update: if false;
-      allow delete: if isRequestParticipant(studentId, consultationRequestId) && isOwner(resource.data.senderId) && isExistingDoc();
+      allow delete: if isRequestParticipant(consultationId) && isOwner(resource.data.senderId) && isExistingDoc();
     }
 
     /**
@@ -169,10 +176,9 @@ service cloud.firestore {
     match /newsAnnouncements/{newsAnnouncementId} {
       allow get: if true;
       allow list: if true;
-      // CRITICAL: Cannot implement owner-only writes. The 'NewsAnnouncement' entity is missing an 'ownerId' or 'authorId' field.
-      allow create: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
-      allow update: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
-      allow delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow create: if isAdmin() && request.resource.data.id == newsAnnouncementId;
+      allow update: if isAdmin() && request.resource.data.id == newsAnnouncementId;
+      allow delete: if isAdmin();
     }
 
     /**
@@ -183,11 +189,13 @@ service cloud.firestore {
      * @principle Enforces document ownership and immutability for sensitive records.
      */
     match /donations/{donationId} {
-      allow get: if isSignedIn() && isOwner(resource.data.userId);
-      allow list: if false;
-      allow create: if isSignedIn() && isOwner(request.resource.data.userId);
+      allow get: if isAdmin();
+      allow list: if isAdmin();
+      allow create: if isSignedIn();
       allow update: if false;
       allow delete: if false;
     }
   }
 }
+
+    

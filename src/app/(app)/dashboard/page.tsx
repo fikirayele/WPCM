@@ -4,12 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { MessageSquare, Users, Building2, Clock, UserCheck, CheckCircle2, AlertCircle, Pause, UserPlus } from 'lucide-react';
-import { departments } from '@/lib/data';
 import { formatDistanceToNow } from 'date-fns';
 import { useAuth } from '@/hooks/use-auth';
 
 export default function DashboardPage() {
-  const { consultations, users } = useAuth();
+  const { consultations, users, departments } = useAuth();
   const activeConsultations = consultations.filter((c) => c.status === 'ACTIVE' || c.status === 'ASSIGNED' || c.status === 'AWAITING_ACCEPTANCE');
 
   const stats = [
@@ -105,3 +104,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    

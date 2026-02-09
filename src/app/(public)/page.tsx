@@ -1,15 +1,27 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { news, testimonials } from '@/lib/data';
 import { ArrowRight, MessageCircle, Users, HeartHandshake } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { format } from 'date-fns';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useCollection, useFirebase, useMemoFirebase } from '@/firebase';
+import { collection } from 'firebase/firestore';
+import type { NewsArticle } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
+
 
 export default function HomePage() {
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-image');
+  const { firestore } = useFirebase();
+
+  const newsCollectionRef = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return collection(firestore, 'newsAnnouncements');
+  }, [firestore]);
+  const { data: news, isLoading: isNewsLoading } = useCollection<NewsArticle>(newsCollectionRef);
 
   return (
     <div className="flex flex-col">
@@ -99,30 +111,42 @@ export default function HomePage() {
             <h2 className="font-headline text-3xl font-bold text-primary">Latest News &amp; Announcements</h2>
           </div>
           <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
-            {news.slice(0, 3).map((article) => {
-               const articleImage = PlaceHolderImages.find(img => img.id === `news-${article.id.split('-')[1]}`);
-              return (
-                <Card key={article.id} className="overflow-hidden card-hover-effect group">
-                  {articleImage && (
-                     <Image
-                      src={articleImage.imageUrl}
-                      alt={article.title}
-                      data-ai-hint={articleImage.imageHint}
-                      width={400}
-                      height={250}
-                      className="h-48 w-full object-cover"
-                    />
-                  )}
-                  <CardHeader>
-                    <CardTitle className="font-headline text-lg group-hover:text-background">{article.title}</CardTitle>
-                    <p className="text-sm text-muted-foreground group-hover:text-background/80">{format(new Date(article.publishedAt), 'MMMM d, yyyy')}</p>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground group-hover:text-background/80 line-clamp-3">{article.content}</p>
-                  </CardContent>
-                </Card>
-              );
-            })}
+            {isNewsLoading ? (
+                [...Array(3)].map((_, i) => (
+                    <Card key={i} className="overflow-hidden">
+                        <Skeleton className="h-48 w-full" />
+                        <CardHeader>
+                            <Skeleton className="h-6 w-3/4" />
+                            <Skeleton className="h-4 w-1/2 mt-2" />
+                        </CardHeader>
+                        <CardContent>
+                            <Skeleton className="h-4 w-full mb-2" />
+                             <Skeleton className="h-4 w-5/6" />
+                        </CardContent>
+                    </Card>
+                ))
+            ) : (
+                news && news.slice(0, 3).map((article) => {
+                return (
+                    <Card key={article.id} className="overflow-hidden card-hover-effect group">
+                    <Image
+                        src={article.imageUrl}
+                        alt={article.title}
+                        width={400}
+                        height={250}
+                        className="h-48 w-full object-cover"
+                        />
+                    <CardHeader>
+                        <CardTitle className="font-headline text-lg group-hover:text-background">{article.title}</CardTitle>
+                        <p className="text-sm text-muted-foreground group-hover:text-background/80">{format(new Date(article.publishedAt), 'MMMM d, yyyy')}</p>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-sm text-muted-foreground group-hover:text-background/80 line-clamp-3">{article.content}</p>
+                    </CardContent>
+                    </Card>
+                );
+                })
+            )}
           </div>
           <div className="mt-12 text-center">
             <Button variant="outline" asChild>
@@ -131,40 +155,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-       <section className="bg-primary/10 py-12 md:py-20">
-        <div className="container px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="font-headline text-3xl font-bold text-primary">What Our Community Says</h2>
-            <p className="mx-auto mt-4 max-w-xl text-foreground/70">
-              Hear from those who have found support and guidance through WPCM.
-            </p>
-          </div>
-          <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
-            {testimonials.map((testimonial) => (
-              <Card key={testimonial.id} className="flex flex-col justify-between text-center bg-card card-hover-effect group">
-                <CardContent className="pt-6">
-                  <blockquote className="text-lg italic text-foreground/80 group-hover:text-background/80 before:content-['“'] after:content-['”']">
-                    {testimonial.quote}
-                  </blockquote>
-                </CardContent>
-                <CardHeader>
-                  <div className="flex flex-col items-center gap-2">
-                    <Avatar>
-                      <AvatarImage src={testimonial.avatarUrl} alt={testimonial.name} />
-                      <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <CardTitle className="text-base font-semibold group-hover:text-background">{testimonial.name}</CardTitle>
-                      <p className="text-sm text-muted-foreground group-hover:text-background/80">{testimonial.role}</p>
-                    </div>
-                  </div>
-                </CardHeader>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
+
+    

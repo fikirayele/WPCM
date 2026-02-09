@@ -70,6 +70,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [users, consultations, user, donations, isLoaded]);
 
+  // Listen for storage changes from other tabs
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent) => {
+      if (!event.key || !event.newValue) return;
+
+      try {
+        if (event.key === 'wpcm-user') {
+          setUser(JSON.parse(event.newValue));
+        } else if (event.key === 'wpcm-users') {
+          setUsers(JSON.parse(event.newValue));
+        } else if (event.key === 'wpcm-consultations') {
+          setConsultations(JSON.parse(event.newValue));
+        } else if (event.key === 'wpcm-donations') {
+          setDonations(JSON.parse(event.newValue));
+        }
+      } catch (error) {
+        console.error('Error parsing storage event data', error);
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
 
   const login = useCallback(
     (email: string, password?: string) => {

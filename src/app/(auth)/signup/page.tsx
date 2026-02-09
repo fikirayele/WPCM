@@ -59,11 +59,21 @@ export default function SignupPage() {
         router.push('/login');
 
     } catch (error: any) {
-        console.error("Signup error:", error);
+        let description = "An unexpected error occurred.";
+        if (error.code === 'auth/email-already-in-use') {
+            description = "This email address is already registered. Please try logging in instead.";
+        } else if (error.code === 'auth/weak-password') {
+            description = "The password must be at least 6 characters long.";
+        } else if (error.code === 'auth/invalid-email') {
+            description = "The email address is not valid. Please enter a valid email.";
+        } else {
+            description = error.message;
+        }
+
         toast({
             variant: "destructive",
             title: "Signup Failed",
-            description: error.message || "An unexpected error occurred.",
+            description: description,
         });
     }
   };

@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ChatClient } from './_components/chat-client';
 import { useAuth } from '@/hooks/use-auth';
 import Image from 'next/image';
-import { UserPlus } from 'lucide-react';
+import { UserPlus, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import {
@@ -30,13 +30,21 @@ import { useToast } from '@/hooks/use-toast';
 
 export default function ConsultationDetailPage() {
   const params = useParams<{ id: string }>();
-  const { user, consultations, users, updateConsultation } = useAuth();
+  const { user, consultations, users, updateConsultation, isLoaded } = useAuth();
   const { toast } = useToast();
   
   const consultation = consultations.find(c => c.id === params.id);
 
   const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false);
   const [selectedConsultant, setSelectedConsultant] = useState<string | null>(null);
+
+  if (!isLoaded) {
+    return (
+        <div className="flex h-full items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+    );
+  }
 
   if (!consultation) {
     notFound();

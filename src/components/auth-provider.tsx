@@ -20,6 +20,7 @@ interface AuthContextType {
   deleteUser: (userId: string) => void;
   donations: Donation[];
   addDonation: (donationData: Omit<Donation, 'id' | 'date'>) => void;
+  isLoaded: boolean;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -29,6 +30,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [users, setUsers] = useState<User[]>(initialUsers);
   const [consultations, setConsultations] = useState<Consultation[]>(initialConsultations);
   const [donations, setDonations] = useState<Donation[]>(initialDonations);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const router = useRouter();
   const { toast } = useToast();
@@ -48,11 +50,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
     } catch (error) {
       console.error("Failed to load state from localStorage", error);
+    } finally {
+      setIsLoaded(true);
     }
   }, []);
 
   // Save state to localStorage whenever it changes
   useEffect(() => {
+    if (!isLoaded) return;
     try {
       localStorage.setItem('wpcm-users', JSON.stringify(users));
       localStorage.setItem('wpcm-consultations', JSON.stringify(consultations));
@@ -65,7 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error("Failed to save state to localStorage", error);
     }
-  }, [users, consultations, user, donations]);
+  }, [users, consultations, user, donations, isLoaded]);
 
 
   const login = useCallback(
@@ -180,7 +185,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setDonations(prev => [newDonation, ...prev]);
   }, []);
 
-  const value = useMemo(() => ({ user, users, login, logout, signup, consultations, updateConsultation, addConsultation, addUser, updateUser, deleteUser, donations, addDonation }), [user, users, login, logout, signup, consultations, updateConsultation, addConsultation, addUser, updateUser, deleteUser, donations, addDonation]);
+  const value = useMemo(() => ({ user, users, login, logout, signup, consultations, updateConsultation, addConsultation, addUser, updateUser, deleteUser, donations, addDonation, isLoaded }), [user, users, login, logout, signup, consultations, updateConsultation, addConsultation, addUser, updateUser, deleteUser, donations, addDonation, isLoaded]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

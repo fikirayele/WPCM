@@ -4,7 +4,7 @@ import type { User, Consultation, Donation } from '@/lib/types';
 import { users as initialUsers, consultations as initialConsultations, donations as initialDonations } from '@/lib/data';
 import React, { createContext, useState, useCallback, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from '@/hooks/use-toast';
 
 interface AuthContextType {
   user: User | null;
@@ -15,6 +15,7 @@ interface AuthContextType {
   consultations: Consultation[];
   updateConsultation: (id: string, updates: Partial<Consultation>) => void;
   addConsultation: (request: Omit<Consultation, 'id' | 'studentId' | 'createdAt' | 'messages' | 'status' | 'fullName' | 'email'>) => void;
+  acceptConsultation: (consultationId: string, userId: string) => void;
   addUser: (userPayload: Omit<User, 'id' | 'avatarUrl'>) => void;
   updateUser: (id: string, updates: Partial<User>) => void;
   deleteUser: (userId: string) => void;
@@ -31,7 +32,12 @@ const getInitialState = <T,>(storageKey: string, fallback: T): T => {
     }
     try {
         const storedItem = localStorage.getItem(storageKey);
-        return storedItem ? JSON.parse(storedItem) : fallback;
+        // Prevent demo data from overwriting existing data
+        if (storedItem) {
+          return JSON.parse(storedItem);
+        }
+        localStorage.setItem(storageKey, JSON.stringify(fallback));
+        return fallback;
     } catch (error) {
         console.error(`Failed to load ${storageKey} from localStorage`, error);
         return fallback;
@@ -47,8 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   const router = useRouter();
-  const { toast } = useToast();
-
+  
   useEffect(() => {
     setIsLoaded(true);
   }, []);
@@ -127,7 +132,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
       }
     },
-    [router, toast, users]
+    [router, users]
   );
   
   const signup = useCallback((userData: Pick<User, 'fullName' | 'email'>, password?: string) => {
@@ -154,7 +159,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: 'You can now log in with your new account.',
     });
     router.push('/login');
-  }, [users, router, toast]);
+  }, [users, router]);
 
   const logout = useCallback(() => {
     setUser(null);
@@ -163,6 +168,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const updateConsultation = useCallback((id: string, updates: Partial<Consultation>) => {
     setConsultations(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
+  }, []);
+
+  const acceptConsultation = useCallback((consultationId: string, userId: string) => {
+    setConsultations(prevConsultations => {
+        const targetConsultation = prevConsultations.find(c => c.id === consultationId);
+        if (!targetConsultation) return prevConsultations;
+
+        const isStudentAction = targetConsultation.studentId === userId;
+        
+        const studentAccepted = isStudentAction ? true : targetConsultation.studentAccepted;
+        const consultantAccepted = !isStudentAction ? true : targetConsultation.consultantAccepted;
+
+        const becomesActive = studentAccepted && consultantAccepted;
+        const status = becomesActive ? 'ACTIVE' : targetConsultation.status;
+        
+        if (becomesActive) {
+            toast({ title: "Consultation Active", description: "You can now start chatting." });
+        } else {
+            toast({ title: "Accepted!", description: `You have accepted. Waiting for the other party.` });
+        }
+
+        return prevConsultations.map(c => 
+            c.id === consultationId ? { ...c, studentAccepted, consultantAccepted, status } : c
+        );
+    });
   }, []);
   
   const addConsultation = useCallback((request: Omit<Consultation, 'id' | 'studentId' | 'createdAt' | 'messages' | 'status' | 'fullName' | 'email'>) => {
@@ -182,7 +212,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         photoUrl: user.avatarUrl,
     };
     setConsultations(prev => [newConsultation, ...prev]);
-  }, [user, toast]);
+  }, [user]);
 
   const addUser = useCallback((userPayload: Omit<User, 'id' | 'avatarUrl'>) => {
       const newUser: User = {
@@ -210,7 +240,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setDonations(prev => [newDonation, ...prev]);
   }, []);
 
-  const value = useMemo(() => ({ user, users, login, logout, signup, consultations, updateConsultation, addConsultation, addUser, updateUser, deleteUser, donations, addDonation, isLoaded }), [user, users, login, logout, signup, consultations, updateConsultation, addConsultation, addUser, updateUser, deleteUser, donations, addDonation, isLoaded]);
+  const value = useMemo(() => ({ user, users, login, logout, signup, consultations, updateConsultation, addConsultation, acceptConsultation, addUser, updateUser, deleteUser, donations, addDonation, isLoaded }), [user, users, login, logout, signup, consultations, updateConsultation, addConsultation, acceptConsultation, addUser, updateUser, deleteUser, donations, addDonation, isLoaded]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

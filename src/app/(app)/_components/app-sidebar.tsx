@@ -19,7 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useFirebase, useUser } from '@/firebase';
+import { useFirebase, useUser, useMemoFirebase } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import type { User } from '@/lib/types';
 import { useDoc } from '@/firebase/firestore/use-doc';
@@ -33,7 +33,10 @@ export function AppSidebar() {
   const { user: authUser } = useUser();
   const router = useRouter();
 
-  const userRef = authUser ? doc(firestore, 'users', authUser.uid) : null;
+  const userRef = useMemoFirebase(() => {
+    if (!firestore || !authUser) return null;
+    return doc(firestore, 'users', authUser.uid);
+  }, [firestore, authUser]);
   const { data: user, isLoading: isUserDocLoading } = useDoc<User>(userRef);
 
   const handleLogout = async () => {

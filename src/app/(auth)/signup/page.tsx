@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirebase } from '@/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, collection, getDocs, query, limit } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 
 export default function SignupPage() {
@@ -38,6 +38,13 @@ export default function SignupPage() {
     }
 
     try {
+        // Check if any users exist to determine if this is the first signup
+        const usersRef = collection(firestore, 'users');
+        const q = query(usersRef, limit(1));
+        const querySnapshot = await getDocs(q);
+        const isFirstUser = querySnapshot.empty;
+        const role = isFirstUser ? 'admin' : 'student';
+
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const firebaseUser = userCredential.user;
 
@@ -45,7 +52,7 @@ export default function SignupPage() {
             id: firebaseUser.uid,
             fullName,
             email: firebaseUser.email,
-            role: 'student',
+            role: role,
             avatarUrl: `https://picsum.photos/seed/${firebaseUser.uid}/100/100`,
             active: true,
         };
@@ -53,7 +60,7 @@ export default function SignupPage() {
         await setDoc(doc(firestore, 'users', firebaseUser.uid), userProfile);
         
         toast({
-            title: 'Account Created!',
+            title: `Account Created as ${role === 'admin' ? 'Admin' : 'Student'}!`,
             description: 'You can now log in with your new account.',
         });
         router.push('/login');

@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ChatClient } from './_components/chat-client';
 import { useAuth } from '@/hooks/use-auth';
 import Image from 'next/image';
-import { UserPlus, Loader2 } from 'lucide-react';
+import { UserPlus, Loader2, User as UserIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import {
@@ -77,8 +77,6 @@ export default function ConsultationDetailPage() {
   const consultant = users.find(u => u.id === consultation.consultantId);
   const department = departments.find(d => d.id === consultation.departmentId);
 
-  const getInitials = (name = '') => name ? name.split(' ').map((n) => n[0]).join('') : '';
-
   const getStatusVariant = (status: string) => {
     switch (status) {
       case 'ACTIVE': return 'default';
@@ -136,7 +134,9 @@ export default function ConsultationDetailPage() {
                       <div className="flex items-center gap-3">
                           <Avatar className="h-10 w-10">
                               <AvatarImage src={student.avatarUrl} />
-                              <AvatarFallback>{getInitials(student.fullName)}</AvatarFallback>
+                              <AvatarFallback>
+                                <UserIcon className="h-5 w-5" />
+                              </AvatarFallback>
                           </Avatar>
                           <div>
                               <p className="text-xs text-muted-foreground">Student</p>
@@ -148,7 +148,9 @@ export default function ConsultationDetailPage() {
                         <div className="flex items-center gap-3">
                             <Avatar className="h-10 w-10">
                                 <AvatarImage src={consultant.avatarUrl} />
-                                <AvatarFallback>{getInitials(consultant.fullName)}</AvatarFallback>
+                                <AvatarFallback>
+                                    <UserIcon className="h-5 w-5" />
+                                </AvatarFallback>
                             </Avatar>
                             <div>
                                 <p className="text-xs text-muted-foreground">Consultant</p>
@@ -273,7 +275,9 @@ export default function ConsultationDetailPage() {
                       <div className="flex items-center gap-3 mt-1">
                           <Avatar className="h-9 w-9">
                               <AvatarImage src={user?.role === 'student' ? consultant?.avatarUrl : student?.avatarUrl} />
-                              <AvatarFallback>{getInitials(user?.role === 'student' ? consultant?.fullName : student?.fullName)}</AvatarFallback>
+                              <AvatarFallback>
+                                <UserIcon className="h-5 w-5" />
+                              </AvatarFallback>
                           </Avatar>
                           <div>
                               <p className="font-semibold">{user?.role === 'student' ? consultant?.fullName : student?.fullName}</p>

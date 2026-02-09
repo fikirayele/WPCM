@@ -10,7 +10,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -43,7 +42,7 @@ import {
 } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
 import type { Department, User } from '@/lib/types';
-import { ArrowUpDown, Pencil, Trash2 } from 'lucide-react';
+import { ArrowUpDown, Pencil, Trash2, User as UserIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { deleteDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase';
 import { doc } from 'firebase/firestore';
@@ -61,12 +60,6 @@ export function UserActions() {
   } | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const getInitials = (name = '') =>
-    name
-      .split(' ')
-      .map((n) => n[0])
-      .join('');
 
   const sortedUsers = useMemo(() => {
     let sortableItems = [...(users || [])];
@@ -312,7 +305,9 @@ export function UserActions() {
                   <div className="flex items-center gap-3">
                     <Avatar>
                       <AvatarImage src={user.avatarUrl} alt={user.fullName} />
-                      <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
+                      <AvatarFallback>
+                        <UserIcon className="h-5 w-5" />
+                      </AvatarFallback>
                     </Avatar>
                     <div>
                       <div className="font-medium">{user.fullName}</div>

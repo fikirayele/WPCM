@@ -11,6 +11,7 @@ import {
   MessageSquare,
   Users,
   Star,
+  User as UserIcon,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -24,8 +25,6 @@ import { signOut } from 'firebase/auth';
 import type { User } from '@/lib/types';
 import { useDoc } from '@/firebase/firestore/use-doc';
 import { doc } from 'firebase/firestore';
-
-const getInitials = (name = '') => name ? name.split(' ').map((n) => n[0]).join('') : '';
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -113,7 +112,9 @@ export function AppSidebar() {
           <div className="flex items-center gap-4">
             <Avatar className="h-10 w-10">
               <AvatarImage src={user.avatarUrl} alt={user.fullName} />
-              <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
+              <AvatarFallback>
+                <UserIcon className="h-5 w-5 text-muted-foreground" />
+              </AvatarFallback>
             </Avatar>
             <div className="flex-1 overflow-hidden">
               <p className="truncate font-semibold">{user.fullName}</p>

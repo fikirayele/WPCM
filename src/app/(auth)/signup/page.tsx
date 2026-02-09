@@ -38,7 +38,7 @@ export default function SignupPage() {
     }
 
     try {
-        // All new users are created as students. The first user must be promoted to admin in the Firebase Console.
+        // All new users are created as students. An admin must promote them.
         const role = 'student';
 
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -49,7 +49,6 @@ export default function SignupPage() {
             fullName,
             email: firebaseUser.email,
             role: role,
-            avatarUrl: `https://picsum.photos/seed/${firebaseUser.uid}/100/100`,
             active: true,
         };
 

@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useMemo } from 'react';
+import { User as UserIcon } from 'lucide-react';
 
 export default function TestimonialsPage() {
   const { consultations, users } = useAuth();
@@ -11,8 +12,6 @@ export default function TestimonialsPage() {
   const testimonials = useMemo(() => {
     return consultations.filter(c => c.testimonial);
   }, [consultations]);
-
-  const getInitials = (name = '') => name ? name.split(' ').map((n) => n[0]).join('') : '';
 
   return (
     <div className="space-y-8">
@@ -45,7 +44,9 @@ export default function TestimonialsPage() {
                                 <div className="flex items-center gap-4 mt-4 pt-4 border-t">
                                     <Avatar>
                                         <AvatarImage src={student?.avatarUrl} />
-                                        <AvatarFallback>{getInitials(student?.fullName)}</AvatarFallback>
+                                        <AvatarFallback>
+                                            <UserIcon className="h-5 w-5" />
+                                        </AvatarFallback>
                                     </Avatar>
                                     <div>
                                         <p className="font-semibold">{student?.fullName}</p>

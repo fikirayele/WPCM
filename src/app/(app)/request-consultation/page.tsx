@@ -13,8 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import type { Consultation } from '@/lib/types';
 import { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
-import Image from 'next/image';
-import { Upload } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Upload, User as UserIcon } from 'lucide-react';
 import { addDocumentNonBlocking } from '@/firebase';
 import { collection, serverTimestamp } from 'firebase/firestore';
 
@@ -154,14 +154,12 @@ export default function RequestConsultationPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div className="md:col-span-1 flex flex-col items-center space-y-4">
                         <Label>Your Photo</Label>
-                        <div className="relative w-32 h-32">
-                           <Image 
-                             src={imagePreview || user.avatarUrl} 
-                             alt="Avatar Preview" 
-                             fill 
-                             className="rounded-full object-cover border-2 border-primary/20"
-                           />
-                        </div>
+                        <Avatar className="w-32 h-32 border-2 border-primary/20">
+                            <AvatarImage src={imagePreview || user.avatarUrl} alt="Avatar Preview" />
+                            <AvatarFallback className="text-muted-foreground">
+                                <UserIcon className="h-16 w-16" />
+                            </AvatarFallback>
+                        </Avatar>
                         <Button asChild variant="outline" size="sm">
                             <Label htmlFor="photo" className="cursor-pointer">
                                 <Upload className="mr-2 h-4 w-4" />

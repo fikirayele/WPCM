@@ -4,7 +4,7 @@ export interface User {
   id: string;
   fullName: string;
   email: string;
-  avatarUrl: string;
+  avatarUrl?: string;
   role: UserRole;
   departmentId?: string; // For consultants
   active?: boolean;

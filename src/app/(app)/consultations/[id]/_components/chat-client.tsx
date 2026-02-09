@@ -27,9 +27,6 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
   const [newMessage, setNewMessage] = useState('');
   const [testimonial, setTestimonial] = useState(consultation.testimonial || '');
 
-
-  const getInitials = (name = '') => name ? name.split(' ').map((n) => n[0]).join('') : '';
-
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (newMessage.trim() === '' || !user) return;
@@ -105,7 +102,9 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
                 {!isCurrentUser && (
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={sender?.avatarUrl} />
-                    <AvatarFallback>{getInitials(sender?.fullName)}</AvatarFallback>
+                    <AvatarFallback>
+                      <UserIcon className="h-4 w-4" />
+                    </AvatarFallback>
                   </Avatar>
                 )}
                 <div className={cn('max-w-xs md:max-w-md lg:max-w-lg rounded-lg px-4 py-2', 
@@ -119,7 +118,9 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
                  {isCurrentUser && (
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={sender?.avatarUrl} />
-                    <AvatarFallback>{getInitials(sender?.fullName)}</AvatarFallback>
+                    <AvatarFallback>
+                      <UserIcon className="h-4 w-4" />
+                    </AvatarFallback>
                   </Avatar>
                 )}
               </div>

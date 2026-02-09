@@ -1,7 +1,7 @@
 'use client';
 
 import { departments } from '@/lib/data';
-import { notFound, useRouter, useParams } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -10,16 +10,57 @@ import { useAuth } from '@/hooks/use-auth';
 import Image from 'next/image';
 import { UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ConsultationDetailPage() {
   const params = useParams<{ id: string }>();
-  const { user, consultations, users } = useAuth();
-  const router = useRouter();
+  const { user, consultations, users, updateConsultation } = useAuth();
+  const { toast } = useToast();
+  
   const consultation = consultations.find(c => c.id === params.id);
+
+  const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false);
+  const [selectedConsultant, setSelectedConsultant] = useState<string | null>(null);
 
   if (!consultation) {
     notFound();
   }
+
+  const handleAssign = () => {
+    if (!selectedConsultant) {
+      toast({ title: "Error", description: "Please select a consultant.", variant: "destructive" });
+      return;
+    }
+    
+    updateConsultation(consultation.id, {
+        status: 'AWAITING_ACCEPTANCE',
+        consultantId: selectedConsultant,
+        studentAccepted: false,
+        consultantAccepted: false
+    });
+    
+    const consultantUser = users.find(u => u.id === selectedConsultant);
+    toast({ title: "Consultant Assigned", description: `${consultantUser?.fullName} has been assigned. A notification has been sent to the student and the consultant.` });
+    
+    setIsAssignDialogOpen(false);
+    setSelectedConsultant(null);
+  };
 
   const student = users.find(u => u.id === consultation.studentId);
   const consultant = users.find(u => u.id === consultation.consultantId);
@@ -58,7 +99,7 @@ export default function ConsultationDetailPage() {
             <div className="flex justify-between items-center pt-2">
                 <h1 className="font-headline text-3xl font-bold text-primary">Consultation Details</h1>
                 {consultation.status === 'PENDING' && (
-                    <Button size="sm" onClick={() => router.push('/consultations')}>
+                    <Button size="sm" onClick={() => setIsAssignDialogOpen(true)}>
                         <UserPlus className="h-4 w-4 mr-2" />
                         Assign Consultant
                     </Button>
@@ -115,6 +156,15 @@ export default function ConsultationDetailPage() {
                     <p className="text-sm text-muted-foreground">{consultation.problemDescription}</p>
                 </CardContent>
             </Card>
+            
+            <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Chat History</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">Chat history is not available to administrators to protect user privacy.</p>
+                </CardContent>
+            </Card>
 
             <Card>
                 <CardHeader>
@@ -148,6 +198,37 @@ export default function ConsultationDetailPage() {
                      </div>
                 </CardContent>
             </Card>
+
+            <Dialog open={isAssignDialogOpen} onOpenChange={(open) => {
+                if (!open) {
+                    setSelectedConsultant(null);
+                }
+                setIsAssignDialogOpen(open);
+            }}>
+                <DialogContent>
+                    <DialogHeader>
+                    <DialogTitle>Assign Consultant</DialogTitle>
+                    <DialogDescription>
+                        Select a consultant for this request. The consultant will be notified.
+                    </DialogDescription>
+                    </DialogHeader>
+                    <Select onValueChange={setSelectedConsultant}>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select a consultant" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {users
+                        .filter(u => u.role === 'consultant' && u.departmentId === consultation.departmentId)
+                        .map(c => (
+                        <SelectItem key={c.id} value={c.id}>{c.fullName}</SelectItem>
+                        ))}
+                    </SelectContent>
+                    </Select>
+                    <DialogFooter>
+                    <Button onClick={handleAssign}>Confirm Assignment</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
   }

@@ -23,11 +23,19 @@ export default function ConsultationsPage() {
   const pageTitle = user?.role === 'admin' ? 'Consultation Management' : 'My Consultations';
   const pageDescription = user?.role === 'admin' 
     ? 'View and manage all consultation requests.'
+    : user?.role === 'consultant'
+    ? 'View and manage all consultations assigned to you.'
     : 'Track the progress of your consultation requests below.';
   
-  const cardTitle = user?.role === 'admin' ? 'All Requests' : 'My Requests';
+  const cardTitle = user?.role === 'admin' 
+    ? 'All Requests' 
+    : user?.role === 'consultant'
+    ? 'Assigned to You'
+    : 'My Requests';
   const cardDescription = user?.role === 'admin' 
     ? 'Assign consultants to pending requests or view details of ongoing consultations.'
+    : user?.role === 'consultant'
+    ? 'These are the consultation requests assigned to you. Select one to view details and begin the conversation.'
     : 'You can view the details and status of each request you have made.';
 
   return (

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useAuth, useFirebase } from '@/firebase';
+import { useFirebase } from '@/firebase';
 import { initiateEmailSignIn } from '@/firebase/non-blocking-login';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
@@ -28,6 +28,16 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!email || !password) {
+        toast({
+            variant: "destructive",
+            title: "Login Failed",
+            description: "Please enter both your email and password.",
+        });
+        return;
+    }
+
     if (!auth) {
         toast({ title: "Error", description: "Auth service not available.", variant: "destructive" });
         return;

@@ -5,9 +5,10 @@ import { departments } from '@/lib/data';
 import { useAuth } from '@/hooks/use-auth';
 import { ConsultationActions } from './_components/consultation-actions';
 import { useMemo } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ConsultationsPage() {
-  const { user, consultations, users } = useAuth();
+  const { user, consultations, users, isLoaded } = useAuth();
   
   const filteredConsultations = useMemo(() => {
     if (!user) return [];
@@ -37,6 +38,32 @@ export default function ConsultationsPage() {
     : user?.role === 'consultant'
     ? 'These are the consultation requests assigned to you. Select one to view details and begin the conversation.'
     : 'You can view the details and status of each request you have made.';
+
+  if (!isLoaded) {
+    return (
+        <div className="space-y-8">
+            <div className="flex items-start justify-between">
+                <div>
+                    <Skeleton className="h-9 w-72 mb-2" />
+                    <Skeleton className="h-5 w-96" />
+                </div>
+            </div>
+            <Card>
+                <CardHeader>
+                    <Skeleton className="h-6 w-48 mb-2" />
+                    <Skeleton className="h-4 w-full max-w-lg" />
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-2 pt-6">
+                        <Skeleton className="h-12 w-full" />
+                        <Skeleton className="h-12 w-full" />
+                        <Skeleton className="h-12 w-full" />
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+    );
+  }
 
   return (
     <div className="space-y-8">

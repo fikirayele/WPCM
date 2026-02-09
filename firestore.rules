@@ -82,9 +82,9 @@ service cloud.firestore {
      * A participant is either the student who created the request or the consultant assigned to it.
      * This requires a 'get' call to the parent consultationRequest document.
      */
-    function isRequestParticipant(studentId, consultationRequestId) {
-      let requestDoc = get(/databases/$(database)/documents/users/$(studentId)/consultationRequests/$(consultationRequestId)).data;
-      return request.auth.uid == studentId || request.auth.uid == requestDoc.assignedConsultantId;
+    function isRequestParticipant(consultationId) {
+      let requestDoc = get(/databases/$(database)/documents/consultations/$(consultationId)).data;
+      return request.auth.uid == requestDoc.studentId || request.auth.uid == requestDoc.consultantId;
     }
 
     // --------------------------------
@@ -114,8 +114,8 @@ service cloud.firestore {
      * @principle Secures reference data as read-only for clients, with writes managed server-side.
      */
     match /departments/{departmentId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
+      allow get: if true;
+      allow list: if true;
       allow create: if isAdmin() && request.resource.data.id == departmentId;
       allow update: if isAdmin() && request.resource.data.id == departmentId;
       allow delete: if isAdmin();
@@ -197,5 +197,3 @@ service cloud.firestore {
     }
   }
 }
-
-    

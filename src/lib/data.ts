@@ -84,6 +84,29 @@ export const departments: Department[] = [
 ];
 
 export const consultations: Consultation[] = [
+   {
+    id: 'cons-6',
+    studentId: 'user-2',
+    departmentId: 'dept-1',
+    problemDescription: 'This is a new test request. I need to talk to someone about managing stress during final exams. My schedule is very tight.',
+    preferredTime: 'Weekend afternoons',
+    status: 'PENDING',
+    createdAt: '2023-11-17T12:00:00Z',
+    messages: [],
+    fullName: 'John Smith',
+    phoneNumber: '234-567-8901',
+    email: 'john.smith@example.com',
+    motherChurch: 'Hilltop Chapel',
+    entryYear: '2021',
+    departmentName: 'Engineering',
+    schoolLevel: 'Third Year',
+    graduationYear: '2025',
+    studentStatus1: 'Regular',
+    studentStatus2: 'Degree Program',
+    studentStatus3: 'Current WPCM',
+    talents: ['Preach'],
+    specialCare: [],
+  },
   {
     id: 'cons-1',
     studentId: 'user-1',

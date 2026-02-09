@@ -191,6 +191,8 @@ service cloud.firestore {
     match /donations/{donationId} {
       allow get: if isAdmin();
       allow list: if isAdmin();
+      // Allow anyone, including unauthenticated users, to submit a donation record.
+      // This is for the public donation confirmation form.
       allow create: if true;
       allow update: if false;
       allow delete: if false;

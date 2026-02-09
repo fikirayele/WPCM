@@ -9,13 +9,14 @@ import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import Link from 'next/link';
-import { departments } from '@/lib/data';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { Consultation } from '@/lib/types';
 import { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import Image from 'next/image';
 import { Upload } from 'lucide-react';
+import { addDocumentNonBlocking } from '@/firebase';
+import { collection, serverTimestamp } from 'firebase/firestore';
 
 
 const schoolLevels = ['Remedial', 'First Year', 'Second Year', 'Third Year', 'Fourth Year', 'Fifth Year', 'Sixth Year', 'Seventh Year'];
@@ -25,7 +26,7 @@ const specialCareOptions = ['Financial Support', 'Consultation Support', 'Other'
 export default function RequestConsultationPage() {
     const { toast } = useToast();
     const router = useRouter();
-    const { user, addConsultation } = useAuth();
+    const { user, firestore, departments } = useAuth();
     const [imagePreview, setImagePreview] = useState<string | null>(null);
 
     const [formData, setFormData] = useState<Omit<Consultation, 'id' | 'studentId' | 'createdAt' | 'messages' | 'status' | 'fullName' | 'email' | 'photoUrl'>>({
@@ -108,12 +109,24 @@ export default function RequestConsultationPage() {
             return;
         }
 
+        if (!firestore) {
+            toast({ variant: 'destructive', title: 'Error', description: 'Database not available.'});
+            return;
+        }
+
         const consultationData = {
             ...formData,
+            studentId: user.id,
+            status: 'PENDING',
+            createdAt: serverTimestamp(),
+            messages: [],
+            fullName: user.fullName,
+            email: user.email,
             photoUrl: imagePreview || user.avatarUrl,
         };
         
-        addConsultation(consultationData);
+        const consultationsRef = collection(firestore, 'consultations');
+        addDocumentNonBlocking(consultationsRef, consultationData);
 
         toast({
             title: "Request Submitted",

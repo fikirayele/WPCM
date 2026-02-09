@@ -13,19 +13,35 @@ import {
   Star,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useAuth } from '@/hooks/use-auth';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useFirebase, useUser } from '@/firebase';
+import { signOut } from 'firebase/auth';
+import type { User } from '@/lib/types';
+import { useDoc } from '@/firebase/firestore/use-doc';
+import { doc } from 'firebase/firestore';
 
 const getInitials = (name = '') => name ? name.split(' ').map((n) => n[0]).join('') : '';
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const { user, logout, isLoaded } = useAuth();
+  const { auth, firestore, isUserLoading } = useFirebase();
+  const { user: authUser } = useUser();
+  const router = useRouter();
+
+  const userRef = authUser ? doc(firestore, 'users', authUser.uid) : null;
+  const { data: user, isLoading: isUserDocLoading } = useDoc<User>(userRef);
+
+  const handleLogout = async () => {
+    if (auth) {
+      await signOut(auth);
+      router.push('/login');
+    }
+  };
 
   const adminNav = [
     { href: '/dashboard', label: 'Dashboard', icon: Home },
@@ -48,8 +64,9 @@ export function AppSidebar() {
   ];
   
   const navItems = user?.role === 'admin' ? adminNav : user?.role === 'consultant' ? consultantNav : studentNav;
+  const isLoading = isUserLoading || isUserDocLoading;
 
-  if (!isLoaded) {
+  if (isLoading) {
     return (
         <div className="flex h-full flex-col p-4">
             <div className="flex-1 space-y-2">
@@ -100,7 +117,7 @@ export function AppSidebar() {
               <p className="truncate text-xs text-muted-foreground">{user.email}</p>
             </div>
             <ThemeToggle />
-            <Button variant="ghost" size="icon" onClick={logout}>
+            <Button variant="ghost" size="icon" onClick={handleLogout}>
               <LogOut className="h-4 w-4" />
             </Button>
           </div>

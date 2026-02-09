@@ -3,21 +3,26 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useFirebase } from '@/firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import { useRouter } from 'next/navigation';
 
 export default function SignupPage() {
-  const { signup } = useAuth();
+  const { auth, firestore } = useFirebase();
   const { toast } = useToast();
+  const router = useRouter();
+
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       toast({
@@ -27,7 +32,40 @@ export default function SignupPage() {
       });
       return;
     }
-    signup({ fullName, email }, password);
+    if (!auth || !firestore) {
+        toast({ title: 'Error', description: 'Firebase not initialized.', variant: 'destructive'});
+        return;
+    }
+
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const firebaseUser = userCredential.user;
+
+        const userProfile = {
+            id: firebaseUser.uid,
+            fullName,
+            email: firebaseUser.email,
+            role: 'student',
+            avatarUrl: `https://picsum.photos/seed/${firebaseUser.uid}/100/100`,
+            active: true,
+        };
+
+        await setDoc(doc(firestore, 'users', firebaseUser.uid), userProfile);
+        
+        toast({
+            title: 'Account Created!',
+            description: 'You can now log in with your new account.',
+        });
+        router.push('/login');
+
+    } catch (error: any) {
+        console.error("Signup error:", error);
+        toast({
+            variant: "destructive",
+            title: "Signup Failed",
+            description: error.message || "An unexpected error occurred.",
+        });
+    }
   };
 
   return (

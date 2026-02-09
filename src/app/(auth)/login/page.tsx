@@ -4,18 +4,35 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useAuth } from '@/hooks/use-auth';
+import { useAuth, useFirebase } from '@/firebase';
+import { initiateEmailSignIn } from '@/firebase/non-blocking-login';
+import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { auth, user, isUserLoading } = useFirebase();
+  const { toast } = useToast();
+  const router = useRouter();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  useEffect(() => {
+    if (!isUserLoading && user) {
+        router.push('/consultations');
+    }
+  }, [user, isUserLoading, router]);
+
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    login(email, password);
+    if (!auth) {
+        toast({ title: "Error", description: "Auth service not available.", variant: "destructive" });
+        return;
+    }
+    initiateEmailSignIn(auth, email, password);
   };
 
   return (

@@ -55,22 +55,29 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
   
   const handleAccept = () => {
     const updates: Partial<Consultation> = {};
-    if (user?.id === student?.id) {
-        updates.studentAccepted = true;
-    }
-    if (user?.id === consultant?.id) {
-        updates.consultantAccepted = true;
-    }
-    updateConsultation(consultation.id, updates);
-    toast({ title: "Accepted!", description: "You have accepted the consultation." });
-  };
+    const isStudentAccepting = user?.id === student?.id;
+    const isConsultantAccepting = user?.id === consultant?.id;
 
-  useEffect(() => {
-    if (consultation.studentAccepted && consultation.consultantAccepted && consultation.status === 'AWAITING_ACCEPTANCE') {
-        updateConsultation(consultation.id, { status: 'ACTIVE' });
-        toast({ title: "Consultation Active", description: "You can now start chatting." });
+    if (isStudentAccepting) {
+      updates.studentAccepted = true;
+      if (consultation.consultantAccepted) {
+        updates.status = 'ACTIVE';
+      }
+    } else if (isConsultantAccepting) {
+      updates.consultantAccepted = true;
+      if (consultation.studentAccepted) {
+        updates.status = 'ACTIVE';
+      }
     }
-  }, [consultation, updateConsultation, toast]);
+    
+    updateConsultation(consultation.id, updates);
+
+    if (updates.status === 'ACTIVE') {
+      toast({ title: "Consultation Active", description: "You can now start chatting." });
+    } else {
+      toast({ title: "Accepted!", description: "You have accepted the consultation." });
+    }
+  };
 
   const handleSummarize = async () => {
     setIsLoadingSummary(true);

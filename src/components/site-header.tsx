@@ -2,22 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/hooks/use-auth';
 import { cn } from '@/lib/utils';
 import { Logo } from './logo';
-import { User as UserIcon, LogOut, LayoutDashboard, BookUser, Menu } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
-import { useState, useEffect } from 'react';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -29,23 +18,6 @@ const navLinks = [
 
 export function SiteHeader() {
   const pathname = usePathname();
-  const { user, logout } = useAuth();
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  const getInitials = (name: string) => {
-    if (!name) return '';
-    return name
-      .split(' ')
-      .map((n) => n[0])
-      .join('');
-  };
-  
-  const dashboardPath = user?.role === 'admin' || user?.role === 'consultant' ? '/dashboard' : '/consultations';
-  const dashboardLabel = user?.role === 'admin' || user?.role === 'consultant' ? 'Dashboard' : 'My Consultations';
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card">
@@ -75,31 +47,12 @@ export function SiteHeader() {
             
             {/* Auth Buttons */}
             <div className="hidden md:flex items-center gap-2">
-              {isClient && (
-                <>
-                  {user ? (
-                      <>
-                        <Button variant="outline" asChild>
-                          <Link href={dashboardPath}>
-                            {dashboardLabel}
-                          </Link>
-                        </Button>
-                        <Button onClick={logout}>
-                          Logout
-                        </Button>
-                      </>
-                  ) : (
-                      <>
-                      <Button variant="ghost" asChild>
-                          <Link href="/login">Login</Link>
-                      </Button>
-                      <Button asChild>
-                          <Link href="/signup">Sign Up</Link>
-                      </Button>
-                      </>
-                  )}
-                </>
-              )}
+              <Button variant="ghost" asChild>
+                  <Link href="/login">Login</Link>
+              </Button>
+              <Button asChild>
+                  <Link href="/signup">Sign Up</Link>
+              </Button>
             </div>
 
             {/* Mobile Menu Trigger */}
@@ -131,27 +84,10 @@ export function SiteHeader() {
                     ))}
                 </nav>
                  <div className="mt-auto border-t p-4">
-                    {isClient && (
-                      <>
-                        {user ? (
-                            <div className="grid gap-2">
-                                <Button asChild>
-                                  <Link href={dashboardPath}>
-                                    {dashboardLabel}
-                                  </Link>
-                                </Button>
-                                <Button variant="outline" onClick={logout}>
-                                    Logout
-                                </Button>
-                            </div>
-                        ) : (
-                            <div className="grid gap-2">
-                                <Button variant="outline" asChild><Link href="/login">Login</Link></Button>
-                                <Button asChild><Link href="/signup">Sign Up</Link></Button>
-                            </div>
-                        )}
-                      </>
-                    )}
+                    <div className="grid gap-2">
+                        <Button variant="outline" asChild><Link href="/login">Login</Link></Button>
+                        <Button asChild><Link href="/signup">Sign Up</Link></Button>
+                    </div>
                  </div>
                 </SheetContent>
             </Sheet>

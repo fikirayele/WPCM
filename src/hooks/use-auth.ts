@@ -17,9 +17,9 @@ export function useAuth() {
   const { data: user, isLoading: isUserDocLoading } = useDoc<User>(userDocRef);
 
   const usersCollectionRef = useMemoFirebase(() => {
-      if (!firestore) return null;
+      if (!firestore || !user || user.role !== 'admin') return null;
       return collection(firestore, 'users');
-  }, [firestore]);
+  }, [firestore, user]);
   const { data: users, isLoading: areUsersLoading } = useCollection<User>(usersCollectionRef);
 
   const consultationsCollectionRef = useMemoFirebase(() => {

@@ -70,7 +70,7 @@ export const users: User[] = [
     role: 'consultant', 
     departmentId: 'dept-4', 
     avatarUrl: 'https://picsum.photos/seed/avatar8/100/100', 
-    active: false,
+    active: true,
   },
 ];
 
@@ -87,12 +87,15 @@ export const consultations: Consultation[] = [
    {
     id: 'cons-6',
     studentId: 'user-2',
-    departmentId: 'dept-1',
-    problemDescription: 'This is a new test request. I need to talk to someone about managing stress during final exams. My schedule is very tight.',
+    consultantId: 'user-8',
+    departmentId: 'dept-4',
+    problemDescription: 'My spouse and I are having trouble communicating. We need some guidance on how to resolve conflicts better.',
     preferredTime: 'Weekend afternoons',
-    status: 'PENDING',
+    status: 'AWAITING_ACCEPTANCE',
     createdAt: '2023-11-17T12:00:00Z',
     messages: [],
+    studentAccepted: false,
+    consultantAccepted: false,
     fullName: 'John Smith',
     phoneNumber: '234-567-8901',
     email: 'john.smith@example.com',

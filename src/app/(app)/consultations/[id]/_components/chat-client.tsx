@@ -33,7 +33,7 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
   const [testimonial, setTestimonial] = useState(consultation.testimonial || '');
 
 
-  const getInitials = (name = '') => name.split(' ').map((n) => n[0]).join('');
+  const getInitials = (name = '') => name ? name.split(' ').map((n) => n[0]).join('') : '';
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -183,18 +183,19 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
         </div>
       </ScrollArea>
       <div className="border-t p-4 space-y-4">
-        {user?.role === 'consultant' && consultation.status === 'ACTIVE' && (
-          <Button onClick={handleCompleteConsultation} className="w-full" variant="outline">
-            <CheckCircle className="mr-2 h-4 w-4" />
-            Mark Consultation as Complete
-          </Button>
-        )}
-        {user?.role === 'consultant' && consultation.status !== 'COMPLETED' && (
-             <Button onClick={handleSummarize} disabled={isLoadingSummary} className="w-full" variant="outline">
+        {consultation.status === 'ACTIVE' && isCurrentUserConsultant && (
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Button onClick={handleSummarize} disabled={isLoadingSummary} className="w-full" variant="outline">
                 <Bot className="mr-2 h-4 w-4" />
                 {isLoadingSummary ? 'Generating Summary...' : 'Summarize Chat'}
             </Button>
+            <Button onClick={handleCompleteConsultation} className="w-full" variant="outline">
+              <CheckCircle className="mr-2 h-4 w-4" />
+              Mark as Complete
+            </Button>
+          </div>
         )}
+        
         {consultation.status === 'AWAITING_ACCEPTANCE' && (
             <>
               {isCurrentUserStudent && !consultation.studentAccepted && (
@@ -205,6 +206,7 @@ export function ChatClient({ consultation, student, consultant }: ChatClientProp
               )}
             </>
         )}
+        
         {consultation.status !== 'COMPLETED' ? (
           <form onSubmit={handleSendMessage} className="flex items-center gap-2">
             <Input

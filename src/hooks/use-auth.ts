@@ -1,6 +1,6 @@
 'use client';
 
-import { useFirebase, useUser, useFirestore, useMemoFirebase } from '@/firebase';
+import { useFirebase, useUser, useFirestore, useMemoFirebase, addDocumentNonBlocking } from '@/firebase';
 import type { User, Consultation, Department, Donation } from '@/lib/types';
 import { collection, doc, query, where } from 'firebase/firestore';
 import { useCollection } from '@/firebase/firestore/use-collection';
@@ -48,11 +48,20 @@ export function useAuth() {
   const { data: departments, isLoading: areDepartmentsLoading } = useCollection<Department>(departmentsCollectionRef);
 
   const donationsCollectionRef = useMemoFirebase(() => {
-      if (!firestore) return null;
+      if (!firestore || !user || user.role !== 'admin') return null;
       return collection(firestore, 'donations');
-  }, [firestore]);
+  }, [firestore, user]);
   const { data: donations, isLoading: areDonationsLoading } = useCollection<Donation>(donationsCollectionRef);
   
+  const addDonation = (donationData: Omit<Donation, 'id' | 'date'>) => {
+    if (!firestore) return;
+    const donationsRef = collection(firestore, 'donations');
+    addDocumentNonBlocking(donationsRef, {
+        ...donationData,
+        date: new Date().toISOString()
+    });
+  };
+
   const isLoading = isUserLoading || isUserDocLoading || areUsersLoading || areConsultationsLoading || areDepartmentsLoading || areDonationsLoading;
 
   return {
@@ -63,6 +72,7 @@ export function useAuth() {
     donations: donations || [],
     isLoaded: !isLoading,
     firestore,
-    auth: useFirebase().auth
+    auth: useFirebase().auth,
+    addDonation,
   };
 }

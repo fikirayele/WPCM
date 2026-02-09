@@ -25,34 +25,32 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
+const getInitialState = <T,>(storageKey: string, fallback: T): T => {
+    if (typeof window === 'undefined') {
+        return fallback;
+    }
+    try {
+        const storedItem = localStorage.getItem(storageKey);
+        return storedItem ? JSON.parse(storedItem) : fallback;
+    } catch (error) {
+        console.error(`Failed to load ${storageKey} from localStorage`, error);
+        return fallback;
+    }
+}
+
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [users, setUsers] = useState<User[]>(initialUsers);
-  const [consultations, setConsultations] = useState<Consultation[]>(initialConsultations);
-  const [donations, setDonations] = useState<Donation[]>(initialDonations);
+  const [user, setUser] = useState<User | null>(() => getInitialState('wpcm-user', null));
+  const [users, setUsers] = useState<User[]>(() => getInitialState('wpcm-users', initialUsers));
+  const [consultations, setConsultations] = useState<Consultation[]>(() => getInitialState('wpcm-consultations', initialConsultations));
+  const [donations, setDonations] = useState<Donation[]>(() => getInitialState('wpcm-donations', initialDonations));
   const [isLoaded, setIsLoaded] = useState(false);
 
   const router = useRouter();
   const { toast } = useToast();
 
-  // Load state from localStorage on initial client-side render
   useEffect(() => {
-    try {
-      const storedUsers = localStorage.getItem('wpcm-users');
-      const storedConsultations = localStorage.getItem('wpcm-consultations');
-      const storedDonations = localStorage.getItem('wpcm-donations');
-      const storedUser = localStorage.getItem('wpcm-user');
-
-      if (storedUsers) setUsers(JSON.parse(storedUsers));
-      if (storedConsultations) setConsultations(JSON.parse(storedConsultations));
-      if (storedDonations) setDonations(JSON.parse(storedDonations));
-      if (storedUser) setUser(JSON.parse(storedUser));
-      
-    } catch (error) {
-      console.error("Failed to load state from localStorage", error);
-    } finally {
-      setIsLoaded(true);
-    }
+    setIsLoaded(true);
   }, []);
 
   // Save state to localStorage whenever it changes

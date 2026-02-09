@@ -62,9 +62,15 @@
     },
     {
       "id": "about-us-image",
-      "description": "A group of people in a church.",
-      "imageUrl": "/pic.jpg",
-      "imageHint": "church community"
+      "description": "A group of diverse people smiling and working together.",
+      "imageUrl": "https://images.unsplash.com/photo-1531545514256-b1400bc00f31?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjaHVyY2glMjBjb21tdW5pdHl8ZW58MHx8fHwxNzY4NTg0MjA0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "diverse group"
+    },
+    {
+      "id": "auth-background-image",
+      "description": "A beautiful, calming image for the authentication screen.",
+      "imageUrl": "https://images.unsplash.com/photo-1583692999435-c0818290f842?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzdXBwb3J0JTIwZ3JvdXB8ZW58MHx8fHwxNzY4NTg0MjA0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "support group"
     },
     {
       "id": "adventist-logo",

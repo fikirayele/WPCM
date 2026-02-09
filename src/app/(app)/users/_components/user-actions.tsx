@@ -22,7 +22,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -278,7 +277,6 @@ export function UserActions() {
             }
             setIsDialogOpen(open);
         }}>
-          {/* Add User button has been removed for security. Users should sign up, then be promoted. */}
           <DialogContent className="sm:max-w-[425px]">
             <UserForm aUser={currentUser} deps={departments} />
           </DialogContent>
@@ -344,19 +342,17 @@ export function UserActions() {
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex items-center justify-end gap-2">
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          setCurrentUser(user);
-                          setIsDialogOpen(true);
-                        }}
-                      >
-                        <Pencil className="w-4 h-4" />
-                        <span className="sr-only">Edit</span>
-                      </Button>
-                    </DialogTrigger>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        setCurrentUser(user);
+                        setIsDialogOpen(true);
+                      }}
+                    >
+                      <Pencil className="w-4 h-4" />
+                      <span className="sr-only">Edit</span>
+                    </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">

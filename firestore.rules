@@ -1,0 +1,193 @@
+/**
+ * Core Philosophy:
+ * This ruleset enforces a security model based on user ownership and role-based
+ * access for collaborative data. The primary goal is to ensure that users can
+ * only access data they own or have been explicitly granted permission to view,
+ * while maintaining flexibility for application development.
+ *
+ * Data Structure:
+ * The data is organized into top-level collections for public or semi-public
+ * data (e.g., /departments, /newsAnnouncements) and user-specific subcollections
+ * for private data (e.g., /users/{userId}/consultationRequests). This structural
+ * segregation provides a clear and performant boundary between private and
+ * public information.
+ *
+ * Key Security Decisions:
+ * - User data stored under /users/{userId} is strictly private to that user.
+ * - Listing all users from the /users collection is explicitly disallowed to
+ *   protect user privacy.
+ * - Consultation requests and their associated chat messages are accessible only
+ *   to the student who created the request and the consultant assigned to it.
+ *   This is managed by checking denormalized IDs on the request document.
+ * - Publicly readable collections like /departments and /consultants are
+ *   read-only for authenticated users, with writes restricted to prevent
+ *   unauthorized modifications.
+ * - Financial records like donations are immutable once created.
+ *
+ * Denormalization for Authorization:
+ * This ruleset relies on denormalization for efficient and secure authorization.
+ * For example, the `consultationRequest` document contains both the `studentId`
+ * and `assignedConsultantId`. This allows security rules for the request and its
+ * `chatMessages` subcollection to grant access to both participants without
+ * needing to perform costly and complex queries or joins.
+ *
+ * Structural Segregation:
+ * Private user data, such as consultation requests, is nested within a user's
+ * own document tree (`/users/{userId}/...`). This is more secure and performant
+ * for list operations than a single top-level collection filtered by a user ID,
+ * as Firestore rules cannot filter query results. Public data like news is
+ * kept in a separate top-level collection.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --------------------------------
+    // Helper Functions
+    // --------------------------------
+
+    /**
+     * Checks if a user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * Checks if the currently authenticated user's UID matches the provided userId.
+     */
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    /**
+     * Checks if the document being accessed already exists.
+     * Used to protect update and delete operations.
+     */
+    function isExistingDoc() {
+      return resource != null;
+    }
+
+
+
+    /**
+     * Checks if the current user is a participant in a consultation.
+     * A participant is either the student who created the request or the consultant assigned to it.
+     * This requires a 'get' call to the parent consultationRequest document.
+     */
+    function isRequestParticipant(studentId, consultationRequestId) {
+      let requestDoc = get(/databases/$(database)/documents/users/$(studentId)/consultationRequests/$(consultationRequestId)).data;
+      return request.auth.uid == studentId || request.auth.uid == requestDoc.assignedConsultantId;
+    }
+
+    // --------------------------------
+    // Collection Rules
+    // --------------------------------
+
+    /**
+     * @description Controls access to user profile documents.
+     * @path /users/{userId}
+     * @allow (create) An authenticated user creating their own user profile document.
+     * @deny (list) Any user attempting to list all documents in the /users collection.
+     * @principle Restricts access to a user's own data tree.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isOwner(userId) && isExistingDoc() && request.resource.data.id == resource.data.id;
+      allow delete: if false;
+    }
+
+    /**
+     * @description Controls access to the list of church departments.
+     * @path /departments/{departmentId}
+     * @allow (get) Any authenticated user reading a department's details.
+     * @deny (create) Any user trying to create a new department.
+     * @principle Secures reference data as read-only for clients, with writes managed server-side.
+     */
+    match /departments/{departmentId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn();
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    /**
+     * @description Controls access to the list of available consultants.
+     * @path /consultants/{consultantId}
+     * @allow (list) Any authenticated user listing all available consultants.
+     * @deny (update) Any user trying to modify a consultant's profile.
+     * @principle Secures reference data as read-only for clients, with writes managed server-side.
+     */
+    match /consultants/{consultantId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn();
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    /**
+     * @description Controls access to a student's private consultation requests.
+     * @path /users/{studentId}/consultationRequests/{consultationRequestId}
+     * @allow (get) The student or the assigned consultant reading the request details.
+     * @deny (get) A different student trying to read another user's request.
+     * @principle Implements shared access between two specific users (student and consultant).
+     */
+    match /users/{studentId}/consultationRequests/{consultationRequestId} {
+      allow get: if isOwner(studentId) || isOwner(resource.data.assignedConsultantId);
+      allow list: if isOwner(studentId);
+      allow create: if isOwner(studentId) && request.resource.data.studentId == studentId;
+      allow update: if (isOwner(studentId) || isOwner(resource.data.assignedConsultantId)) && isExistingDoc() && request.resource.data.studentId == resource.data.studentId;
+      allow delete: if isOwner(studentId) && isExistingDoc();
+    }
+
+    /**
+     * @description Controls access to chat messages within a consultation request.
+     * @path /users/{studentId}/consultationRequests/{consultationRequestId}/chatMessages/{chatMessageId}
+     * @allow (create) The student or consultant sending a message in their own session.
+     * @deny (list) An un-involved user trying to list messages from a private chat.
+     * @principle Enforces subcollection access based on the state of a parent document.
+     */
+    match /users/{studentId}/consultationRequests/{consultationRequestId}/chatMessages/{chatMessageId} {
+      allow get: if isRequestParticipant(studentId, consultationRequestId);
+      allow list: if isRequestParticipant(studentId, consultationRequestId);
+      allow create: if isRequestParticipant(studentId, consultationRequestId) && isOwner(request.resource.data.senderId);
+      allow update: if false;
+      allow delete: if isRequestParticipant(studentId, consultationRequestId) && isOwner(resource.data.senderId) && isExistingDoc();
+    }
+
+    /**
+     * @description Controls access to public news and announcements.
+     * @path /newsAnnouncements/{newsAnnouncementId}
+     * @allow (list) Any user, including unauthenticated visitors, reading the news.
+     * @deny (create) Any client attempting to create a new announcement.
+     * @principle Provides public read access while restricting writes.
+     */
+    match /newsAnnouncements/{newsAnnouncementId} {
+      allow get: if true;
+      allow list: if true;
+      // CRITICAL: Cannot implement owner-only writes. The 'NewsAnnouncement' entity is missing an 'ownerId' or 'authorId' field.
+      allow create: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow update: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+    }
+
+    /**
+     * @description Controls access to donation records.
+     * @path /donations/{donationId}
+     * @allow (create) An authenticated user creating a donation record for themselves.
+     * @deny (get) A user trying to view another user's donation record.
+     * @principle Enforces document ownership and immutability for sensitive records.
+     */
+    match /donations/{donationId} {
+      allow get: if isSignedIn() && isOwner(resource.data.userId);
+      allow list: if false;
+      allow create: if isSignedIn() && isOwner(request.resource.data.userId);
+      allow update: if false;
+      allow delete: if false;
+    }
+  }
+}

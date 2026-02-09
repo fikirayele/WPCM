@@ -1,0 +1,382 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the FaithConnect platform.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user entity."
+        },
+        "role": {
+          "type": "string",
+          "description": "User role (student, consultant, admin)."
+        },
+        "firstName": {
+          "type": "string",
+          "description": "The first name of the user."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The last name of the user."
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address.",
+          "format": "email"
+        },
+        "phone": {
+          "type": "string",
+          "description": "User's phone number."
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "Indicates whether the user account is active."
+        }
+      },
+      "required": [
+        "id",
+        "role",
+        "firstName",
+        "lastName",
+        "email",
+        "phone",
+        "isActive"
+      ]
+    },
+    "Department": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Department",
+      "type": "object",
+      "description": "Represents a department within the church.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the department entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the department (e.g., Spiritual Counseling)."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the department."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description"
+      ]
+    },
+    "Consultant": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Consultant",
+      "type": "object",
+      "description": "Represents a consultant within the church.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the consultant entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:1 Consultant)"
+        },
+        "departmentId": {
+          "type": "string",
+          "description": "Reference to Department. (Relationship: Department 1:N Consultant)"
+        },
+        "specialization": {
+          "type": "string",
+          "description": "Consultant's area of expertise."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "departmentId",
+        "specialization"
+      ]
+    },
+    "ConsultationRequest": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ConsultationRequest",
+      "type": "object",
+      "description": "Represents a consultation request submitted by a student.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the consultation request entity."
+        },
+        "studentId": {
+          "type": "string",
+          "description": "Reference to User (student). (Relationship: User 1:N ConsultationRequest)"
+        },
+        "departmentId": {
+          "type": "string",
+          "description": "Reference to Department. (Relationship: Department 1:N ConsultationRequest)"
+        },
+        "problemDescription": {
+          "type": "string",
+          "description": "Description of the student's problem."
+        },
+        "preferredTime": {
+          "type": "string",
+          "description": "Student's preferred time for consultation."
+        },
+        "status": {
+          "type": "string",
+          "description": "Status of the consultation request (PENDING, ASSIGNED, ACTIVE, PAUSED, COMPLETED)."
+        },
+        "assignedConsultantId": {
+          "type": "string",
+          "description": "Reference to Consultant. (Relationship: Consultant 1:N ConsultationRequest)"
+        }
+      },
+      "required": [
+        "id",
+        "studentId",
+        "departmentId",
+        "problemDescription",
+        "preferredTime",
+        "status"
+      ]
+    },
+    "ChatMessage": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ChatMessage",
+      "type": "object",
+      "description": "Represents a message in the real-time chat between a student and a consultant.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the chat message entity."
+        },
+        "consultationRequestId": {
+          "type": "string",
+          "description": "Reference to ConsultationRequest. (Relationship: ConsultationRequest 1:N ChatMessage)"
+        },
+        "senderId": {
+          "type": "string",
+          "description": "Reference to User (sender). (Relationship: User 1:N ChatMessage)"
+        },
+        "message": {
+          "type": "string",
+          "description": "Content of the chat message."
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp of when the message was sent.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "consultationRequestId",
+        "senderId",
+        "message",
+        "timestamp"
+      ]
+    },
+    "NewsAnnouncement": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "NewsAnnouncement",
+      "type": "object",
+      "description": "Represents a news announcement published on the public website.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the news announcement entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the news announcement."
+        },
+        "content": {
+          "type": "string",
+          "description": "Content of the news announcement (text, images, videos)."
+        },
+        "publicationDate": {
+          "type": "string",
+          "description": "Date when the news announcement was published.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "content",
+        "publicationDate"
+      ]
+    },
+    "Donation": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Donation",
+      "type": "object",
+      "description": "Represents a donation made to the church.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the donation entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User (donor). (Relationship: User 1:N Donation)"
+        },
+        "amount": {
+          "type": "number",
+          "description": "Amount of the donation."
+        },
+        "donationDate": {
+          "type": "string",
+          "description": "Date when the donation was made.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "amount",
+        "donationDate"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profile information. Uses path-based ownership for private user data.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/departments/{departmentId}",
+        "definition": {
+          "entityName": "Department",
+          "schema": {
+            "$ref": "#/backend/entities/Department"
+          },
+          "description": "Stores information about departments within the church.",
+          "params": [
+            {
+              "name": "departmentId",
+              "description": "The unique identifier of the department."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/consultants/{consultantId}",
+        "definition": {
+          "entityName": "Consultant",
+          "schema": {
+            "$ref": "#/backend/entities/Consultant"
+          },
+          "description": "Stores information about consultants.",
+          "params": [
+            {
+              "name": "consultantId",
+              "description": "The unique identifier of the consultant."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{studentId}/consultationRequests/{consultationRequestId}",
+        "definition": {
+          "entityName": "ConsultationRequest",
+          "schema": {
+            "$ref": "#/backend/entities/ConsultationRequest"
+          },
+          "description": "Stores consultation requests submitted by students. Uses path-based ownership under the user's document.",
+          "params": [
+            {
+              "name": "studentId",
+              "description": "The unique identifier of the student (User)."
+            },
+            {
+              "name": "consultationRequestId",
+              "description": "The unique identifier of the consultation request."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{studentId}/consultationRequests/{consultationRequestId}/chatMessages/{chatMessageId}",
+        "definition": {
+          "entityName": "ChatMessage",
+          "schema": {
+            "$ref": "#/backend/entities/ChatMessage"
+          },
+          "description": "Stores chat messages associated with a consultation request. Path-based hierarchy ensures clear ownership and access control. Includes denormalized 'studentId' and 'consultationRequestId' for authorization independence.",
+          "params": [
+            {
+              "name": "studentId",
+              "description": "The unique identifier of the student (User)."
+            },
+            {
+              "name": "consultationRequestId",
+              "description": "The unique identifier of the consultation request."
+            },
+            {
+              "name": "chatMessageId",
+              "description": "The unique identifier of the chat message."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/newsAnnouncements/{newsAnnouncementId}",
+        "definition": {
+          "entityName": "NewsAnnouncement",
+          "schema": {
+            "$ref": "#/backend/entities/NewsAnnouncement"
+          },
+          "description": "Stores news announcements published on the public website.",
+          "params": [
+            {
+              "name": "newsAnnouncementId",
+              "description": "The unique identifier of the news announcement."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/donations/{donationId}",
+        "definition": {
+          "entityName": "Donation",
+          "schema": {
+            "$ref": "#/backend/entities/Donation"
+          },
+          "description": "Stores information about donations made to the church.",
+          "params": [
+            {
+              "name": "donationId",
+              "description": "The unique identifier of the donation."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore data structure is designed to support the FaithConnect platform, prioritizing authorization independence, clarity, and scalability. It leverages path-based ownership for user-specific data and membership maps for collaborative entities.  Authorization Independence is achieved by denormalizing relevant authorization data into subcollections, eliminating the need for `get()` calls in security rules.  This approach supports atomic operations and simplifies debugging.  QAPs (Rules are not Filters) are supported through structural segregation, ensuring that collections with different access requirements are separated.   The use of membership maps and explicit state modeling further enhances security and simplifies rule creation. Collection names are plural and entity names are singular."
+  }
+}

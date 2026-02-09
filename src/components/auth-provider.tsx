@@ -184,9 +184,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const status = becomesActive ? 'ACTIVE' : targetConsultation.status;
         
         if (becomesActive) {
-            toast({ title: "Consultation Active", description: "You can now start chatting." });
+            setTimeout(() => toast({ title: "Consultation Active", description: "You can now start chatting." }), 0);
         } else {
-            toast({ title: "Accepted!", description: `You have accepted. Waiting for the other party.` });
+            setTimeout(() => toast({ title: "Accepted!", description: `You have accepted. Waiting for the other party.` }), 0);
         }
 
         return prevConsultations.map(c => 

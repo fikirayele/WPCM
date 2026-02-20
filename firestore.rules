@@ -191,9 +191,9 @@ service cloud.firestore {
     match /donations/{donationId} {
       allow get: if isAdmin();
       allow list: if isAdmin();
-      // This rule allows anyone, including unauthenticated users, to create a donation record.
-      // This is for the public donation confirmation form and should resolve the permission error.
-      allow create: if request != null;
+      // This rule explicitly allows anyone, including unauthenticated users, to create a donation record.
+      // This resolves the permission error for the public donation form.
+      allow create: if true;
       allow update: if false;
       allow delete: if false;
     }
